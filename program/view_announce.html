@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#102c25">
+  <title>Announcement | Mobilization Church Balilihan</title>
+
+  <!-- Navbar -->
+  <script src="navbar.js" defer></script>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- html2canvas for HD image download -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <style>
+    :root {
+      color-scheme: light;
+      --forest: #102c25;
+      --forest-light: #1b4437;
+      --forest-mid: #214739;
+      --gold: #c5a56b;
+      --gold-light: #e9d8b5;
+      --gold-soft: #f5efe2;
+      --cream: #f7f5ef;
+      --paper: #fffdf8;
+      --ink: #20312b;
+      --muted: #718078;
+      --line: #e6e3db;
+      --white: #fff;
+      --error: #b23a3a;
+      --nav-h: 72px;
+
+      /* Dynamic font size (controlled by slider) */
+      --ann-font-size: 100%;
+
+      /* Bond paper width (controlled by size selector) */
+      --paper-max-width: 850px; /* short default */
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      color: var(--ink);
+      background: var(--cream);
+      font-family: "Segoe UI", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      padding-top: var(--nav-h);
+    }
+
+    a { color: inherit; }
+
+    /* ============================================================
+       TOOLBAR
+       ============================================================ */
+    .toolbar {
+      position: sticky;
+      top: var(--nav-h);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: min(1080px, 100%);
+      margin: 0 auto;
+      padding: 12px 24px;
+      background: rgba(247, 245, 239, .94);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .toolbar-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .toolbar .left { font-size: 12.5px; color: var(--muted); }
+    .toolbar .left strong { color: var(--ink); }
+    .toolbar .right { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    /* Font/paper tools row */
+    .tools-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      padding: 10px 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+
+    .tool-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1 1 300px;
+      min-width: 240px;
+    }
+
+    .tool-item .t-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: #56635c;
+      white-space: nowrap;
+    }
+
+    .tool-item .t-badge {
+      display: inline-block;
+      min-width: 44px;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: var(--gold-soft);
+      color: #806633;
+      text-align: center;
+      letter-spacing: 0;
+      font-size: 11px;
+    }
+
+    .tool-item input[type="range"] {
+      flex: 1 1 auto;
+      height: 4px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: #e6dfd0;
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+    }
+    .tool-item input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--forest);
+      border: 2px solid var(--gold);
+      cursor: pointer;
+      transition: transform 120ms ease;
+    }
+    .tool-item input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.12); }
+    .tool-item input[type="range"]::-moz-range-thumb {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--forest);
+      border: 2px solid var(--gold);
+      cursor: pointer;
+    }
+
+    /* Bond paper size — segmented buttons */
+    .paper-sizes {
+      display: inline-flex;
+      gap: 4px;
+      padding: 3px;
+      background: #f6f4ee;
+      border-radius: 10px;
+    }
+    .paper-size-btn {
+      padding: 7px 14px;
+      border: 0;
+      border-radius: 7px;
+      background: transparent;
+      color: #56635c;
+      cursor: pointer;
+      font: inherit;
+      font-size: 12px;
+      font-weight: 650;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      transition: background 150ms ease, color 150ms ease;
+    }
+    .paper-size-btn:hover { color: #2b2113; }
+    .paper-size-btn.is-active {
+      background: var(--forest);
+      color: var(--gold-light);
+      box-shadow: 0 2px 6px rgba(16,44,37,.2);
+    }
+    .paper-size-btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 8px; padding: 10px 18px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      cursor: pointer;
+      font: inherit; font-size: 13px; font-weight: 650;
+      text-decoration: none;
+      transition: background 150ms ease, border-color 150ms ease, transform 150ms ease, color 150ms ease, opacity 150ms ease;
+    }
+    .btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+    .btn-primary { background: var(--forest); color: var(--white); }
+    .btn-primary:hover { background: var(--forest-light); transform: translateY(-1px); }
+    .btn-gold { background: var(--gold); color: #2b2113; }
+    .btn-gold:hover { background: #d4b57e; transform: translateY(-1px); }
+    .btn-ghost { background: transparent; border-color: #d9d6cd; color: #43564c; }
+    .btn-ghost:hover { border-color: var(--gold); color: #947440; }
+    .btn[disabled] { opacity: .65; cursor: progress; }
+
+    .btn svg {
+      width: 15px; height: 15px;
+      fill: none; stroke: currentColor; stroke-width: 1.8;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    /* ============================================================
+       MAIN
+       ============================================================ */
+    main {
+      position: relative; z-index: 2; flex: 1;
+      width: min(1080px, 100%);
+      margin-inline: auto;
+      padding: 24px 24px 72px;
+    }
+
+    .panel {
+      padding: clamp(22px, 4vw, 40px);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--white);
+      box-shadow: 0 18px 55px rgb(26 45 36 / 8%);
+    }
+
+    .state {
+      padding: 80px 20px; text-align: center;
+      color: var(--muted); font-size: 14px;
+    }
+    .state svg {
+      width: 48px; height: 48px;
+      margin-bottom: 12px;
+      fill: none; stroke: currentColor; stroke-width: 1.3;
+      stroke-linecap: round; stroke-linejoin: round;
+      color: #c2c9bf;
+    }
+    .state.error { color: var(--error); }
+
+    /* ============================================================
+       BOND PAPER SHEET
+       ============================================================ */
+    .sheet {
+      width: 100%;
+      max-width: var(--paper-max-width);
+      margin: 0 auto;
+      padding: 46px 52px 40px;
+      background: var(--paper);
+      border: 1px solid #e0d7bf;
+      border-radius: 6px;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.8),
+        0 4px 20px rgba(26,45,36,.08);
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+      transition: max-width 200ms ease;
+    }
+
+    /* ---- Sheet header ---- */
+    .sheet-header {
+      text-align: center;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--gold);
+      margin-bottom: 22px;
+    }
+    .sheet-logo {
+      display: block;
+      width: 84px;
+      height: 84px;
+      margin: 0 auto 10px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #f0ece0;
+      border: 2px solid var(--gold);
+      box-shadow: 0 4px 14px rgba(26,45,36,.12);
+    }
+    .sheet-title {
+      margin: 0;
+      color: var(--forest);
+      font-family: Georgia, serif;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+    .sheet-sub {
+      margin: 6px 0 0;
+      color: #7a6b4f;
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: 11px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+    }
+    .sheet-date {
+      margin: 12px 0 0;
+      color: var(--forest-light);
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 14px;
+      letter-spacing: .04em;
+    }
+
+    /* ---- Body announcement ---- */
+    .announce-body {
+      font-size: var(--ann-font-size);
+      line-height: 2.1;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0) calc(100% - 1px), #efe9d7 calc(100% - 1px));
+      background-size: 100% 32px;
+      padding-bottom: 2px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+    .announce-body:empty::before,
+    .announce-body[data-empty="true"]::before {
+      content: "No announcements recorded for this program.";
+      color: #a89f88;
+      font-style: italic;
+      font-size: .95em;
+    }
+    .announce-body p { margin: 0 0 10px; }
+    .announce-body ul,
+    .announce-body ol { padding-left: 26px; margin: 8px 0; }
+    .announce-body li { margin: 4px 0; }
+    .announce-body h1,
+    .announce-body h2,
+    .announce-body h3 {
+      margin: 12px 0 8px;
+      font-family: Georgia, serif;
+      font-weight: 700;
+      color: var(--forest);
+    }
+
+    /* Meta info (per record) */
+    .announce-meta {
+      margin: 0 0 18px;
+      padding: 10px 16px;
+      border: 1px solid #eadfc2;
+      border-radius: 10px;
+      background: #fffef9;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px 20px;
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: 12px;
+    }
+    .announce-meta .m-item span {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+    .announce-meta .m-item strong {
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* ---- Footer ---- */
+    .sheet-footer {
+      margin-top: 30px;
+      padding-top: 14px;
+      border-top: 2px solid var(--gold);
+      text-align: center;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: #7a6b4f;
+      font-size: 10.5px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .sheet-footer strong {
+      display: block;
+      color: var(--forest);
+      margin-bottom: 4px;
+      font-size: 11.5px;
+      letter-spacing: .16em;
+    }
+    .sheet-footer .gen-id {
+      display: block;
+      margin-top: 4px;
+      font-family: "Courier New", monospace;
+      font-size: 10px;
+      letter-spacing: .18em;
+      color: #947440;
+    }
+
+    /* Responsive */
+    @media (max-width: 680px) {
+      .toolbar { padding: 10px 14px; }
+      .tool-item { min-width: 0; flex: 1 1 100%; }
+      main { padding: 16px 12px 60px; }
+      .sheet { padding: 26px 20px 28px; }
+      .sheet-logo { width: 68px; height: 68px; }
+      .sheet-title { font-size: 18px; letter-spacing: .16em; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+
+    /* ============================================================
+       PRINT — bond paper size (short / long)
+       ============================================================ */
+    @media print {
+      /* Default size uses the .sheet.print-short / print-long class */
+      html, body {
+        background: #fff !important;
+        padding-top: 0 !important;
+        margin: 0 !important;
+        min-height: auto !important;
+      }
+
+      /* Hide everything outside the sheet */
+      .toolbar,
+      .tools-row,
+      #mcb-navbar,
+      .mcb-navbar,
+      .mcb-drawer,
+      .mcb-backdrop,
+      .navbar-slot,
+      .mcb-brand,
+      .mcb-clock,
+      .mcb-toggle,
+      .mcb-drawer__head,
+      .mcb-drawer__link {
+        display: none !important;
+        visibility: hidden !important;
+      }
+
+      main { padding: 0 !important; margin: 0 !important; width: 100% !important; max-width: 100% !important; }
+      .panel {
+        border: 0 !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+        background: #fff !important;
+      }
+      .sheet {
+        border: 0 !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        background: #fff !important;
+        margin: 0 !important;
+      }
+
+      /* Reset the ruled-line background for print */
+      .announce-body {
+        background: none !important;
+      }
+
+      /* Preserve colors */
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+
+    /* Short = Letter (8.5" x 11") */
+    @media print {
+      body.print-short @page { size: letter portrait; margin: 12mm; }
+    }
+    /* Long = Legal / Folio (8.5" x 13") */
+    @media print {
+      body.print-long @page { size: 8.5in 13in portrait; margin: 12mm; }
+    }
+
+    /* Navbar overrides */
+    .mcb-navbar__inner {
+      display: flex !important; align-items: center !important;
+      justify-content: space-between !important; gap: 16px !important;
+    }
+    .mcb-left {
+      display: flex !important; align-items: center !important;
+      gap: 12px !important; min-width: 0 !important; flex: 1 1 auto !important;
+    }
+    .mcb-navbar__inner > .mcb-toggle { order: -2 !important; flex: 0 0 42px !important; }
+    .mcb-navbar__inner > .mcb-brand  { order: -1 !important; flex: 1 1 auto !important; margin-right: auto !important; }
+    .mcb-navbar__inner > .mcb-clock  { order: 0 !important; flex: 0 0 auto !important; margin-left: 0 !important; }
+    .mcb-drawer__head { border-bottom: 1px solid rgba(255,255,255,.18) !important; }
+    .mcb-drawer__title { color: var(--gold-light) !important; font-weight: 500 !important; }
+    .mcb-drawer__subtitle { color: rgba(255,255,255,.55) !important; }
+    .mcb-drawer__link { color: rgba(255,255,255,.85) !important; background: transparent !important; }
+    .mcb-drawer__link:hover { background: rgba(233,216,181,.1) !important; color: var(--gold-light) !important; }
+    .mcb-drawer__link:focus-visible { outline: 2px solid var(--gold) !important; outline-offset: 2px !important; }
+    .mcb-drawer__link.is-active {
+      background: #16372e !important; color: #f5efe2 !important;
+      box-shadow: inset 3px 0 0 #c5a56b !important; font-weight: 600 !important;
+    }
+    .mcb-drawer__link.is-active:hover { background: #1b4437 !important; color: #ffffff !important; }
+    .mcb-drawer__link.is-active .mcb-drawer__icon { color: #f5efe2 !important; }
+    .mcb-drawer__link.is-active .mcb-drawer__icon svg { stroke: #f5efe2 !important; }
+    .mcb-drawer__link.is-danger { color: #f2b8b8 !important; background: transparent !important; }
+    .mcb-drawer__link.is-danger:hover { background: rgba(178,58,58,.12) !important; color: #ffd9d9 !important; }
+    .mcb-drawer__icon { color: inherit !important; }
+    .mcb-drawer__icon svg { stroke: currentColor !important; }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       TOOLBAR
+       ============================================================ -->
+  <div class="toolbar">
+
+    <!-- Row 1: status + actions -->
+    <div class="toolbar-row">
+      <div class="left" id="toolbar-status">Loading announcement…</div>
+      <div class="right">
+        <a class="btn btn-ghost" href="table.html">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          Back
+        </a>
+        <button class="btn btn-primary" type="button" id="btn-print">
+          <svg viewBox="0 0 24 24"><path d="M6 9V4h12v5"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 17h10v4H7z"/></svg>
+          Print
+        </button>
+        <button class="btn btn-gold" type="button" id="btn-download">
+          <svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+          Download HD
+        </button>
+      </div>
+    </div>
+
+    <!-- Row 2: font size + paper size -->
+    <div class="tools-row">
+      <div class="tool-item">
+        <label class="t-label" for="range-font">
+          Font size
+          <span class="t-badge" id="font-pct">100%</span>
+        </label>
+        <input type="range" id="range-font" min="50" max="200" step="5" value="100">
+      </div>
+
+      <div class="tool-item" style="flex: 0 0 auto; min-width: 0;">
+        <span class="t-label">Bond paper size</span>
+        <div class="paper-sizes" role="group" aria-label="Bond paper size">
+          <button type="button" class="paper-size-btn is-active" data-size="short">Short</button>
+          <button type="button" class="paper-size-btn" data-size="long">Long</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <main>
+    <div class="panel">
+
+      <!-- Loading -->
+      <div class="state" id="state-loading">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        Loading announcement…
+      </div>
+
+      <!-- Error -->
+      <div class="state error" id="state-error" hidden></div>
+
+      <!-- ============================================================
+           BOND PAPER SHEET
+           ============================================================ -->
+      <article class="sheet" id="sheet" hidden>
+
+        <!-- Sheet header -->
+        <header class="sheet-header">
+          <img class="sheet-logo" id="sheet-logo" src="mcb.jpg" alt="MCB Logo"
+               onerror="this.style.background='#c5a56b';this.alt='';">
+          <h1 class="sheet-title">MCB Announcement</h1>
+          <p class="sheet-sub">Mobilization Church Balilihan</p>
+          <p class="sheet-date" id="sheet-date">Date to be announced</p>
+        </header>
+
+        <!-- Meta (MC / Pastor) -->
+        <div class="announce-meta" id="meta" hidden>
+          <div class="m-item"><span>MC</span><strong id="meta-mc">—</strong></div>
+          <div class="m-item"><span>Pastor</span><strong id="meta-pastor">—</strong></div>
+        </div>
+
+        <!-- Announcement body -->
+        <div class="announce-body" id="announce-body" data-empty="false"></div>
+
+        <!-- Footer -->
+        <footer class="sheet-footer">
+          <strong>Mobilization Church Balilihan</strong>
+          Growing together in faith and service
+          <span class="gen-id" id="gen-id">ID — — —</span>
+        </footer>
+
+      </article>
+
+    </div>
+  </main>
+
+  <script>
+    /* =========================================================
+       SUPABASE CONFIG
+       ========================================================= */
+    const SUPABASE_URL      = 'https://iebmvqdobsumzydhtlvf.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImllYm12cWRvYnN1bXp5ZGh0bHZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NjYwNjAsImV4cCI6MjEwNzQ0MjA2MH0.ZBlazciC_su_tj5PUMryh02ZwA5JaDtOxucedi8IVDc';
+    const TABLE_NAME        = 'sunday_programs';
+
+    let sbClient = null;
+    try {
+      if (window.supabase && SUPABASE_URL.startsWith('https://')) {
+        sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('[MCB] Supabase client ready.');
+      }
+    } catch (e) {
+      console.error('[MCB] Supabase init failed:', e);
+    }
+
+    /* =========================================================
+       DOM
+       ========================================================= */
+    const stateLoading   = document.getElementById('state-loading');
+    const stateError     = document.getElementById('state-error');
+    const sheet          = document.getElementById('sheet');
+    const toolbarStatus  = document.getElementById('toolbar-status');
+
+    const sheetDate      = document.getElementById('sheet-date');
+    const bodyEl         = document.getElementById('announce-body');
+    const genIdEl        = document.getElementById('gen-id');
+    const metaEl         = document.getElementById('meta');
+    const metaMc         = document.getElementById('meta-mc');
+    const metaPastor     = document.getElementById('meta-pastor');
+
+    /* Tools */
+    const rangeFont  = document.getElementById('range-font');
+    const fontPct    = document.getElementById('font-pct');
+    const sizeBtns   = document.querySelectorAll('.paper-size-btn');
+
+    const STORAGE_KEY = 'mcb-announce-tools';
+
+    /* =========================================================
+       Helpers
+       ========================================================= */
+    function getParam(name) {
+      return new URLSearchParams(window.location.search).get(name);
+    }
+
+    function formatDateLong(dateStr) {
+      if (!dateStr) return 'Date to be announced';
+      const d = new Date(dateStr + 'T00:00:00');
+      if (isNaN(d)) return dateStr;
+      return d.toLocaleDateString(undefined, {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+      });
+    }
+
+    function escapeHtml(s) {
+      return String(s ?? '').replace(/[&<>"']/g, c => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      }[c]));
+    }
+
+    function showError(msg) {
+      stateLoading.hidden = true;
+      stateError.hidden = false;
+      stateError.textContent = msg;
+      toolbarStatus.textContent = 'Error';
+    }
+
+    /* =========================================================
+       Tools — Font size slider + Bond paper size
+       ========================================================= */
+    function applyFontSize(pct) {
+      document.documentElement.style.setProperty('--ann-font-size', pct + '%');
+      fontPct.textContent = pct + '%';
+    }
+
+    function applyPaperSize(size) {
+      // Update CSS var
+      document.documentElement.style.setProperty(
+        '--paper-max-width',
+        size === 'long' ? '1020px' : '850px'
+      );
+
+      // Update body class for print
+      document.body.classList.remove('print-short', 'print-long');
+      document.body.classList.add(size === 'long' ? 'print-long' : 'print-short');
+
+      // Update buttons
+      sizeBtns.forEach(b => b.classList.toggle('is-active', b.dataset.size === size));
+    }
+
+    function saveTools(fontPctVal, paperSizeVal) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          font: fontPctVal,
+          paper: paperSizeVal
+        }));
+      } catch (e) {}
+    }
+
+    function loadTools() {
+      let saved = null;
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) saved = JSON.parse(raw);
+      } catch (e) {}
+
+      const fontPctVal = (saved && Number(saved.font)) || 100;
+      const paperSizeVal = (saved && saved.paper) || 'short';
+
+      rangeFont.value = fontPctVal;
+      applyFontSize(fontPctVal);
+      applyPaperSize(paperSizeVal);
+    }
+
+    rangeFont.addEventListener('input', () => {
+      const pct = Number(rangeFont.value);
+      applyFontSize(pct);
+      const activeBtn = document.querySelector('.paper-size-btn.is-active');
+      const paper = activeBtn ? activeBtn.dataset.size : 'short';
+      saveTools(pct, paper);
+    });
+
+    sizeBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const size = btn.dataset.size;
+        applyPaperSize(size);
+        const pct = Number(rangeFont.value);
+        saveTools(pct, size);
+      });
+    });
+
+    /* Init tools */
+    loadTools();
+
+    /* =========================================================
+       Generate ID
+       ========================================================= */
+    function generateAnnounceId(recordId) {
+      const shortId = String(recordId || '').replace(/-/g, '').slice(0, 6).toUpperCase() || 'XXXXXX';
+      const random = Math.random().toString(36).substring(2, 5).toUpperCase();
+      return `MCB-ANN-${shortId}-${random}`;
+    }
+
+    /* =========================================================
+       Load and render
+       ========================================================= */
+    async function load() {
+      const id = getParam('id');
+      if (!id) {
+        showError('No announcement selected. Please return to the records page.');
+        return;
+      }
+      if (!sbClient) {
+        showError('Supabase is not configured.');
+        return;
+      }
+
+      try {
+        const { data, error } = await sbClient
+          .from(TABLE_NAME)
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (error) throw error;
+        if (!data) {
+          showError('Program not found.');
+          return;
+        }
+
+        console.log('[MCB] Loaded announcement:', data);
+
+        /* ---- Fill in header ---- */
+        sheetDate.textContent = formatDateLong(data.program_date);
+
+        /* ---- Meta info ---- */
+        metaEl.hidden = false;
+        metaMc.textContent     = data.mc_name || '—';
+        metaPastor.textContent = data.pastor  || '—';
+
+        /* ---- Body announcement ---- */
+        const html = (data.announcement || '').trim();
+        if (html) {
+          bodyEl.innerHTML = html;
+          bodyEl.dataset.empty = 'false';
+        } else {
+          bodyEl.innerHTML = '';
+          bodyEl.dataset.empty = 'true';
+        }
+
+        /* ---- Footer ID ---- */
+        genIdEl.textContent = `ID ${generateAnnounceId(data.id)}`;
+
+        /* ---- Show sheet ---- */
+        stateLoading.hidden = true;
+        stateError.hidden = true;
+        sheet.hidden = false;
+
+        toolbarStatus.innerHTML = `Loaded announcement for <strong>${escapeHtml(data.mc_name || 'Program')}</strong> · ${escapeHtml(formatDateLong(data.program_date))}`;
+
+      } catch (err) {
+        console.error('[MCB] Load failed:', err);
+        showError('Could not load the announcement: ' + (err.message || 'Unknown error.'));
+      }
+    }
+
+    /* =========================================================
+       Print
+       ========================================================= */
+    document.getElementById('btn-print').addEventListener('click', () => {
+      window.print();
+    });
+
+    /* =========================================================
+       Download HD image
+       ========================================================= */
+    document.getElementById('btn-download').addEventListener('click', async () => {
+      const btn = document.getElementById('btn-download');
+      if (typeof html2canvas !== 'function') {
+        alert('Image library not loaded. Please try again.');
+        return;
+      }
+      if (sheet.hidden) {
+        alert('Walang announcement na ma-download.');
+        return;
+      }
+
+      btn.disabled = true;
+      const prevHTML = btn.innerHTML;
+      btn.innerHTML = `Rendering…`;
+
+      try {
+        const scale = 3;
+        const canvas = await html2canvas(sheet, {
+          scale,
+          backgroundColor: '#fffdf8',
+          useCORS: true,
+          logging: false
+        });
+
+        const safe = (v) => String(v || '').replace(/[^a-z0-9\-_]/gi, '_').slice(0, 40);
+        const filename = `MCB-Announcement_${safe(sheetDate.textContent)}.png`;
+
+        const link = document.createElement('a');
+        link.download = filename;
+        link.href = canvas.toDataURL('image/png', 1.0);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        console.log('[MCB] Downloaded:', filename);
+      } catch (err) {
+        console.error('[MCB] Download failed:', err);
+        alert('Could not generate the image: ' + (err.message || 'Unknown error.'));
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = prevHTML;
+      }
+    });
+
+    /* Init */
+    load();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#102c25">
+  <meta name="description" content="Welcome to the Mobilization Church Balilihan portal.">
+  <title>MCB Portal | Mobilization Church Balilihan</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --forest: #102c25;
+      --forest-light: #1b4437;
+      --gold: #c5a56b;
+      --gold-light: #e9d8b5;
+      --cream: #f7f5ef;
+      --ink: #20312b;
+      --muted: #718078;
+      --white: #fff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      color: var(--ink);
+      background: var(--cream);
+      font-family: "Segoe UI", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    /* ============================================================
+       HERO — two columns: info left, framed family picture right
+       ============================================================ */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 28px max(6vw, 24px) 94px;
+      color: var(--white);
+      background:
+        radial-gradient(ellipse at 83% 4%, rgb(197 165 107 / 20%), transparent 34%),
+        linear-gradient(125deg, var(--forest), #16372e 72%, #214739);
+    }
+
+    .hero::after {
+      position: absolute;
+      right: -110px;
+      bottom: -350px;
+      width: 620px;
+      height: 620px;
+      border: 1px solid rgb(233 216 181 / 14%);
+      border-radius: 50%;
+      box-shadow: 0 0 0 38px rgb(233 216 181 / 4%), 0 0 0 82px rgb(233 216 181 / 3%);
+      content: "";
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      width: min(1080px, 100%);
+      margin-inline: auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(300px, 1fr);
+      gap: 40px 56px;
+      align-items: center;
+    }
+
+    /* ---- Left: logo + brand + welcome ---- */
+    .hero-left {
+      min-width: 0;
+      padding-top: 8px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 40px;
+    }
+
+    .brand-logo {
+      display: block;
+      width: 60px;
+      height: 60px;
+      flex: 0 0 60px;
+      border-radius: 14px;
+      object-fit: cover;
+      background: rgb(255 255 255 / 8%);
+      border: 1px solid rgb(233 216 181 / 55%);
+      box-shadow: 0 6px 18px rgb(0 0 0 / 20%);
+    }
+
+    .brand-name {
+      font-size: 15px;
+      font-weight: 650;
+      letter-spacing: .025em;
+    }
+
+    .brand-caption {
+      margin-top: 3px;
+      color: rgb(255 255 255 / 65%);
+      font-size: 11px;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 18px;
+      color: var(--gold-light);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 25px;
+      height: 1px;
+      background: var(--gold);
+      content: "";
+    }
+
+    h1 {
+      max-width: 520px;
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(36px, 5.6vw, 60px);
+      font-weight: 400;
+      letter-spacing: -.035em;
+      line-height: 1.08;
+    }
+
+    h1 span {
+      color: var(--gold-light);
+      font-style: italic;
+    }
+
+    .hero-description {
+      max-width: 480px;
+      margin: 20px 0 0;
+      color: rgb(255 255 255 / 72%);
+      font-size: 15px;
+      line-height: 1.75;
+    }
+
+    /* ---- Right: framed family picture ---- */
+    .hero-right {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .family-frame {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      padding: 18px;
+      border-radius: 10px;
+      background: linear-gradient(145deg, #d9c08a 0%, #e9d8b5 45%, #b8975a 100%);
+      box-shadow:
+        0 20px 50px rgb(0 0 0 / 35%),
+        0 0 0 1px rgb(255 255 255 / 12%) inset;
+      transform: rotate(-1.2deg);
+      transition: transform 400ms ease;
+    }
+    .family-frame:hover {
+      transform: rotate(0deg) translateY(-3px);
+    }
+
+    /* Inner gold mat */
+    .family-frame::before {
+      position: absolute;
+      inset: 9px;
+      border-radius: 6px;
+      border: 1px solid rgb(255 255 255 / 35%);
+      content: "";
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Corner accents (top-left, bottom-right) */
+    .family-frame::after {
+      position: absolute;
+      inset: -6px;
+      border-radius: 14px;
+      border: 1px solid rgb(233 216 181 / 40%);
+      content: "";
+      pointer-events: none;
+    }
+
+    .family-photo {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      border-radius: 4px;
+      background: #1a2b22;
+      box-shadow: 0 4px 14px rgb(0 0 0 / 25%);
+    }
+
+    .family-caption {
+      margin: 14px 0 0;
+      text-align: center;
+      color: #2b2113;
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 12.5px;
+      letter-spacing: .02em;
+    }
+
+    /* Small corner ornaments */
+    .family-frame .corner {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgb(255 255 255 / 55%);
+      z-index: 3;
+      pointer-events: none;
+    }
+    .family-frame .corner.tl { top: 12px; left: 12px; border-right: 0; border-bottom: 0; }
+    .family-frame .corner.br { bottom: 12px; right: 12px; border-left: 0; border-top: 0; }
+
+    /* ============================================================
+       MAIN
+       ============================================================ */
+    .topbar,
+    main,
+    footer {
+      width: min(1080px, 100%);
+      margin-inline: auto;
+    }
+
+    main {
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      padding: 0 24px 72px;
+      margin-top: -41px;
+    }
+
+    .portal-panel {
+      padding: clamp(24px, 5vw, 44px);
+      border: 1px solid #e9e5dc;
+      border-radius: 18px;
+      background: var(--white);
+      box-shadow: 0 18px 55px rgb(26 45 36 / 8%);
+    }
+
+    .guidance-panel {
+      margin-top: 24px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(24px, 4vw, 31px);
+      font-weight: 400;
+      letter-spacing: -.025em;
+    }
+
+    .section-heading p {
+      margin: 0 0 3px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .portal-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 15px;
+    }
+
+    .portal-card {
+      position: relative;
+      display: flex;
+      min-height: 190px;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 23px;
+      border: 1px solid #e8e8e1;
+      border-radius: 13px;
+      color: var(--ink);
+      background: #fff;
+      cursor: pointer;
+      text-align: left;
+      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    .portal-card:hover {
+      transform: translateY(-4px);
+      border-color: #c9b27f;
+      box-shadow: 0 12px 25px rgb(26 45 36 / 8%);
+    }
+
+    .portal-card:focus-visible,
+    .modal-close:focus-visible,
+    .modal-action:focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 3px;
+    }
+
+    .card-icon {
+      display: grid;
+      width: 45px;
+      height: 45px;
+      margin-bottom: 23px;
+      place-items: center;
+      border-radius: 12px;
+      color: var(--forest-light);
+      background: #f1f3ed;
+    }
+
+    .card-icon svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.7;
+    }
+
+    .card-title {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 21px;
+      letter-spacing: -.02em;
+    }
+
+    .card-description {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .card-arrow {
+      position: absolute;
+      right: 21px;
+      bottom: 22px;
+      color: #9c8660;
+      font-size: 19px;
+      transition: transform 180ms ease;
+    }
+
+    .portal-card:hover .card-arrow {
+      transform: translateX(4px);
+    }
+
+    .guidance-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .guidance-card {
+      display: flex;
+      min-height: 90px;
+      align-items: center;
+      gap: 14px;
+      padding: 16px;
+      border: 1px solid #e8e8e1;
+      border-radius: 12px;
+      color: var(--ink);
+      background: #fff;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+    }
+
+    .guidance-card:hover {
+      transform: translateY(-2px);
+      border-color: #c9b27f;
+      background: #fdfcf9;
+    }
+
+    .guidance-card:focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 3px;
+    }
+
+    .guidance-number {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      flex: 0 0 38px;
+      place-items: center;
+      border-radius: 11px;
+      color: #866b3b;
+      background: #f5efe2;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 18px;
+    }
+
+    .guidance-card strong {
+      display: block;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 17px;
+      font-weight: 400;
+    }
+
+    .guidance-card small {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 22px 24px 27px;
+      border-top: 1px solid #e7e4dc;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .footer-note { line-height: 1.6; }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 22px;
+    }
+
+    .footer-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: #43564c;
+      text-decoration: none;
+      transition: color 150ms ease;
+    }
+
+    .footer-links a:hover { color: #947440; }
+    .footer-links svg { width: 15px; height: 15px; fill: currentColor; }
+
+    .modal-backdrop {
+      position: fixed;
+      z-index: 5;
+      inset: 0;
+      display: grid;
+      padding: 20px;
+      place-items: center;
+      background: rgb(10 24 19 / 62%);
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-backdrop[hidden] { display: none; }
+
+    .modal {
+      position: relative;
+      width: min(510px, 100%);
+      max-height: min(90vh, 760px);
+      overflow-y: auto;
+      padding: 34px 32px 30px;
+      border: 1px solid rgb(197 165 107 / 40%);
+      border-radius: 18px;
+      background: var(--white);
+      box-shadow: 0 24px 80px rgb(0 0 0 / 25%);
+      text-align: center;
+      animation: modal-in 180ms ease-out;
+    }
+
+    @keyframes modal-in {
+      from { opacity: 0; transform: translateY(8px) scale(.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-icon {
+      display: grid;
+      width: 54px;
+      height: 54px;
+      margin: 0 auto 18px;
+      place-items: center;
+      border-radius: 50%;
+      color: #866b3b;
+      background: #f5efe2;
+      font-size: 24px;
+    }
+
+    .modal h2 {
+      margin: 0;
+      color: var(--forest);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 29px;
+      font-weight: 400;
+    }
+
+    .modal p {
+      margin: 12px 0 24px;
+      color: #68766e;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .guidance-image {
+      display: block;
+      width: 100%;
+      height: 210px;
+      margin: 0 0 22px;
+      border-radius: 12px;
+      background: #edf0e9;
+      object-fit: cover;
+    }
+
+    .guidance-copy p {
+      margin: 12px 0;
+      text-align: left;
+    }
+
+    .guidance-copy p:last-child { margin-bottom: 24px; }
+
+    .portal-login-form {
+      margin-top: 22px;
+      text-align: left;
+    }
+
+    .portal-login-form[hidden] { display: none; }
+
+    .portal-login-form label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .portal-login-form input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #d9ddd5;
+      border-radius: 8px;
+      color: var(--ink);
+      background: #fff;
+      font: inherit;
+      font-size: 15px;
+    }
+
+    .portal-login-form input:focus-visible {
+      border-color: var(--gold);
+      outline: 3px solid rgb(197 165 107 / 25%);
+    }
+
+    .login-error {
+      margin: 9px 0 0;
+      color: #a33e35;
+      font-size: 13px;
+    }
+
+    .login-error[hidden] { display: none; }
+
+    .portal-login-form .modal-action {
+      width: 100%;
+      margin-top: 16px;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 13px;
+      right: 13px;
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border: 0;
+      border-radius: 50%;
+      color: #66746d;
+      background: transparent;
+      cursor: pointer;
+      font-size: 22px;
+    }
+
+    .modal-close:hover { background: #f2f3ef; }
+
+    .modal-action {
+      min-width: 118px;
+      padding: 11px 20px;
+      border: 0;
+      border-radius: 8px;
+      color: var(--white);
+      background: var(--forest);
+      cursor: pointer;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 650;
+      transition: background 150ms ease;
+    }
+
+    .modal-action:hover { background: var(--forest-light); }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 900px) {
+      .hero-inner {
+        grid-template-columns: 1fr;
+        gap: 34px;
+        text-align: center;
+      }
+      .hero-left { padding-top: 0; }
+      .topbar { justify-content: center; }
+      .eyebrow { justify-content: center; }
+      h1, .hero-description { margin-inline: auto; }
+      .hero-right { margin-top: 4px; }
+      .family-frame { max-width: 360px; }
+    }
+
+    @media (max-width: 680px) {
+      .hero { padding-bottom: 78px; }
+      .section-heading { align-items: flex-start; flex-direction: column; gap: 8px; }
+      .portal-grid { grid-template-columns: 1fr; }
+      .guidance-grid { grid-template-columns: 1fr; }
+      .portal-card { min-height: 142px; }
+      .card-icon { margin-bottom: 14px; }
+      .modal { padding: 34px 22px 24px; }
+      .guidance-image { height: 175px; }
+      footer { align-items: flex-start; flex-direction: column; }
+      .brand-logo { width: 52px; height: 52px; flex-basis: 52px; }
+      .family-frame { max-width: 100%; padding: 14px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       HERO — left info, right framed family picture
+       ============================================================ -->
+  <header class="hero">
+    <div class="hero-inner">
+
+      <!-- LEFT: logo + brand + welcome -->
+      <div class="hero-left">
+        <div class="topbar">
+          <img class="brand-logo" src="mcb.jpg" alt="Mobilization Church Balilihan logo"
+               onerror="this.style.background='#c5a56b';this.alt='MCB';">
+          <div>
+            <div class="brand-name">Mobilization Church Balilihan</div>
+            <div class="brand-caption">Faith · Community · Service</div>
+          </div>
+        </div>
+
+        <p class="eyebrow">Welcome to our church</p>
+        <h1>A place to grow<br>in <span>faith together.</span></h1>
+        <p class="hero-description">
+          Find the ministries and resources that help you connect, serve,
+          and be part of our church family.
+        </p>
+      </div>
+
+      <!-- RIGHT: framed family picture -->
+      <div class="hero-right">
+        <figure class="family-frame" aria-label="MCB family picture">
+          <span class="corner tl" aria-hidden="true"></span>
+          <span class="corner br" aria-hidden="true"></span>
+          <img class="family-photo" src="mcb_fam.jpg" alt="Mobilization Church Balilihan family"
+               onerror="this.style.background='#2a3a31';this.alt='MCB Family Picture';">
+          <figcaption class="family-caption">Our church family</figcaption>
+        </figure>
+      </div>
+
+    </div>
+  </header>
+
+  <main>
+    <section class="portal-panel" aria-labelledby="portal-heading">
+      <div class="section-heading">
+        <h2 id="portal-heading">Explore the MCB Portal</h2>
+        <p>Choose a section to get started.</p>
+      </div>
+
+      <div class="portal-grid">
+        <button class="portal-card" type="button" data-section="Program">
+          <span class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M8 3v4M16 3v4M4 10h16M8 14h3M8 17h6"></path></svg>
+          </span>
+          <span class="card-title">Program</span>
+          <span class="card-description">Church gatherings, events, and schedules</span>
+          <span class="card-arrow" aria-hidden="true">→</span>
+        </button>
+
+        <button class="portal-card" type="button" data-section="Praise and Worship">
+          <span class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+          </span>
+          <span class="card-title">Praise and Worship</span>
+          <span class="card-description">Worship team updates and resources</span>
+          <span class="card-arrow" aria-hidden="true">→</span>
+        </button>
+
+        <button class="portal-card" type="button" data-section="Members">
+          <span class="card-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"></circle><path d="M3.5 19v-1.5A4.5 4.5 0 0 1 8 13h2a4.5 4.5 0 0 1 4.5 4.5V19zM16 5.5a3 3 0 0 1 0 5.8M17 13h.5a4 4 0 0 1 4 4v2h-4"></path></svg>
+          </span>
+          <span class="card-title">Members</span>
+          <span class="card-description">Connect with our church community</span>
+          <span class="card-arrow" aria-hidden="true">→</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="portal-panel guidance-panel" aria-labelledby="guidance-heading">
+      <div class="section-heading">
+        <h2 id="guidance-heading">Guidance</h2>
+        <p>Five ways to get connected and grow.</p>
+      </div>
+
+      <div class="guidance-grid">
+        <button class="guidance-card" type="button" data-title="Welcome" data-image="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&amp;fit=crop&amp;w=1000&amp;q=85" data-alt="People gathered together in a welcoming community" data-paragraph-one="You are welcome at Mobilization Church Balilihan. Whether you are visiting for the first time or looking for a church home, there is a place for you here." data-paragraph-two="Come as you are, join a gathering, and introduce yourself to someone from our church family. We would be glad to meet you and help you feel at home.">
+          <span class="guidance-number" aria-hidden="true">1</span>
+          <span><strong>Welcome</strong><small>What to expect when you visit</small></span>
+        </button>
+        <button class="guidance-card" type="button" data-title="Worship" data-image="https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&amp;fit=crop&amp;w=1000&amp;q=85" data-alt="Church congregation joining together in worship" data-paragraph-one="Worship is a time for our church family to praise God, pray, and reflect together. You are welcome to participate in whatever way feels comfortable to you." data-paragraph-two="Bring an open heart and join us in singing, listening, and encouraging one another. Check the Program section for gathering details as they become available.">
+          <span class="guidance-number" aria-hidden="true">2</span>
+          <span><strong>Worship</strong><small>Join in praise and reflection</small></span>
+        </button>
+        <button class="guidance-card" type="button" data-title="Community" data-image="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&amp;fit=crop&amp;w=1000&amp;q=85" data-alt="Friends spending time together outdoors" data-paragraph-one="Church is more than a gathering; it is a community where people can build friendships, share life, and support one another." data-paragraph-two="Take a moment to connect with someone after a service or reach out through our church contacts. We would love to help you find your place in the community.">
+          <span class="guidance-number" aria-hidden="true">3</span>
+          <span><strong>Community</strong><small>Build friendships and find support</small></span>
+        </button>
+        <button class="guidance-card" type="button" data-title="Serving" data-image="https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&amp;fit=crop&amp;w=1000&amp;q=85" data-alt="Volunteers working together to serve others" data-paragraph-one="Serving is one way we care for one another and share God’s love with our neighbors. Every person brings gifts and experiences that can make a difference." data-paragraph-two="If you are interested in helping, talk with a church leader or contact us by email. We can help you learn about opportunities that match your interests and availability.">
+          <span class="guidance-number" aria-hidden="true">4</span>
+          <span><strong>Serving</strong><small>Use your gifts to help others</small></span>
+        </button>
+        <button class="guidance-card" type="button" data-title="Contact" data-image="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&amp;fit=crop&amp;w=1000&amp;q=85" data-alt="People talking and connecting around a table" data-paragraph-one="Have a question, need prayer, or want to know more about Mobilization Church Balilihan? We are happy to hear from you." data-paragraph-two="Send a message to mobilizationchurchb@gmail.com or find Mobilization Church Balilihan on Facebook. Someone from the church will be glad to connect with you.">
+          <span class="guidance-number" aria-hidden="true">5</span>
+          <span><strong>Contact</strong><small>Reach out with questions or prayer requests</small></span>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-note">© <span id="current-year"></span> Mobilization Church Balilihan<br>Growing together in faith and service.</div>
+    <nav class="footer-links" aria-label="Church contact links">
+      <a href="https://www.facebook.com/search/top?q=Mobilization%20Church%20Balilihan" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.4 21v-8.2h2.8l.4-3.2h-3.2V7.5c0-.9.3-1.5 1.6-1.5h1.7V3.2c-.3 0-1.3-.2-2.5-.2-2.5 0-4.2 1.5-4.2 4.3v2.3H7.2v3.2H10V21z"></path></svg>
+        Mobilization Church Balilihan
+      </a>
+      <a href="mailto:mobilizationchurchb@gmail.com">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5A2.5 2.5 0 0 1 5.5 4h13A2.5 2.5 0 0 1 21 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5zM4 6l8 7 8-7"></path></svg>
+        mobilizationchurchb@gmail.com
+      </a>
+    </nav>
+  </footer>
+
+  <div class="modal-backdrop" id="coming-soon-modal" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-message">
+      <button class="modal-close" type="button" aria-label="Close dialog">&times;</button>
+      <div class="modal-icon" id="modal-icon" aria-hidden="true">✦</div>
+      <h2 id="modal-title">MCB PORTAL</h2>
+      <p id="modal-message" hidden></p>
+      <form class="portal-login-form" id="portal-login-form" hidden>
+        <label for="portal-pin">Enter your portal PIN</label>
+        <input id="portal-pin" name="pin" type="password" autocomplete="current-password" required>
+        <p class="login-error" id="login-error" role="alert" hidden>Incorrect PIN. Please try again.</p>
+        <button class="modal-action" type="submit">Sign in</button>
+      </form>
+      <div class="guidance-copy" id="guidance-content" hidden>
+        <img class="guidance-image" id="guidance-image" alt="">
+        <p id="guidance-paragraph-one"></p>
+        <p id="guidance-paragraph-two"></p>
+      </div>
+      <button class="modal-action" id="modal-confirm" type="button" hidden>Close</button>
+    </section>
+  </div>
+
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  /* =========================================================
+     SUPABASE CONFIG
+     ========================================================= */
+  const SUPABASE_URL      = 'https://iebmvqdobsumzydhtlvf.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImllYm12cWRvYnN1bXp5ZGh0bHZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NjYwNjAsImV4cCI6MjEwNzQ0MjA2MH0.ZBlazciC_su_tj5PUMryh02ZwA5JaDtOxucedi8IVDc';
+  const TABLE_NAME        = 'allowed_users';
+
+  let sbClient = null;
+  try {
+    if (window.supabase && SUPABASE_URL.startsWith('https://')) {
+      sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      console.log('[MCB Portal] Supabase client ready.');
+    }
+  } catch (e) {
+    console.error('[MCB Portal] Supabase init failed:', e);
+  }
+
+  /* =========================================================
+     DOM
+     ========================================================= */
+  const modal            = document.getElementById("coming-soon-modal");
+  const modalTitle       = document.getElementById("modal-title");
+  const modalMessage     = document.getElementById("modal-message");
+  const modalIcon        = document.getElementById("modal-icon");
+  const loginForm        = document.getElementById("portal-login-form");
+  const pinInput         = document.getElementById("portal-pin");
+  const loginError       = document.getElementById("login-error");
+  const modalConfirm     = document.getElementById("modal-confirm");
+  const guidanceContent  = document.getElementById("guidance-content");
+  const guidanceImage    = document.getElementById("guidance-image");
+  const guidanceParagraphOne = document.getElementById("guidance-paragraph-one");
+  const guidanceParagraphTwo = document.getElementById("guidance-paragraph-two");
+  const closeButton      = modal.querySelector(".modal-close");
+
+  let previouslyFocusedElement;
+  let selectedPortalSection = "";
+  let loginBusy = false;
+
+  /* Which DB role value each portal card maps to */
+  const portalAccess = {
+    Program:            { dbRole: "prog", destination: "program/index.html" },
+    "Praise and Worship": { dbRole: "p&w",  destination: "praise_and_worship/index.html" },
+    Members:            { dbRole: null,     destination: "member/index.html" }
+  };
+
+  /* =========================================================
+     MODAL HELPERS
+     ========================================================= */
+  function closeModal() {
+    modal.hidden = true;
+    if (previouslyFocusedElement) previouslyFocusedElement.focus();
+  }
+
+  function showWarning(message) {
+    modalIcon.hidden = false;
+    modalIcon.textContent = "⚠";
+    guidanceContent.hidden = true;
+    loginForm.hidden = true;
+    modalConfirm.hidden = false;
+    modalConfirm.textContent = "Close";
+    modalMessage.textContent = message;
+    modalMessage.hidden = false;
+  }
+
+  function resetModalToLogin() {
+    modalIcon.hidden = true;
+    loginError.hidden = true;
+    guidanceContent.hidden = true;
+    modalConfirm.hidden = true;
+    modalMessage.hidden = true;
+    loginForm.hidden = false;
+    loginForm.reset();
+  }
+
+  /* =========================================================
+     PORTAL CARD CLICKS
+     ========================================================= */
+  document.querySelectorAll(".portal-card").forEach((card) => {
+    card.addEventListener("click", () => {
+      previouslyFocusedElement = card;
+      selectedPortalSection = card.dataset.section;
+
+      modalTitle.textContent = "MCB PORTAL";
+      resetModalToLogin();
+
+      // Members section has no PIN — show guidance instead
+      if (selectedPortalSection === "Members") {
+        modalTitle.textContent = "Members";
+        showWarning(
+          "Members area is coming soon. Please contact the Admin Church for user registration."
+        );
+        modalConfirm.textContent = "Close";
+        modalConfirm.hidden = false;
+        modal.hidden = false;
+        closeButton.focus();
+        return;
+      }
+
+      loginForm.querySelector("label").textContent =
+        `Enter your ${selectedPortalSection} PIN`;
+      modal.setAttribute("aria-describedby", "portal-pin");
+      modal.hidden = false;
+      pinInput.focus();
+    });
+  });
+
+  /* =========================================================
+     PIN SUBMIT — verify against Supabase
+     ========================================================= */
+  loginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (loginBusy) return;
+
+    loginError.hidden = true;
+    const section = portalAccess[selectedPortalSection];
+
+    if (!section || !section.dbRole) {
+      showWarning("Please contact the Admin Church for user registration.");
+      return;
+    }
+
+    const pin = pinInput.value.trim();
+    if (!pin) {
+      loginError.textContent = "Please enter your PIN.";
+      loginError.hidden = false;
+      pinInput.focus();
+      return;
+    }
+
+    // No Supabase → can't verify → warn user
+    if (!sbClient) {
+      showWarning(
+        "We couldn't reach the server right now. Please check your connection, or contact the Admin Church for user registration."
+      );
+      return;
+    }
+
+    loginBusy = true;
+    const submitBtn = loginForm.querySelector("button[type=submit]");
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Checking…";
+
+    try {
+      // Look up the PIN in allowed_users for this role
+      const { data, error } = await sbClient
+        .from(TABLE_NAME)
+        .select('id, full_name, role, pin, status')
+        .eq('pin', pin)
+        .eq('role', section.dbRole)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      // No matching user → generic incorrect PIN
+      if (!data) {
+        loginError.textContent = "Incorrect PIN. Please try again.";
+        loginError.hidden = false;
+        pinInput.value = "";
+        pinInput.focus();
+        return;
+      }
+
+      // Found the user — check status
+      const status = (data.status || 'active').toLowerCase();
+      if (status !== 'active') {
+        showWarning(
+          "Your account is currently offline. Please contact the Admin Church for user registration or to reactivate your PIN."
+        );
+        return;
+      }
+
+      // Success → redirect
+      window.location.href = section.destination;
+
+    } catch (err) {
+      console.error('[MCB Portal] PIN check failed:', err);
+
+      // Network / offline / fetch failure → same warning message
+      const isNetworkError =
+        err?.name === 'TypeError' ||
+        /fetch|network|failed to fetch/i.test(err?.message || '');
+
+      if (isNetworkError) {
+        showWarning(
+          "We couldn't reach the server. Please check your internet connection, or contact the Admin Church for user registration."
+        );
+      } else {
+        showWarning(
+          "Something went wrong while checking your PIN. Please try again, or contact the Admin Church for user registration."
+        );
+      }
+    } finally {
+      loginBusy = false;
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+    }
+  });
+
+  /* =========================================================
+     GUIDANCE CARDS (unchanged behavior)
+     ========================================================= */
+  document.querySelectorAll(".guidance-card").forEach((card) => {
+    card.addEventListener("click", () => {
+      previouslyFocusedElement = card;
+      modalTitle.textContent = card.dataset.title;
+      modalMessage.hidden = true;
+      modalIcon.hidden = true;
+      loginForm.hidden = true;
+      loginError.hidden = true;
+      modalConfirm.hidden = false;
+      modalConfirm.textContent = "Close";
+      guidanceImage.src = card.dataset.image;
+      guidanceImage.alt = card.dataset.alt;
+      guidanceParagraphOne.textContent = card.dataset.paragraphOne;
+      guidanceParagraphTwo.textContent = card.dataset.paragraphTwo;
+      guidanceContent.hidden = false;
+      modal.setAttribute("aria-describedby", "guidance-content");
+      modal.hidden = false;
+      closeButton.focus();
+    });
+  });
+
+  /* =========================================================
+     CLOSE HANDLERS
+     ========================================================= */
+  closeButton.addEventListener("click", closeModal);
+  modalConfirm.addEventListener("click", closeModal);
+
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal) closeModal();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !modal.hidden) closeModal();
+  });
+
+  document.getElementById("current-year").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

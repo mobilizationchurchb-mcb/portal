@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#102c25">
+  <title>Monthly Schedule | Mobilization Church Balilihan</title>
+
+  <script src="navbar.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <style>
+    :root {
+      color-scheme: light;
+      --forest: #102c25;
+      --forest-light: #1b4437;
+      --forest-mid: #214739;
+      --gold: #c5a56b;
+      --gold-light: #e9d8b5;
+      --gold-soft: #f5efe2;
+      --cream: #f7f5ef;
+      --paper: #fffdf8;
+      --ink: #20312b;
+      --muted: #718078;
+      --line: #e6e3db;
+      --white: #fff;
+      --error: #b23a3a;
+      --nav-h: 72px;
+
+      /* Dynamic font-size for each column (controlled by sliders) */
+      --col-left-size: 100%;
+      --col-right-size: 100%;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      color: var(--ink);
+      background: var(--cream);
+      font-family: "Segoe UI", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      padding-top: var(--nav-h);
+    }
+
+    a { color: inherit; }
+
+    /* ============================================================
+       TOOLBAR
+       ============================================================ */
+    .toolbar {
+      position: sticky;
+      top: var(--nav-h);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: min(1400px, 100%);
+      margin: 0 auto;
+      padding: 12px 24px;
+      background: rgba(247, 245, 239, .94);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .toolbar-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .toolbar .left { font-size: 12.5px; color: var(--muted); }
+    .toolbar .left strong { color: var(--ink); }
+    .toolbar .right { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: end;
+      padding: 12px 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-width: 150px;
+    }
+    .filter-group label {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: #56635c;
+    }
+    .filter-group select,
+    .filter-group input {
+      padding: 9px 12px;
+      border: 1px solid #d9d6cd;
+      border-radius: 9px;
+      background: #fff; color: var(--ink);
+      font: inherit; font-size: 14px;
+    }
+    .filter-group select:focus,
+    .filter-group input:focus {
+      outline: none; border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgb(197 165 107 / 18%);
+    }
+
+    /* ---- Font tools row ---- */
+    .font-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      padding: 10px 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+
+    .font-tool {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1 1 320px;
+      min-width: 260px;
+    }
+
+    .font-tool .ft-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: #56635c;
+      white-space: nowrap;
+    }
+    .font-tool .ft-label .badge {
+      display: inline-block;
+      min-width: 42px;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: var(--gold-soft);
+      color: #806633;
+      text-align: center;
+      font-family: "Segoe UI", Arial, sans-serif;
+      letter-spacing: 0;
+      font-size: 11px;
+    }
+
+    .font-tool input[type="range"] {
+      flex: 1 1 auto;
+      height: 4px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: #e6dfd0;
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+    }
+    .font-tool input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--forest);
+      border: 2px solid var(--gold);
+      cursor: pointer;
+      transition: transform 120ms ease;
+    }
+    .font-tool input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.12); }
+    .font-tool input[type="range"]::-moz-range-thumb {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--forest);
+      border: 2px solid var(--gold);
+      cursor: pointer;
+    }
+
+    .btn-reset-tools {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border: 1px solid #d9d6cd;
+      border-radius: 8px;
+      background: transparent;
+      color: #43564c;
+      cursor: pointer;
+      font: inherit;
+      font-size: 11.5px;
+      font-weight: 650;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .btn-reset-tools:hover { border-color: var(--gold); color: #947440; }
+    .btn-reset-tools:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 8px; padding: 10px 18px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      cursor: pointer;
+      font: inherit; font-size: 13px; font-weight: 650;
+      text-decoration: none;
+      transition: background 150ms ease, border-color 150ms ease, transform 150ms ease, color 150ms ease, opacity 150ms ease;
+    }
+    .btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+    .btn-primary { background: var(--forest); color: var(--white); }
+    .btn-primary:hover { background: var(--forest-light); transform: translateY(-1px); }
+    .btn-gold { background: var(--gold); color: #2b2113; }
+    .btn-gold:hover { background: #d4b57e; transform: translateY(-1px); }
+    .btn-ghost { background: transparent; border-color: #d9d6cd; color: #43564c; }
+    .btn-ghost:hover { border-color: var(--gold); color: #947440; }
+    .btn[disabled] { opacity: .65; cursor: progress; }
+
+    .btn svg {
+      width: 15px; height: 15px;
+      fill: none; stroke: currentColor; stroke-width: 1.8;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    /* ============================================================
+       MAIN
+       ============================================================ */
+    main {
+      position: relative; z-index: 2; flex: 1;
+      width: min(1400px, 100%);
+      margin-inline: auto;
+      padding: 24px 24px 72px;
+    }
+
+    .panel {
+      padding: clamp(20px, 3vw, 32px);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--white);
+      box-shadow: 0 18px 55px rgb(26 45 36 / 8%);
+    }
+
+    .state {
+      padding: 80px 20px; text-align: center;
+      color: var(--muted); font-size: 14px;
+    }
+    .state svg {
+      width: 48px; height: 48px;
+      margin-bottom: 12px;
+      fill: none; stroke: currentColor; stroke-width: 1.3;
+      stroke-linecap: round; stroke-linejoin: round;
+      color: #c2c9bf;
+    }
+    .state.error { color: var(--error); }
+
+    /* ============================================================
+       LANDSCAPE SHEET — Bond Paper
+       ============================================================ */
+    .sheet {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 32px 40px;
+      background: var(--paper);
+      border: 1px solid #e0d7bf;
+      border-radius: 6px;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.8),
+        0 4px 20px rgba(26,45,36,.08);
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+    }
+
+    .sheet-header {
+      text-align: center;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--gold);
+      margin-bottom: 18px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 16px;
+    }
+    .sheet-header .hdr-center { text-align: center; }
+    .sheet-header .hdr-right {
+      text-align: right;
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .sheet-logo {
+      display: block;
+      width: 74px; height: 74px;
+      margin: 0 auto 10px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #f0ece0;
+      border: 2px solid var(--gold);
+      box-shadow: 0 4px 14px rgba(26,45,36,.12);
+    }
+    .sheet-title {
+      margin: 0;
+      color: var(--forest);
+      font-family: Georgia, serif;
+      font-size: 24px; font-weight: 700;
+      letter-spacing: .16em; text-transform: uppercase;
+    }
+    .sheet-sub {
+      margin: 6px 0 0;
+      color: #7a6b4f;
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: 11.5px; letter-spacing: .2em;
+      text-transform: uppercase;
+    }
+    .sheet-month {
+      margin: 10px 0 0;
+      color: var(--forest-light);
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 15px; letter-spacing: .04em;
+    }
+
+    .cols {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px 34px;
+    }
+    .col { min-width: 0; }
+
+    /* ============================================================
+       LEFT / RIGHT COLUMN — font-size scoped styles
+       ============================================================ */
+
+    /* Each column has its own font-size CSS variable */
+    .col.col-left  { font-size: var(--col-left-size); }
+    .col.col-right { font-size: var(--col-right-size); }
+
+    /* All body text inside cards inherits the column's font-size */
+    .prog .p-welcome { font-size: 1em; }
+    .prog .p-part    { font-size: .95em; }
+    .prog .p-row     { font-size: 1em; }
+    .prog .p-center  { font-size: .95em; }
+    .prog .p-mc-label{ font-size: .8em; }
+    .prog .p-mc-name { font-size: 1.2em; }
+    .prog .p-verse-text { font-size: .95em; }
+    .prog .p-verse-ref  { font-size: .75em; }
+
+    /* Card header remains fixed — not affected by slider */
+    .prog-head .prog-date { font-size: 15px; }
+    .prog-head .prog-tag  { font-size: 10px; }
+
+    /* ============================================================
+       PROGRAM CARD
+       ============================================================ */
+    .prog {
+      margin: 0 0 20px;
+      padding: 0;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .prog-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+      border-bottom: 2px solid var(--gold);
+    }
+    .prog-date {
+      margin: 0;
+      color: var(--forest);
+      font-family: Georgia, serif;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+    .prog-tag {
+      margin: 0;
+      color: #7a6b4f;
+      font-family: "Segoe UI", Arial, sans-serif;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .prog-tag.holy {
+      color: #806633;
+      background: var(--gold-soft);
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+
+    .p-welcome {
+      text-align: center;
+      margin: 0 0 12px;
+      color: var(--forest-light);
+      font-style: italic;
+      padding: 6px 10px;
+      border-top: 1px dashed #d9c9a0;
+      border-bottom: 1px dashed #d9c9a0;
+      background: #fdfaf1;
+      border-radius: 4px;
+      letter-spacing: .04em;
+    }
+
+    .p-part {
+      margin: 10px 0 6px;
+      padding-bottom: 3px;
+      color: var(--forest);
+      font-family: Georgia, serif;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      border-bottom: 1px solid #e0d7bf;
+    }
+
+    .p-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(18px, auto) minmax(0, 1.3fr);
+      gap: 4px 8px;
+      align-items: baseline;
+      margin: 5px 0;
+      line-height: 1.4;
+    }
+    .p-row .label {
+      color: #4a544c;
+      font-style: italic;
+    }
+    .p-row .dotted {
+      border-bottom: 1px dotted #c5bba2;
+      height: 1em;
+      transform: translateY(-3px);
+      min-width: 18px;
+    }
+    .p-row .value {
+      color: var(--forest);
+      font-weight: 600;
+      text-align: right;
+      font-family: Georgia, serif;
+      word-break: break-word;
+    }
+
+    .p-center {
+      text-align: center;
+      font-style: italic;
+      color: #7a6b4f;
+      margin: 6px 0 10px;
+      letter-spacing: .05em;
+    }
+
+    .p-mc {
+      margin-top: 14px;
+      padding-top: 10px;
+      border-top: 1px solid #e0d7bf;
+      text-align: center;
+    }
+    .p-mc .p-mc-label {
+      margin: 0;
+      color: #7a6b4f;
+      font-family: "Segoe UI", Arial, sans-serif;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+    .p-mc .p-mc-name {
+      margin: 5px 0 0;
+      color: var(--forest);
+      font-family: Georgia, serif;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+    .p-mc .p-mc-line {
+      display: inline-block;
+      min-width: 160px;
+      padding: 0 10px 2px;
+      border-bottom: 1.5px solid var(--forest);
+      font-style: italic;
+    }
+
+    .p-verse {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-top: 1px solid #e0d7bf;
+      border-bottom: 1px solid #e0d7bf;
+      background: #fdfaf1;
+      text-align: center;
+    }
+    .p-verse-text {
+      margin: 0;
+      color: var(--forest);
+      font-family: Georgia, "Times New Roman", serif;
+      font-style: italic;
+      line-height: 1.55;
+    }
+    .p-verse-text::before { content: "“"; color: var(--gold); font-size: 1.4em; vertical-align: middle; margin-right: 2px; }
+    .p-verse-text::after  { content: "”"; color: var(--gold); font-size: 1.4em; vertical-align: middle; margin-left: 2px; }
+    .p-verse-ref {
+      margin: 6px 0 0;
+      color: #7a6b4f;
+      font-family: "Segoe UI", Arial, sans-serif;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+    .p-verse-ref::before { content: "— "; }
+    .p-verse-ref::after  { content: " —"; }
+
+    .prog + .prog {
+      padding-top: 20px;
+      border-top: 1px dashed #d9c9a0;
+    }
+
+    .empty {
+      padding: 60px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      grid-column: 1 / -1;
+    }
+
+    /* ---- Footer ---- */
+    .sheet-footer {
+      margin-top: 22px;
+      padding-top: 12px;
+      border-top: 2px solid var(--gold);
+      text-align: center;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: #7a6b4f;
+      font-size: 10.5px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .sheet-footer strong { color: var(--forest); }
+    .sheet-footer .gen-id {
+      display: block;
+      margin-top: 4px;
+      font-family: "Courier New", monospace;
+      font-size: 10px;
+      letter-spacing: .18em;
+      color: #947440;
+    }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 900px) {
+      .cols { grid-template-columns: 1fr; }
+      .sheet-header {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .sheet-header .hdr-right { text-align: center; }
+    }
+    @media (max-width: 680px) {
+      .toolbar { padding: 10px 14px; }
+      .font-tool { min-width: 0; flex: 1 1 100%; }
+      main { padding: 16px 12px 60px; }
+      .sheet { padding: 20px 14px; }
+      .sheet-title { font-size: 18px; letter-spacing: .1em; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+
+    /* ============================================================
+       PRINT — LANDSCAPE A4, hide toolbar + font tools + navbar
+       ============================================================ */
+    @media print {
+      @page { size: A4 landscape; margin: 8mm; }
+
+      html, body {
+        background: #fff !important;
+        padding-top: 0 !important;
+        margin: 0 !important;
+        min-height: auto !important;
+      }
+
+      .toolbar,
+      .filter-row,
+      .font-tools,
+      #mcb-navbar,
+      .mcb-navbar,
+      .mcb-drawer,
+      .mcb-backdrop,
+      .navbar-slot,
+      .mcb-brand,
+      .mcb-clock,
+      .mcb-toggle,
+      .mcb-drawer__head,
+      .mcb-drawer__link {
+        display: none !important;
+        visibility: hidden !important;
+      }
+
+      main { padding: 0 !important; margin: 0 !important; width: 100% !important; max-width: 100% !important; }
+      .panel {
+        border: 0 !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+        background: #fff !important;
+      }
+      .sheet {
+        border: 0 !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        background: #fff !important;
+        margin: 0 !important;
+      }
+
+      .cols {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 16px 24px !important;
+      }
+      .prog { page-break-inside: avoid; break-inside: avoid; }
+      .sheet-logo { width: 64px !important; height: 64px !important; }
+
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+
+    /* Navbar overrides */
+    .mcb-navbar__inner {
+      display: flex !important; align-items: center !important;
+      justify-content: space-between !important; gap: 16px !important;
+    }
+    .mcb-left {
+      display: flex !important; align-items: center !important;
+      gap: 12px !important; min-width: 0 !important; flex: 1 1 auto !important;
+    }
+    .mcb-navbar__inner > .mcb-toggle { order: -2 !important; flex: 0 0 42px !important; }
+    .mcb-navbar__inner > .mcb-brand  { order: -1 !important; flex: 1 1 auto !important; margin-right: auto !important; }
+    .mcb-navbar__inner > .mcb-clock  { order: 0 !important; flex: 0 0 auto !important; margin-left: 0 !important; }
+    .mcb-drawer__head { border-bottom: 1px solid rgba(255,255,255,.18) !important; }
+    .mcb-drawer__title { color: var(--gold-light) !important; font-weight: 500 !important; }
+    .mcb-drawer__subtitle { color: rgba(255,255,255,.55) !important; }
+    .mcb-drawer__link { color: rgba(255,255,255,.85) !important; background: transparent !important; }
+    .mcb-drawer__link:hover { background: rgba(233,216,181,.1) !important; color: var(--gold-light) !important; }
+    .mcb-drawer__link:focus-visible { outline: 2px solid var(--gold) !important; outline-offset: 2px !important; }
+    .mcb-drawer__link.is-active {
+      background: #16372e !important; color: #f5efe2 !important;
+      box-shadow: inset 3px 0 0 #c5a56b !important; font-weight: 600 !important;
+    }
+    .mcb-drawer__link.is-active:hover { background: #1b4437 !important; color: #ffffff !important; }
+    .mcb-drawer__link.is-active .mcb-drawer__icon { color: #f5efe2 !important; }
+    .mcb-drawer__link.is-active .mcb-drawer__icon svg { stroke: #f5efe2 !important; }
+    .mcb-drawer__link.is-danger { color: #f2b8b8 !important; background: transparent !important; }
+    .mcb-drawer__link.is-danger:hover { background: rgba(178,58,58,.12) !important; color: #ffd9d9 !important; }
+    .mcb-drawer__icon { color: inherit !important; }
+    .mcb-drawer__icon svg { stroke: currentColor !important; }
+  </style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <div class="toolbar-row">
+      <div class="left" id="toolbar-status">Loading schedule…</div>
+      <div class="right">
+        <a class="btn btn-ghost" href="table.html">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          Back
+        </a>
+        <button class="btn btn-primary" type="button" id="btn-print">
+          <svg viewBox="0 0 24 24"><path d="M6 9V4h12v5"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 17h10v4H7z"/></svg>
+          Print
+        </button>
+        <button class="btn btn-gold" type="button" id="btn-download">
+          <svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+          Download HD
+        </button>
+      </div>
+    </div>
+
+    <div class="filter-row">
+      <div class="filter-group">
+        <label for="filter-month">Month</label>
+        <select id="filter-month">
+          <option value="1">January</option>
+          <option value="2">February</option>
+          <option value="3">March</option>
+          <option value="4">April</option>
+          <option value="5">May</option>
+          <option value="6">June</option>
+          <option value="7">July</option>
+          <option value="8">August</option>
+          <option value="9">September</option>
+          <option value="10">October</option>
+          <option value="11">November</option>
+          <option value="12">December</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="filter-year">Year</label>
+        <select id="filter-year"></select>
+      </div>
+      <button class="btn btn-primary" type="button" id="btn-apply">
+        <svg viewBox="0 0 24 24"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
+        Apply
+      </button>
+      <button class="btn btn-ghost" type="button" id="btn-today">
+        This month
+      </button>
+    </div>
+
+    <!-- ============================================================
+         FONT SIZE TOOLS (left / right program)
+         ============================================================ -->
+    <div class="font-tools" role="group" aria-label="Font size controls">
+      <div class="font-tool">
+        <label class="ft-label" for="range-left">
+          Left program
+          <span class="badge" id="left-pct">100%</span>
+        </label>
+        <input type="range" id="range-left" min="50" max="200" step="5" value="100">
+      </div>
+
+      <div class="font-tool">
+        <label class="ft-label" for="range-right">
+          Right program
+          <span class="badge" id="right-pct">100%</span>
+        </label>
+        <input type="range" id="range-right" min="50" max="200" step="5" value="100">
+      </div>
+
+      <button class="btn-reset-tools" type="button" id="btn-reset-fonts" title="Reset font sizes to 100%">
+        Reset
+      </button>
+    </div>
+  </div>
+
+  <main>
+    <div class="panel">
+
+      <div class="state" id="state-loading">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        Loading monthly schedule…
+      </div>
+
+      <div class="state error" id="state-error" hidden></div>
+
+      <article class="sheet" id="sheet" hidden>
+
+        <header class="sheet-header">
+          <div class="hdr-left" aria-hidden="true"></div>
+          <div class="hdr-center">
+            <img class="sheet-logo" src="mcb.jpg" alt="MCB Logo"
+                 onerror="this.style.background='#c5a56b';this.alt='';">
+            <h1 class="sheet-title">Monthly Schedule</h1>
+            <p class="sheet-sub">Mobilization Church Balilihan</p>
+            <p class="sheet-month" id="sheet-month">October 2026</p>
+          </div>
+          <div class="hdr-right">
+            <div>Del Carmen, Balilihan, Bohol</div>
+            <div>6342</div>
+          </div>
+        </header>
+
+        <div class="cols" id="cols"></div>
+
+        <footer class="sheet-footer">
+          <strong>Monthly Schedule · Mobilization Church Balilihan</strong>
+          <span class="gen-id" id="gen-id">ID — — —</span>
+        </footer>
+
+      </article>
+
+    </div>
+  </main>
+
+  <script>
+    /* SUPABASE CONFIG */
+    const SUPABASE_URL      = 'https://iebmvqdobsumzydhtlvf.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImllYm12cWRvYnN1bXp5ZGh0bHZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NjYwNjAsImV4cCI6MjEwNzQ0MjA2MH0.ZBlazciC_su_tj5PUMryh02ZwA5JaDtOxucedi8IVDc';
+    const TABLE_NAME        = 'sunday_programs';
+
+    let sbClient = null;
+    try {
+      if (window.supabase && SUPABASE_URL.startsWith('https://')) {
+        sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('[MCB] Supabase client ready.');
+      }
+    } catch (e) {
+      console.error('[MCB] Supabase init failed:', e);
+    }
+
+    /* DOM */
+    const stateLoading   = document.getElementById('state-loading');
+    const stateError     = document.getElementById('state-error');
+    const sheet          = document.getElementById('sheet');
+    const toolbarStatus  = document.getElementById('toolbar-status');
+    const colsEl         = document.getElementById('cols');
+    const sheetMonthEl   = document.getElementById('sheet-month');
+    const genIdEl        = document.getElementById('gen-id');
+
+    const filterMonth    = document.getElementById('filter-month');
+    const filterYear     = document.getElementById('filter-year');
+    const btnApply       = document.getElementById('btn-apply');
+    const btnToday       = document.getElementById('btn-today');
+
+    /* ---- Font-size tools refs ---- */
+    const rangeLeft   = document.getElementById('range-left');
+    const rangeRight  = document.getElementById('range-right');
+    const leftPct     = document.getElementById('left-pct');
+    const rightPct    = document.getElementById('right-pct');
+    const btnReset    = document.getElementById('btn-reset-fonts');
+
+    const STORAGE_KEY = 'mcb-monthly-fonts';
+
+    /* Helpers */
+    function escapeHtml(s) {
+      return String(s ?? '').replace(/[&<>"']/g, c => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      }[c]));
+    }
+
+    function monthName(m) {
+      return [
+        'January','February','March','April','May','June',
+        'July','August','September','October','November','December'
+      ][m - 1] || '';
+    }
+
+    function formatDateShort(dateStr) {
+      if (!dateStr) return '—';
+      const d = new Date(dateStr + 'T00:00:00');
+      if (isNaN(d)) return dateStr;
+      return d.toLocaleDateString(undefined, {
+        weekday: 'short', month: 'short', day: 'numeric'
+      });
+    }
+
+    function formatDateLong(dateStr) {
+      if (!dateStr) return '—';
+      const d = new Date(dateStr + 'T00:00:00');
+      if (isNaN(d)) return dateStr;
+      return d.toLocaleDateString(undefined, {
+        weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
+      });
+    }
+
+    function isFirstSunday(dateStr) {
+      if (!dateStr) return false;
+      const d = new Date(dateStr + 'T00:00:00');
+      if (isNaN(d)) return false;
+      return d.getDay() === 0 && d.getDate() >= 1 && d.getDate() <= 7;
+    }
+
+    function showError(msg) {
+      stateLoading.hidden = true;
+      stateError.hidden = false;
+      stateError.textContent = msg;
+      toolbarStatus.textContent = 'Error';
+    }
+
+    /* =========================================================
+       FONT-SIZE TOOLS
+       ========================================================= */
+    function applyFontSizes(leftVal, rightVal) {
+      document.documentElement.style.setProperty('--col-left-size', leftVal + '%');
+      document.documentElement.style.setProperty('--col-right-size', rightVal + '%');
+      leftPct.textContent = leftVal + '%';
+      rightPct.textContent = rightVal + '%';
+    }
+
+    function saveFontSizes(leftVal, rightVal) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          left: leftVal,
+          right: rightVal
+        }));
+      } catch (e) {}
+    }
+
+    function loadFontSizes() {
+      let saved = null;
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) saved = JSON.parse(raw);
+      } catch (e) {}
+      const l = (saved && Number(saved.left))  || 100;
+      const r = (saved && Number(saved.right)) || 100;
+      rangeLeft.value = l;
+      rangeRight.value = r;
+      applyFontSizes(l, r);
+    }
+
+    rangeLeft.addEventListener('input', () => {
+      const l = Number(rangeLeft.value);
+      const r = Number(rangeRight.value);
+      applyFontSizes(l, r);
+      saveFontSizes(l, r);
+    });
+    rangeRight.addEventListener('input', () => {
+      const l = Number(rangeLeft.value);
+      const r = Number(rangeRight.value);
+      applyFontSizes(l, r);
+      saveFontSizes(l, r);
+    });
+    btnReset.addEventListener('click', () => {
+      rangeLeft.value = 100;
+      rangeRight.value = 100;
+      applyFontSizes(100, 100);
+      saveFontSizes(100, 100);
+    });
+
+    /* Apply saved on load */
+    loadFontSizes();
+
+    /* =========================================================
+       BUILD PROGRAM CARD
+       ========================================================= */
+    function buildProgramCard(rec) {
+      const isFirst = isFirstSunday(rec.program_date);
+      const dateLong = formatDateLong(rec.program_date);
+      const dateShort = formatDateShort(rec.program_date);
+
+      const wrap = document.createElement('article');
+      wrap.className = 'prog';
+
+      wrap.innerHTML = `
+        <div class="prog-head">
+          <p class="prog-date">${escapeHtml(dateLong)}</p>
+          <p class="prog-tag ${isFirst ? 'holy' : ''}">
+            ${isFirst ? 'Holy Communion' : escapeHtml(dateShort)}
+          </p>
+        </div>
+
+        <div class="p-welcome">Welcome and Acknowledgement</div>
+
+        <p class="p-part">Part 1 · Sunday Service</p>
+        <div class="p-row">
+          <span class="label">Opening Song</span>
+          <span class="dotted"></span>
+          <span class="value">${escapeHtml(rec.opening_song || '—')}</span>
+        </div>
+        <div class="p-row">
+          <span class="label">Opening Prayer</span>
+          <span class="dotted"></span>
+          <span class="value">${escapeHtml(rec.opening_prayer || '—')}</span>
+        </div>
+        <div class="p-row">
+          <span class="label">Praise and Worship</span>
+          <span class="dotted"></span>
+          <span class="value">${escapeHtml(rec.worship_leader || '—')}</span>
+        </div>
+        <p class="p-center">— Testimony —</p>
+
+        <p class="p-part">Part 2 · Word of God</p>
+        <div class="p-row">
+          <span class="label">Message</span>
+          <span class="dotted"></span>
+          <span class="value">${escapeHtml(rec.pastor || '—')}</span>
+        </div>
+
+        ${isFirst ? `
+          <p class="p-part">Part 3 · Holy Communion</p>
+          <div class="p-row">
+            <span class="label">Officiating</span>
+            <span class="dotted"></span>
+            <span class="value">${escapeHtml(rec.communion_officiant || '—')}</span>
+          </div>
+        ` : ''}
+
+        <p class="p-part">Part 4 · Announcement</p>
+        <div class="p-row">
+          <span class="label">c/o MC</span>
+          <span class="dotted"></span>
+          <span class="value">${escapeHtml(rec.mc_name || '—')}</span>
+        </div>
+
+        <p class="p-part">Part 5 · Closing Service</p>
+        <div class="p-row">
+          <span class="label">Closing Song</span>
+          <span class="dotted"></span>
+          <span class="value">${escapeHtml(rec.closing_song || '—')}</span>
+        </div>
+        <div class="p-row">
+          <span class="label">Closing Prayer and Benediction</span>
+          <span class="dotted"></span>
+          <span class="value">${escapeHtml(rec.closing_prayer || '—')}</span>
+        </div>
+
+        <div class="p-mc">
+          <p class="p-mc-label">Master of Ceremony</p>
+          <p class="p-mc-name">
+            <span class="p-mc-line">${escapeHtml(rec.mc_name || '—')}</span>
+          </p>
+        </div>
+
+        <div class="p-verse">
+          <p class="p-verse-text">
+            For where two or three are gathered together in my name,
+            there am I in the midst of them.
+          </p>
+          <p class="p-verse-ref">Matthew 18:20</p>
+        </div>
+      `;
+
+      return wrap;
+    }
+
+    /* =========================================================
+       Render columns — with class for font-size targeting
+       ========================================================= */
+    function renderColumns(records) {
+      colsEl.innerHTML = '';
+
+      if (!records.length) {
+        const empty = document.createElement('div');
+        empty.className = 'empty';
+        empty.innerHTML = `
+          <svg viewBox="0 0 24 24" style="width:48px;height:48px;margin-bottom:12px;fill:none;stroke:#c2c9bf;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round;color:#c2c9bf">
+            <path d="M4 4h16v16H4z"/><path d="M4 10h16M10 10v10"/>
+          </svg>
+          <div>No programs found for this month.</div>
+        `;
+        colsEl.appendChild(empty);
+        return;
+      }
+
+      const mid = Math.ceil(records.length / 2);
+      const leftRecs = records.slice(0, mid);
+      const rightRecs = records.slice(mid);
+
+      const leftCol = document.createElement('div');
+      leftCol.className = 'col col-left';   /* ← for --col-left-size */
+      const rightCol = document.createElement('div');
+      rightCol.className = 'col col-right'; /* ← for --col-right-size */
+
+      leftRecs.forEach(r => leftCol.appendChild(buildProgramCard(r)));
+      rightRecs.forEach(r => rightCol.appendChild(buildProgramCard(r)));
+
+      colsEl.appendChild(leftCol);
+      colsEl.appendChild(rightCol);
+    }
+
+    /* Generate ID */
+    function generateMonthlyId(month, year) {
+      const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+      const m = String(month).padStart(2, '0');
+      return `MCB-MS-${year}-${m}-${random}`;
+    }
+
+    /* Load month */
+    async function loadMonth(month, year) {
+      if (!sbClient) { showError('Supabase is not configured.'); return; }
+
+      stateLoading.hidden = false;
+      stateError.hidden = true;
+      sheet.hidden = true;
+
+      toolbarStatus.textContent = `Loading ${monthName(month)} ${year}…`;
+
+      const start = `${year}-${String(month).padStart(2, '0')}-01`;
+      const lastDay = new Date(year, month, 0).getDate();
+      const end = `${year}-${String(month).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+
+      try {
+        const { data, error } = await sbClient
+          .from(TABLE_NAME)
+          .select('*')
+          .gte('program_date', start)
+          .lte('program_date', end)
+          .order('program_date', { ascending: true });
+
+        if (error) throw error;
+
+        const records = data || [];
+        console.log(`[MCB] Loaded ${records.length} programs for ${monthName(month)} ${year}`, records);
+
+        sheetMonthEl.textContent = `${monthName(month)} ${year}`;
+        renderColumns(records);
+        genIdEl.textContent = generateMonthlyId(month, year);
+
+        stateLoading.hidden = true;
+        stateError.hidden = true;
+        sheet.hidden = false;
+
+        toolbarStatus.innerHTML = `Loaded <strong>${records.length}</strong> program${records.length === 1 ? '' : 's'} for <strong>${escapeHtml(monthName(month) + ' ' + year)}</strong>`;
+
+      } catch (err) {
+        console.error('[MCB] Load failed:', err);
+        showError('Could not load monthly schedule: ' + (err.message || 'Unknown error.'));
+      }
+    }
+
+    /* Filter setup */
+    function populateYears() {
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const years = [];
+      for (let y = currentYear - 3; y <= currentYear + 5; y++) years.push(y);
+      filterYear.innerHTML = years.map(y =>
+        `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${y}</option>`
+      ).join('');
+    }
+
+    function setCurrentMonth() {
+      const now = new Date();
+      filterMonth.value = String(now.getMonth() + 1);
+      filterYear.value = String(now.getFullYear());
+    }
+
+    btnApply.addEventListener('click', () => {
+      const m = Number(filterMonth.value);
+      const y = Number(filterYear.value);
+      if (!m || !y) return;
+      loadMonth(m, y);
+    });
+
+    btnToday.addEventListener('click', () => {
+      setCurrentMonth();
+      loadMonth(Number(filterMonth.value), Number(filterYear.value));
+    });
+
+    /* Print */
+    document.getElementById('btn-print').addEventListener('click', () => {
+      window.print();
+    });
+
+    /* Download HD */
+    document.getElementById('btn-download').addEventListener('click', async () => {
+      const btn = document.getElementById('btn-download');
+      if (typeof html2canvas !== 'function') {
+        alert('Image library not loaded. Please try again.');
+        return;
+      }
+      if (sheet.hidden) {
+        alert('Walang schedule na ma-download. I-apply muna ang filter.');
+        return;
+      }
+
+      btn.disabled = true;
+      const prevHTML = btn.innerHTML;
+      btn.innerHTML = `Rendering…`;
+
+      try {
+        const scale = 3;
+        const canvas = await html2canvas(sheet, {
+          scale,
+          backgroundColor: '#fffdf8',
+          useCORS: true,
+          logging: false
+        });
+
+        const safe = (v) => String(v || '').replace(/[^a-z0-9\-_]/gi, '_').slice(0, 40);
+        const filename = `MCB-Monthly-Schedule_${safe(sheetMonthEl.textContent)}.png`;
+
+        const link = document.createElement('a');
+        link.download = filename;
+        link.href = canvas.toDataURL('image/png', 1.0);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        console.log('[MCB] Downloaded:', filename);
+      } catch (err) {
+        console.error('[MCB] Download failed:', err);
+        alert('Could not generate the image: ' + (err.message || 'Unknown error.'));
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = prevHTML;
+      }
+    });
+
+    /* Init */
+    populateYears();
+    setCurrentMonth();
+    loadMonth(Number(filterMonth.value), Number(filterYear.value));
+  </script>
+</body>
+</html>

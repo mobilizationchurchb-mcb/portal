@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#102c25">
+  <meta name="description" content="Welcome to the Mobilization Church Balilihan portal — Sunday programs, monthly schedules, and daily Bible verses.">
+  <title>MCB Portal | Mobilization Church Balilihan</title>
+
+  <script src="navbar.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      color-scheme: light;
+      --forest: #102c25;
+      --forest-light: #1b4437;
+      --forest-mid: #214739;
+      --gold: #c5a56b;
+      --gold-light: #e9d8b5;
+      --gold-soft: #f5efe2;
+      --cream: #f7f5ef;
+      --paper: #fffdf8;
+      --ink: #20312b;
+      --muted: #718078;
+      --line: #e6e3db;
+      --white: #fff;
+      --error: #b23a3a;
+      --nav-h: 72px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      color: var(--ink);
+      background: var(--cream);
+      font-family: "Segoe UI", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      padding-top: var(--nav-h);
+    }
+
+    a { color: inherit; }
+
+    /* ============================================================
+       HERO HEADER — two columns
+       ============================================================ */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 36px max(6vw, 24px) 104px;
+      color: var(--white);
+      background:
+        radial-gradient(ellipse at 83% 4%, rgb(197 165 107 / 20%), transparent 34%),
+        linear-gradient(125deg, var(--forest), #16372e 72%, var(--forest-mid));
+    }
+    .hero::after {
+      position: absolute;
+      right: -110px; bottom: -350px;
+      width: 620px; height: 620px;
+      border: 1px solid rgb(233 216 181 / 14%);
+      border-radius: 50%;
+      box-shadow: 0 0 0 38px rgb(233 216 181 / 4%), 0 0 0 82px rgb(233 216 181 / 3%);
+      content: ""; pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(300px, 1fr);
+      gap: 40px 56px;
+      align-items: start;
+      width: min(1120px, 100%);
+      margin-inline: auto;
+      padding-top: 26px;
+    }
+
+    /* Left column */
+    .hero-left { min-width: 0; }
+
+    .greeting {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 22px;
+      padding: 7px 16px;
+      border: 1px solid rgb(233 216 181 / 40%);
+      border-radius: 999px;
+      color: var(--gold-light);
+      background: rgb(233 216 181 / 7%);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+    .greeting .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 0 4px rgb(197 165 107 / 22%);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: .55; transform: scale(.8); }
+    }
+
+    .hero-left h1 {
+      max-width: 560px;
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(30px, 4.6vw, 48px);
+      font-weight: 400;
+      letter-spacing: -.03em;
+      line-height: 1.1;
+    }
+    .hero-left h1 span { color: var(--gold-light); font-style: italic; }
+
+    .hero-left p {
+      max-width: 540px;
+      margin: 18px 0 0;
+      color: rgb(255 255 255 / 74%);
+      font-size: 14.5px;
+      line-height: 1.75;
+    }
+    .hero-left p + p { margin-top: 12px; }
+
+    /* Right column */
+    .hero-right {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 24px 24px 22px;
+      border: 1px solid rgb(233 216 181 / 22%);
+      border-radius: 16px;
+      background: rgb(255 255 255 / 6%);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 20px 50px rgb(0 0 0 / 18%);
+    }
+    .hero-right-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .hero-right-block .tag {
+      color: rgb(255 255 255 / 55%);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+    }
+    .hero-right-block .church {
+      color: #fff;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -.005em;
+      line-height: 1.25;
+    }
+    .hero-right-block .tagline {
+      color: var(--gold-light);
+      font-style: italic;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 13.5px;
+      letter-spacing: .01em;
+    }
+
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgb(233 216 181 / 28%), transparent);
+      margin: 4px 0;
+    }
+
+    .verse-mini {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .verse-mini .verse-mini-text {
+      margin: 0;
+      color: #fff;
+      font-family: Georgia, "Times New Roman", serif;
+      font-style: italic;
+      font-size: 14.5px;
+      line-height: 1.55;
+      letter-spacing: -.005em;
+    }
+    .verse-mini .verse-mini-text::before { content: "“"; color: var(--gold); margin-right: 2px; }
+    .verse-mini .verse-mini-text::after  { content: "”"; color: var(--gold); margin-left: 2px; }
+    .verse-mini .verse-mini-ref {
+      margin: 0;
+      color: var(--gold-light);
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+
+    .clock-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 20px;
+      margin-top: 4px;
+    }
+    .clock-block { display: flex; flex-direction: column; gap: 3px; }
+    .clock-block .clock-label {
+      color: rgb(255 255 255 / 55%);
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+    .clock-block .clock-value {
+      color: #fff;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 15px;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: .02em;
+    }
+    .clock-block .clock-value.time {
+      color: var(--gold-light);
+      font-size: 17px;
+    }
+
+    /* ============================================================
+       MAIN
+       ============================================================ */
+    main {
+      position: relative; z-index: 2; flex: 1;
+      width: min(1120px, 100%);
+      margin-inline: auto;
+      padding: 0 24px 72px;
+      margin-top: -48px;
+    }
+
+    .section { margin: 0 0 26px; }
+    .section:last-child { margin-bottom: 0; }
+
+    .panel {
+      padding: clamp(26px, 4vw, 48px);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--white);
+      box-shadow: 0 18px 55px rgb(26 45 36 / 8%);
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 26px;
+      flex-wrap: wrap;
+    }
+    .section-heading h2 {
+      margin: 0;
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(22px, 4vw, 30px);
+      font-weight: 400;
+      letter-spacing: -.025em;
+    }
+    .section-heading h2 span { color: var(--forest-light); font-style: italic; }
+    .section-heading p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      max-width: 380px;
+    }
+
+    /* ---------------- Summary cards ---------------- */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .summary-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      padding: 22px 20px 20px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: linear-gradient(160deg, #ffffff 0%, #fdfcf9 100%);
+      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    }
+    .summary-card:hover {
+      transform: translateY(-3px);
+      border-color: #c9b27f;
+      box-shadow: 0 12px 26px rgb(26 45 36 / 8%);
+    }
+    .summary-card .sc-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .summary-card .sc-label svg {
+      width: 15px; height: 15px;
+      fill: none; stroke: currentColor;
+      stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+      color: #9c8660;
+    }
+    .summary-card .sc-value {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 40px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--forest);
+      letter-spacing: -.02em;
+    }
+    .summary-card .sc-sub {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .summary-card.gold {
+      background:
+        radial-gradient(ellipse at 90% 0%, rgb(197 165 107 / 12%), transparent 60%),
+        linear-gradient(160deg, #102c25 0%, #1b4437 100%);
+      border-color: #1b4437;
+    }
+    .summary-card.gold .sc-label { color: var(--gold-light); }
+    .summary-card.gold .sc-label svg { color: var(--gold); }
+    .summary-card.gold .sc-value { color: #fff; }
+    .summary-card.gold .sc-sub { color: rgb(255 255 255 / 65%); }
+
+    /* ---------------- Monthly table ---------------- */
+    .monthly-wrap {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+    }
+    table.monthly {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    table.monthly thead th {
+      background: var(--forest);
+      color: var(--gold-light);
+      text-align: left;
+      padding: 14px 16px;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    table.monthly tbody td {
+      padding: 14px 16px;
+      border-top: 1px solid var(--line);
+      color: var(--ink);
+      vertical-align: middle;
+    }
+    table.monthly tbody tr:hover { background: #fbfaf4; }
+    table.monthly .col-date { width: 220px; white-space: nowrap; font-weight: 600; }
+    table.monthly .col-tag  {
+      width: 140px;
+      text-align: right;
+      font-size: 10.5px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: #7a6b4f;
+    }
+    table.monthly .col-tag.holy { color: #806633; font-weight: 700; }
+
+    .monthly-empty {
+      padding: 48px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13.5px;
+    }
+    .monthly-footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-top: 1px solid var(--line);
+      background: #fbfaf4;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .monthly-footer strong { color: var(--ink); }
+
+    .btn-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 16px;
+      border-radius: 9px;
+      background: var(--forest);
+      color: var(--white);
+      text-decoration: none;
+      font-size: 12.5px;
+      font-weight: 650;
+      transition: background 150ms ease, transform 150ms ease;
+    }
+    .btn-link:hover { background: var(--forest-light); transform: translateY(-1px); }
+    .btn-link svg {
+      width: 13px; height: 13px;
+      fill: none; stroke: currentColor; stroke-width: 2;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    /* ============================================================
+       ABOUT GENERATING PROGRAM — 5 IMAGE CARDS
+       ============================================================ */
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .about-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      border: 1px solid #e8e8e1;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #fff;
+      cursor: pointer;
+      text-align: left;
+      transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+    }
+    .about-card:hover {
+      transform: translateY(-4px);
+      border-color: #c9b27f;
+      box-shadow: 0 16px 32px rgb(26 45 36 / 10%);
+    }
+    .about-card:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+
+    .about-thumb {
+      position: relative;
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      background: #edf0e9;
+      overflow: hidden;
+    }
+    .about-thumb img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 400ms ease;
+    }
+    .about-card:hover .about-thumb img { transform: scale(1.05); }
+    .about-thumb::after {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgb(16 44 37 / 0%) 45%, rgb(16 44 37 / 55%) 100%);
+      content: "";
+      pointer-events: none;
+    }
+    .about-num {
+      position: absolute;
+      top: 12px; left: 12px;
+      z-index: 2;
+      display: grid;
+      width: 32px; height: 32px;
+      place-items: center;
+      border-radius: 9px;
+      background: rgb(255 255 255 / 92%);
+      color: var(--forest);
+      font-family: Georgia, serif;
+      font-size: 15px;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgb(0 0 0 / 12%);
+    }
+    .about-body {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 16px 18px 18px;
+    }
+    .about-title {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -.015em;
+    }
+    .about-sub {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .about-more {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 8px;
+      color: #9c8660;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .about-more::after { content: "→"; transition: transform 180ms ease; }
+    .about-card:hover .about-more::after { transform: translateX(3px); }
+
+    /* ============================================================
+       MODAL
+       ============================================================ */
+    .modal-backdrop {
+      position: fixed;
+      z-index: 3000;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgb(10 24 19 / 62%);
+      backdrop-filter: blur(4px);
+    }
+    .modal-backdrop.is-visible { display: flex; }
+
+    .modal {
+      position: relative;
+      width: min(640px, 100%);
+      max-height: min(90vh, 800px);
+      overflow-y: auto;
+      padding: 0;
+      border: 1px solid rgb(197 165 107 / 40%);
+      border-radius: 18px;
+      background: var(--white);
+      box-shadow: 0 24px 80px rgb(0 0 0 / 30%);
+      animation: modal-in 200ms ease-out;
+    }
+    @keyframes modal-in {
+      from { opacity: 0; transform: translateY(10px) scale(.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .modal-close {
+      position: absolute;
+      top: 12px; right: 12px;
+      z-index: 3;
+      display: grid;
+      width: 36px; height: 36px;
+      place-items: center;
+      border: 0;
+      border-radius: 50%;
+      background: rgb(255 255 255 / 92%);
+      color: #56635c;
+      cursor: pointer;
+      font-size: 22px;
+      line-height: 1;
+      box-shadow: 0 4px 14px rgb(0 0 0 / 14%);
+      transition: background 150ms ease, transform 150ms ease;
+    }
+    .modal-close:hover { background: #fff; transform: scale(1.05); }
+    .modal-close:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+
+    .modal-image {
+      display: block;
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      background: #edf0e9;
+      border-bottom: 1px solid var(--line);
+    }
+    .modal-body { padding: 24px 28px 26px; }
+    .modal-body h3 {
+      margin: 0 0 4px;
+      color: var(--forest);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -.02em;
+    }
+    .modal-body .modal-tag {
+      display: inline-block;
+      margin: 0 0 18px;
+      color: #806633;
+      background: var(--gold-soft);
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .modal-body p {
+      margin: 0 0 12px;
+      color: #3d4a44;
+      font-size: 14px;
+      line-height: 1.75;
+    }
+    .modal-body p:last-of-type { margin-bottom: 22px; }
+
+    .modal-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+    .modal-btn {
+      padding: 11px 22px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--forest);
+      color: var(--white);
+      cursor: pointer;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 650;
+      transition: background 150ms ease;
+    }
+    .modal-btn:hover { background: var(--forest-light); }
+    .modal-btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+
+    /* ---------------- Footer ---------------- */
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      width: min(1120px, 100%);
+      margin-inline: auto;
+      padding: 22px 24px 27px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 12px;
+      flex-wrap: wrap;
+    }
+    .footer-note { line-height: 1.6; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 10px 22px; }
+    .footer-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: #43564c;
+      text-decoration: none;
+      transition: color 150ms ease;
+    }
+    .footer-links a:hover { color: #947440; }
+    .footer-links svg { width: 15px; height: 15px; fill: currentColor; }
+
+    /* ---------------- Responsive ---------------- */
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 26px; }
+      .summary-grid { grid-template-columns: repeat(2, 1fr); }
+      .about-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 680px) {
+      .hero { padding-bottom: 84px; }
+      .hero-inner { padding-top: 14px; }
+      .hero-right { padding: 20px 18px; }
+      .hero-right-block .church { font-size: 18px; }
+      .clock-value.time { font-size: 16px; }
+      .section-heading { flex-direction: column; align-items: flex-start; }
+      .summary-grid { grid-template-columns: 1fr; }
+      .about-grid { grid-template-columns: 1fr; }
+      table.monthly .col-date { width: auto; }
+      footer { flex-direction: column; align-items: flex-start; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+
+    /* ============================================================
+       NAVBAR OVERRIDES — user badge on RIGHT side before clock
+       ============================================================ */
+    .mcb-navbar__inner {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 16px !important;
+    }
+    .mcb-left {
+      display: flex !important;
+      align-items: center !important;
+      gap: 12px !important;
+      min-width: 0 !important;
+      flex: 1 1 auto !important;
+    }
+    .mcb-navbar__inner > .mcb-toggle { order: -2 !important; flex: 0 0 42px !important; }
+    .mcb-navbar__inner > .mcb-brand  { order: -1 !important; flex: 1 1 auto !important; margin-right: auto !important; }
+
+    /* USER BADGE — right side, before the clock */
+    .mcb-navbar__inner > .mcb-user {
+      order: 0 !important;
+      flex: 0 0 auto !important;
+      margin-left: auto !important;
+      margin-right: 8px !important;
+      display: none;
+    }
+    .mcb-navbar__inner > .mcb-user.is-visible {
+      display: inline-flex !important;
+      align-items: center !important;
+    }
+    .mcb-navbar__inner > .mcb-user .mcb-user__name { max-width: 180px !important; }
+    .mcb-navbar__inner > .mcb-user .mcb-user__role { max-width: 180px !important; }
+
+    .mcb-navbar__inner > .mcb-clock { order: 1 !important; flex: 0 0 auto !important; margin-left: 0 !important; }
+
+    .mcb-drawer__head { border-bottom: 1px solid rgba(255,255,255,.18) !important; }
+    .mcb-drawer__title { color: var(--gold-light) !important; font-weight: 500 !important; }
+    .mcb-drawer__subtitle { color: rgba(255,255,255,.55) !important; }
+    .mcb-drawer__link { color: rgba(255,255,255,.85) !important; background: transparent !important; }
+    .mcb-drawer__link:hover { background: rgba(233,216,181,.1) !important; color: var(--gold-light) !important; }
+    .mcb-drawer__link:focus-visible { outline: 2px solid var(--gold) !important; outline-offset: 2px !important; }
+    .mcb-drawer__link.is-active {
+      background: #16372e !important; color: #f5efe2 !important;
+      box-shadow: inset 3px 0 0 #c5a56b !important; font-weight: 600 !important;
+    }
+    .mcb-drawer__link.is-active:hover { background: #1b4437 !important; color: #ffffff !important; }
+    .mcb-drawer__link.is-active .mcb-drawer__icon { color: #f5efe2 !important; }
+    .mcb-drawer__link.is-active .mcb-drawer__icon svg { stroke: #f5efe2 !important; }
+    .mcb-drawer__link.is-danger { color: #f2b8b8 !important; background: transparent !important; }
+    .mcb-drawer__link.is-danger:hover { background: rgba(178,58,58,.12) !important; color: #ffd9d9 !important; }
+    .mcb-drawer__icon { color: inherit !important; }
+    .mcb-drawer__icon svg { stroke: currentColor !important; }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       HERO HEADER — two columns
+       ============================================================ -->
+  <header class="hero">
+    <div class="hero-inner">
+
+      <!-- LEFT: greeting + welcome + 2 paragraphs -->
+      <div class="hero-left">
+        <p class="greeting">
+          <span class="dot" aria-hidden="true"></span>
+          <span id="greeting-text">Good day</span>
+        </p>
+
+        <h1>Welcome to the<br><span>Sunday Program System</span></h1>
+
+        <p>
+          Mobilization Church Balilihan is building a simple, transparent way
+          for our church family to prepare and share the Sunday worship program.
+          Every service, every role, and every song — organized in one place.
+        </p>
+        <p>
+          From the Master of Ceremony to the closing benediction, our portal
+          keeps the whole week's plan visible to everyone serving. No more
+          guessing who is doing what — just open the schedule and prepare with
+          joy.
+        </p>
+      </div>
+
+      <!-- RIGHT: church name + verse + date/time -->
+      <aside class="hero-right" aria-label="Church info">
+        <div class="hero-right-block">
+          <span class="tag">Church</span>
+          <div class="church">Mobilization Church Balilihan</div>
+          <div class="tagline">Growing together in faith and service.</div>
+        </div>
+
+        <div class="divider" aria-hidden="true"></div>
+
+        <div class="verse-mini">
+          <span class="tag">Bible Verse</span>
+          <p class="verse-mini-text" id="hero-verse-text">Loading verse…</p>
+          <p class="verse-mini-ref" id="hero-verse-ref">—</p>
+        </div>
+
+        <div class="divider" aria-hidden="true"></div>
+
+        <div class="clock-row">
+          <div class="clock-block">
+            <span class="clock-label">Date</span>
+            <span class="clock-value" id="hero-date">—</span>
+          </div>
+          <div class="clock-block">
+            <span class="clock-label">Time</span>
+            <span class="clock-value time" id="hero-time">--:--:--</span>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Programs this month -->
+    <section class="section panel" aria-labelledby="summary-heading">
+      <div class="section-heading">
+        <h2 id="summary-heading">Programs <span>this month</span></h2>
+        <p id="summary-sub">A quick overview of scheduled services and assignments.</p>
+      </div>
+
+      <div class="summary-grid">
+        <article class="summary-card">
+          <span class="sc-label">
+            <svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>
+            Total Programs
+          </span>
+          <span class="sc-value" id="stat-total">—</span>
+          <span class="sc-sub">Sunday services scheduled for this month</span>
+        </article>
+
+        <article class="summary-card">
+          <span class="sc-label">
+            <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3.5 19v-1.5A4.5 4.5 0 0 1 8 13h2a4.5 4.5 0 0 1 4.5 4.5V19z"/></svg>
+            Master of Ceremony
+          </span>
+          <span class="sc-value" id="stat-mcs">—</span>
+          <span class="sc-sub">Different MCs serving this month</span>
+        </article>
+
+        <article class="summary-card">
+          <span class="sc-label">
+            <svg viewBox="0 0 24 24"><path d="M12 6.5C9.5 4.5 6 4 3 5v14c3-1 6.5-.5 9 1.5"/><path d="M12 6.5C14.5 4.5 18 4 21 5v14c-3-1-6.5-.5-9 1.5"/></svg>
+            Pastors
+          </span>
+          <span class="sc-value" id="stat-pastors">—</span>
+          <span class="sc-sub">Pastors delivering the message</span>
+        </article>
+
+        <article class="summary-card gold">
+          <span class="sc-label">
+            <svg viewBox="0 0 24 24"><path d="M12 21s-7-4.5-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.5-9 9-9 9z"/></svg>
+            Holy Communion
+          </span>
+          <span class="sc-value" id="stat-holy">—</span>
+          <span class="sc-sub">First Sunday service this month</span>
+        </article>
+      </div>
+    </section>
+
+    <!-- Monthly preview -->
+    <section class="section panel" aria-labelledby="monthly-heading">
+      <div class="section-heading">
+        <h2 id="monthly-heading">This month's <span>schedule</span></h2>
+        <p>Sunday-by-Sunday assignments for MC and Pastor.</p>
+      </div>
+
+      <div class="monthly-wrap">
+        <table class="monthly" id="monthly-table">
+          <thead>
+            <tr>
+              <th class="col-date">Sunday</th>
+              <th>MC</th>
+              <th>Pastor</th>
+              <th class="col-tag" style="text-align:right;">Note</th>
+            </tr>
+          </thead>
+          <tbody id="monthly-tbody">
+            <tr>
+              <td colspan="4">
+                <div class="monthly-empty">
+                  Loading this month's schedule…
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="monthly-footer">
+          <span>Looking for the full schedule? <strong id="monthly-month-label">—</strong></span>
+          <a class="btn-link" href="monthly.html">
+            View monthly schedule
+            <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Generating Program -->
+    <section class="section panel" aria-labelledby="about-heading">
+      <div class="section-heading">
+        <h2 id="about-heading">About <span>Generating Program</span></h2>
+        <p>Click any card to learn more about each step.</p>
+      </div>
+
+      <div class="about-grid" id="about-grid">
+        <!-- Filled by JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       MODAL — About Generating Program
+       ============================================================ -->
+  <div class="modal-backdrop" id="about-modal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="about-modal-title">
+      <button class="modal-close" type="button" aria-label="Close dialog" id="about-modal-close">&times;</button>
+      <img class="modal-image" id="about-modal-image" src="" alt="">
+      <div class="modal-body">
+        <h3 id="about-modal-title">Title</h3>
+        <span class="modal-tag" id="about-modal-tag">Step</span>
+        <p id="about-modal-p1"></p>
+        <p id="about-modal-p2"></p>
+        <div class="modal-actions">
+          <button class="modal-btn" type="button" id="about-modal-ok">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-note">
+      © <span id="current-year"></span> Mobilization Church Balilihan<br>
+      Growing together in faith and service.
+    </div>
+    <nav class="footer-links" aria-label="Church contact links">
+      <a href="https://www.facebook.com/search/top?q=Mobilization%20Church%20Balilihan" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.4 21v-8.2h2.8l.4-3.2h-3.2V7.5c0-.9.3-1.5 1.6-1.5h1.7V3.2c-.3 0-1.3-.2-2.5-.2-2.5 0-4.2 1.5-4.2 4.3v2.3H7.2v3.2H10V21z"></path></svg>
+        Facebook
+      </a>
+      <a href="mailto:mobilizationchurchb@gmail.com">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5A2.5 2.5 0 0 1 5.5 4h13A2.5 2.5 0 0 1 21 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5zM4 6l8 7 8-7"></path></svg>
+        mobilizationchurchb@gmail.com
+      </a>
+    </nav>
+  </footer>
+
+  <script>
+    /* =========================================================
+       SUPABASE CONFIG
+       ========================================================= */
+    const SUPABASE_URL      = 'https://iebmvqdobsumzydhtlvf.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImllYm12cWRvYnN1bXp5ZGh0bHZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NjYwNjAsImV4cCI6MjEwNzQ0MjA2MH0.ZBlazciC_su_tj5PUMryh02ZwA5JaDtOxucedi8IVDc';
+    const TABLE_NAME        = 'sunday_programs';
+
+    let sbClient = null;
+    try {
+      if (window.supabase && SUPABASE_URL.startsWith('https://')) {
+        sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('[MCB] Supabase client ready.');
+      }
+    } catch (e) {
+      console.error('[MCB] Supabase init failed:', e);
+    }
+
+    /* =========================================================
+       Helpers
+       ========================================================= */
+    function escapeHtml(s) {
+      return String(s ?? '').replace(/[&<>"']/g, c => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      }[c]));
+    }
+    function formatDateShort(dateStr) {
+      if (!dateStr) return '—';
+      const d = new Date(dateStr + 'T00:00:00');
+      if (isNaN(d)) return dateStr;
+      return d.toLocaleDateString(undefined, {
+        weekday: 'long', month: 'long', day: 'numeric'
+      });
+    }
+    function isFirstSunday(dateStr) {
+      if (!dateStr) return false;
+      const d = new Date(dateStr + 'T00:00:00');
+      if (isNaN(d)) return false;
+      return d.getDay() === 0 && d.getDate() >= 1 && d.getDate() <= 7;
+    }
+
+    /* =========================================================
+       Monthly preview + summary
+       ========================================================= */
+    async function loadMonthPreview() {
+      const tbody = document.getElementById('monthly-tbody');
+      const monthLabel = document.getElementById('monthly-month-label');
+      const subEl = document.getElementById('summary-sub');
+
+      const statTotal  = document.getElementById('stat-total');
+      const statMCs    = document.getElementById('stat-mcs');
+      const statPastors = document.getElementById('stat-pastors');
+      const statHoly   = document.getElementById('stat-holy');
+
+      if (!tbody) return;
+
+      if (!sbClient) {
+        tbody.innerHTML = `
+          <tr><td colspan="4"><div class="monthly-empty">Supabase not configured.</div></td></tr>`;
+        return;
+      }
+
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth() + 1;
+      const start = `${year}-${String(month).padStart(2, '0')}-01`;
+      const lastDay = new Date(year, month, 0).getDate();
+      const end = `${year}-${String(month).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+
+      const monthName = [
+        'January','February','March','April','May','June',
+        'July','August','September','October','November','December'
+      ][month - 1];
+
+      if (monthLabel) monthLabel.textContent = `${monthName} ${year}`;
+      if (subEl) subEl.textContent = `Overview for ${monthName} ${year}.`;
+
+      try {
+        const { data, error } = await sbClient
+          .from(TABLE_NAME)
+          .select('*')
+          .gte('program_date', start)
+          .lte('program_date', end)
+          .order('program_date', { ascending: true });
+
+        if (error) throw error;
+
+        const records = data || [];
+        const total = records.length;
+        const uniqueMCs = new Set();
+        const uniquePastors = new Set();
+        let holy = 0;
+
+        records.forEach(r => {
+          if (r.mc_name && r.mc_name.trim()) uniqueMCs.add(r.mc_name.trim().toLowerCase());
+          if (r.pastor && r.pastor.trim()) uniquePastors.add(r.pastor.trim().toLowerCase());
+          if (isFirstSunday(r.program_date)) holy += 1;
+        });
+
+        if (statTotal) statTotal.textContent = total;
+        if (statMCs) statMCs.textContent = uniqueMCs.size;
+        if (statPastors) statPastors.textContent = uniquePastors.size;
+        if (statHoly) statHoly.textContent = holy;
+
+        if (!total) {
+          tbody.innerHTML = `
+            <tr><td colspan="4"><div class="monthly-empty">No programs scheduled for ${escapeHtml(monthName)} ${year}.</div></td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = records.map(r => {
+          const isHoly = isFirstSunday(r.program_date);
+          return `
+            <tr>
+              <td class="col-date">${escapeHtml(formatDateShort(r.program_date))}</td>
+              <td>${escapeHtml(r.mc_name || '—')}</td>
+              <td>${escapeHtml(r.pastor || '—')}</td>
+              <td class="col-tag ${isHoly ? 'holy' : ''}">${isHoly ? 'Holy Communion' : 'Regular Sunday'}</td>
+            </tr>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error('[MCB] Monthly preview failed:', err);
+        tbody.innerHTML = `
+          <tr><td colspan="4"><div class="monthly-empty">Could not load schedule.</div></td></tr>`;
+        if (statTotal) statTotal.textContent = '0';
+        if (statMCs) statMCs.textContent = '0';
+        if (statPastors) statPastors.textContent = '0';
+        if (statHoly) statHoly.textContent = '0';
+      }
+    }
+
+    /* =========================================================
+       Bible verse list (used for hero fallback)
+       ========================================================= */
+    const VERSES = [
+      { text: 'For where two or three are gathered together in my name, there am I in the midst of them.', ref: 'Matthew 18:20' },
+      { text: 'Trust in the LORD with all thine heart; and lean not unto thine own understanding.', ref: 'Proverbs 3:5' },
+      { text: 'I can do all things through Christ which strengtheneth me.', ref: 'Philippians 4:13' },
+      { text: 'The LORD is my shepherd; I shall not want.', ref: 'Psalm 23:1' },
+      { text: 'Be strong and of a good courage; be not afraid, neither be thou dismayed: for the LORD thy God is with thee whithersoever thou goest.', ref: 'Joshua 1:9' },
+      { text: 'This is the day which the LORD hath made; we will rejoice and be glad in it.', ref: 'Psalm 118:24' },
+      { text: 'The LORD bless thee, and keep thee: the LORD make his face shine upon thee, and be gracious unto thee.', ref: 'Numbers 6:24-25' },
+      { text: 'Come unto me, all ye that labour and are heavy laden, and I will give you rest.', ref: 'Matthew 11:28' },
+      { text: 'Thy word is a lamp unto my feet, and a light unto my path.', ref: 'Psalm 119:105' },
+      { text: 'But they that wait upon the LORD shall renew their strength; they shall mount up with wings as eagles.', ref: 'Isaiah 40:31' },
+      { text: 'For God so loved the world, that he gave his only begotten Son, that whosoever believeth in him should not perish, but have everlasting life.', ref: 'John 3:16' },
+      { text: 'And we know that all things work together for good to them that love God.', ref: 'Romans 8:28' }
+    ];
+
+    /* =========================================================
+       ABOUT GENERATING PROGRAM — cards + modal
+       ========================================================= */
+    const ABOUT_STEPS = [
+      {
+        n: 1,
+        title: 'Master of Ceremony',
+        sub: 'Setting the tone for the entire service',
+        tag: 'Step 1',
+        image: 'https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=1000&q=80',
+        p1: 'The MC opens the Sunday worship service and guides the congregation through the flow of the program. From the welcome and opening remarks to the transitions between each part, the MC helps everyone follow along with clarity.',
+        p2: 'In the Generating Program system, the MC name and service date are the first step recorded. These details anchor the entire program and make it easy to search and print later.'
+      },
+      {
+        n: 2,
+        title: 'Call to Worship',
+        sub: 'Opening song, prayer, and worship leadership',
+        tag: 'Step 2',
+        image: 'https://images.unsplash.com/photo-1507692049790-de58290a4334?auto=format&fit=crop&w=1000&q=80',
+        p1: 'The Call to Worship gathers hearts before God. The opening song, opening prayer, and Praise & Worship time are recorded so the worship team and presider can prepare together with one heart.',
+        p2: 'This section makes it easy to see who will lead the worship team and who will pray. Every song and every person serving is documented for transparency and coordination.'
+      },
+      {
+        n: 3,
+        title: 'Word of God',
+        sub: 'Message and preaching assignment',
+        tag: 'Step 3',
+        image: 'https://images.unsplash.com/photo-1504052434569-70ad5836ab65?auto=format&fit=crop&w=1000&q=80',
+        p1: 'The Word of God is the center of every Sunday gathering. The Generating Program system records the pastor who will deliver the message, making sure that everyone knows who to pray for and prepare with.',
+        p2: 'Having the pastor name in the program helps the worship team, media team, and congregation align with the theme. It also creates a clean record of every message for future reference.'
+      },
+      {
+        n: 4,
+        title: 'Holy Communion',
+        sub: 'Officiating on the First Sunday only',
+        tag: 'Step 4',
+        image: 'https://images.unsplash.com/photo-1519491050282-cf00c82424b4?auto=format&fit=crop&w=1000&q=80',
+        p1: 'Holy Communion is celebrated on the First Sunday of each month. The Generating Program system automatically shows this section only for that Sunday — no need to type the officiant name on regular Sundays.',
+        p2: 'The officiating pastor or elder is recorded here, so the whole church knows who will lead the communion service. On non-communion Sundays, the section is hidden to keep the program clean.'
+      },
+      {
+        n: 5,
+        title: 'Announcements & Closing',
+        sub: 'Tithes, closing song, and benediction',
+        tag: 'Step 5',
+        image: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1000&q=80',
+        p1: 'The closing part of the service includes announcements, prayer for tithes and offering, offering song, closing song, and the benediction. Each role is recorded so no one is missed.',
+        p2: 'Announcements can be added with rich text — bold, bullet lists, and highlights — making it easy to prepare the printed Sunday program or share it online. The MC and closing presider are logged for the whole month.'
+      }
+    ];
+
+    const aboutGrid   = document.getElementById('about-grid');
+    const modalBackdrop = document.getElementById('about-modal');
+    const modalImage  = document.getElementById('about-modal-image');
+    const modalTitle  = document.getElementById('about-modal-title');
+    const modalTag    = document.getElementById('about-modal-tag');
+    const modalP1     = document.getElementById('about-modal-p1');
+    const modalP2     = document.getElementById('about-modal-p2');
+    const modalClose  = document.getElementById('about-modal-close');
+    const modalOk     = document.getElementById('about-modal-ok');
+    let lastFocused   = null;
+
+    function buildAboutCards() {
+      if (!aboutGrid) return;
+      aboutGrid.innerHTML = ABOUT_STEPS.map(step => `
+        <button class="about-card" type="button" data-id="${step.n}" aria-label="Open details for ${escapeHtml(step.title)}">
+          <span class="about-thumb">
+            <span class="about-num" aria-hidden="true">${step.n}</span>
+            <img src="${step.image}" alt="" loading="lazy"
+                 onerror="this.style.background='#c5a56b';this.alt='';">
+          </span>
+          <span class="about-body">
+            <span class="about-title">${escapeHtml(step.title)}</span>
+            <span class="about-sub">${escapeHtml(step.sub)}</span>
+            <span class="about-more">Learn more</span>
+          </span>
+        </button>
+      `).join('');
+    }
+
+    function openAboutModal(id) {
+      const step = ABOUT_STEPS.find(s => s.n === Number(id));
+      if (!step) return;
+
+      lastFocused = document.activeElement;
+      modalImage.src = step.image;
+      modalImage.alt = step.title;
+      modalTitle.textContent = step.title;
+      modalTag.textContent = step.tag;
+      modalP1.textContent = step.p1;
+      modalP2.textContent = step.p2;
+
+      modalBackdrop.hidden = false;
+      modalBackdrop.classList.add('is-visible');
+      setTimeout(() => modalClose.focus(), 60);
+    }
+
+    function closeAboutModal() {
+      modalBackdrop.classList.remove('is-visible');
+      modalBackdrop.hidden = true;
+      if (lastFocused && typeof lastFocused.focus === 'function') {
+        lastFocused.focus();
+      }
+    }
+
+    if (aboutGrid) {
+      aboutGrid.addEventListener('click', (e) => {
+        const card = e.target.closest('.about-card');
+        if (!card) return;
+        openAboutModal(card.dataset.id);
+      });
+    }
+
+    if (modalClose) modalClose.addEventListener('click', closeAboutModal);
+    if (modalOk)    modalOk.addEventListener('click', closeAboutModal);
+
+    if (modalBackdrop) {
+      modalBackdrop.addEventListener('click', (e) => {
+        if (e.target === modalBackdrop) closeAboutModal();
+      });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modalBackdrop && !modalBackdrop.hidden) {
+        closeAboutModal();
+      }
+    });
+
+    /* =========================================================
+       HERO HEADER — greeting + clock + online Bible verse
+       ========================================================= */
+    function updateGreeting() {
+      const h = new Date().getHours();
+      let text = 'Good day';
+      if (h >= 5  && h < 12) text = 'Good morning';
+      else if (h >= 12 && h < 13) text = 'Good noon';
+      else if (h >= 13 && h < 18) text = 'Good afternoon';
+      else if (h >= 18 || h < 5) text = 'Good evening';
+
+      const el = document.getElementById('greeting-text');
+      if (el) el.textContent = text;
+    }
+
+    function startHeroClock() {
+      const dateEl = document.getElementById('hero-date');
+      const timeEl = document.getElementById('hero-time');
+      if (!dateEl || !timeEl) return;
+
+      const dateFmt = new Intl.DateTimeFormat(undefined, {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+      });
+      const timeFmt = new Intl.DateTimeFormat(undefined, {
+        hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
+      });
+
+      function tick() {
+        const now = new Date();
+        dateEl.textContent = dateFmt.format(now);
+        timeEl.textContent = timeFmt.format(now);
+      }
+      tick();
+      setInterval(tick, 1000);
+    }
+
+    const HERO_VERSE_POOL = [
+      'john 3:16', 'psalm 23:1', 'philippians 4:13',
+      'proverbs 3:5-6', 'isaiah 40:31', 'romans 8:28',
+      'matthew 11:28', 'psalm 119:105', 'joshua 1:9',
+      'numbers 6:24-26'
+    ];
+
+    async function loadHeroVerse() {
+      const textEl = document.getElementById('hero-verse-text');
+      const refEl  = document.getElementById('hero-verse-ref');
+      if (!textEl || !refEl) return;
+
+      // Rotate daily so the verse stays consistent for the day
+      const dayIndex = Math.floor(Date.now() / 86400000);
+      const verseRef = HERO_VERSE_POOL[dayIndex % HERO_VERSE_POOL.length];
+
+      try {
+        const url = `https://bible-api.com/${encodeURIComponent(verseRef)}?translation=web`;
+        const res = await fetch(url, { cache: 'no-store' });
+        if (!res.ok) throw new Error('Network ' + res.status);
+        const json = await res.json();
+        if (json && json.text) {
+          textEl.textContent = json.text.trim().replace(/\s+/g, ' ');
+          refEl.textContent  = json.reference || verseRef;
+          return;
+        }
+        throw new Error('Empty response');
+      } catch (err) {
+        console.warn('[MCB] Online verse failed, using fallback:', err);
+        const fallback = VERSES[Math.floor(Math.random() * VERSES.length)];
+        textEl.textContent = fallback.text;
+        refEl.textContent  = fallback.ref;
+      }
+    }
+
+    /* =========================================================
+       Init
+       ========================================================= */
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+    loadMonthPreview();
+    buildAboutCards();
+
+    /* Hero */
+    updateGreeting();
+    startHeroClock();
+    loadHeroVerse();
+    setInterval(updateGreeting, 5 * 60 * 1000);
+  </script>
+</body>
+</html>

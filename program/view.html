@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#102c25">
+  <title>Sunday Program | Mobilization Church Balilihan</title>
+
+  <!-- Navbar -->
+  <script src="navbar.js" defer></script>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- html2canvas for HD image download -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <style>
+    :root {
+      color-scheme: light;
+      --forest: #102c25;
+      --forest-light: #1b4437;
+      --forest-mid: #214739;
+      --gold: #c5a56b;
+      --gold-light: #e9d8b5;
+      --gold-soft: #f5efe2;
+      --cream: #f7f5ef;
+      --paper: #fffdf8;
+      --ink: #20312b;
+      --muted: #718078;
+      --line: #e6e3db;
+      --white: #fff;
+      --error: #b23a3a;
+      --ok: #1f7a4a;
+      --nav-h: 72px;
+
+      /* Dynamic font-size variables (controlled by sliders) */
+      --label-size: 100%;
+      --value-size: 100%;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      color: var(--ink);
+      background: var(--cream);
+      font-family: "Segoe UI", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      padding-top: var(--nav-h);
+    }
+
+    a { color: inherit; }
+
+    /* ---------------- Toolbar (top) ---------------- */
+    .toolbar {
+      position: sticky;
+      top: var(--nav-h);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: min(1080px, 100%);
+      margin: 0 auto;
+      padding: 12px 24px;
+      background: rgba(247, 245, 239, .94);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .toolbar-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .toolbar .left {
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+    .toolbar .left strong { color: var(--ink); }
+
+    .toolbar .right {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    /* ---- Font size controls row ---- */
+    .font-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      padding: 10px 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+
+    .font-tool {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1 1 320px;
+      min-width: 260px;
+    }
+
+    .font-tool .ft-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: #56635c;
+      white-space: nowrap;
+    }
+    .font-tool .ft-label .badge {
+      display: inline-block;
+      min-width: 42px;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: var(--gold-soft);
+      color: #806633;
+      text-align: center;
+      font-family: "Segoe UI", Arial, sans-serif;
+      letter-spacing: 0;
+      font-size: 11px;
+    }
+
+    .font-tool input[type="range"] {
+      flex: 1 1 auto;
+      height: 4px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: #e6dfd0;
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+    }
+    .font-tool input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--forest);
+      border: 2px solid var(--gold);
+      cursor: pointer;
+      transition: transform 120ms ease;
+    }
+    .font-tool input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.12); }
+    .font-tool input[type="range"]::-moz-range-thumb {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--forest);
+      border: 2px solid var(--gold);
+      cursor: pointer;
+    }
+
+    .btn-reset-tools {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border: 1px solid #d9d6cd;
+      border-radius: 8px;
+      background: transparent;
+      color: #43564c;
+      cursor: pointer;
+      font: inherit;
+      font-size: 11.5px;
+      font-weight: 650;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+    .btn-reset-tools:hover { border-color: var(--gold); color: #947440; }
+    .btn-reset-tools:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+    /* ---- Buttons ---- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      cursor: pointer;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 650;
+      text-decoration: none;
+      transition: background 150ms ease, border-color 150ms ease, transform 150ms ease, color 150ms ease, opacity 150ms ease;
+    }
+    .btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+    .btn-primary { background: var(--forest); color: var(--white); }
+    .btn-primary:hover { background: var(--forest-light); transform: translateY(-1px); }
+    .btn-gold { background: var(--gold); color: #2b2113; }
+    .btn-gold:hover { background: #d4b57e; transform: translateY(-1px); }
+    .btn-ghost { background: transparent; border-color: #d9d6cd; color: #43564c; }
+    .btn-ghost:hover { border-color: var(--gold); color: #947440; }
+    .btn[disabled] { opacity: .65; cursor: progress; }
+
+    .btn svg {
+      width: 15px; height: 15px;
+      fill: none; stroke: currentColor; stroke-width: 1.8;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    /* ---------------- Main ---------------- */
+    main {
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      width: min(1080px, 100%);
+      margin-inline: auto;
+      padding: 24px 24px 72px;
+    }
+
+    .panel {
+      padding: clamp(22px, 4vw, 40px);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--white);
+      box-shadow: 0 18px 55px rgb(26 45 36 / 8%);
+    }
+
+    .state {
+      padding: 80px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .state svg {
+      width: 48px; height: 48px;
+      margin-bottom: 12px;
+      fill: none; stroke: currentColor; stroke-width: 1.3;
+      stroke-linecap: round; stroke-linejoin: round;
+      color: #c2c9bf;
+    }
+    .state.error { color: var(--error); }
+
+    /* ============================================================
+       PRINT-READY PROGRAM SHEET
+       ============================================================ */
+    .sheet {
+      width: min(820px, 100%);
+      margin: 0 auto;
+      padding: 44px 48px 40px;
+      background: var(--paper);
+      border: 1px solid #e0d7bf;
+      border-radius: 6px;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.8),
+        0 4px 20px rgba(26,45,36,.08);
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--ink);
+    }
+
+    .sheet-header {
+      text-align: center;
+      padding-bottom: 18px;
+      border-bottom: 2px solid var(--gold);
+      margin-bottom: 22px;
+    }
+    .sheet-logo {
+      display: block;
+      width: 90px;
+      height: 90px;
+      margin: 0 auto 12px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #f0ece0;
+      border: 2px solid var(--gold);
+      box-shadow: 0 4px 14px rgba(26,45,36,.12);
+    }
+    .sheet-church {
+      margin: 0;
+      color: var(--forest);
+      font-family: Georgia, serif;
+      font-size: clamp(20px, 2.6vw, 26px);
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+    .sheet-address {
+      margin: 6px 0 0;
+      color: #7a6b4f;
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: 11.5px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+    .sheet-title {
+      margin: 20px 0 0;
+      color: var(--forest);
+      font-family: Georgia, serif;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+    }
+    .sheet-date {
+      margin: 8px 0 0;
+      color: #7a6b4f;
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: 12px;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .welcome-line {
+      text-align: center;
+      margin: 18px 0 24px;
+      color: var(--forest-light);
+      font-style: italic;
+      font-size: 15px;
+      padding: 10px 16px;
+      border-top: 1px dashed #d9c9a0;
+      border-bottom: 1px dashed #d9c9a0;
+      background: #fdfaf1;
+      border-radius: 4px;
+    }
+
+    .part {
+      margin: 0 0 22px;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    .part-title {
+      margin: 0 0 12px;
+      color: var(--forest);
+      font-family: Georgia, serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #e0d7bf;
+    }
+    .part-center {
+      text-align: center;
+      font-style: italic;
+      color: #7a6b4f;
+      font-size: 14px;
+      margin: 6px 0 12px;
+      letter-spacing: .05em;
+    }
+
+    /* ============================================================
+       ROWS — font sizes controlled by CSS variables
+       ============================================================ */
+    .row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(30px, auto) minmax(0, 1fr);
+      align-items: baseline;
+      gap: 6px 10px;
+      margin: 8px 0;
+      font-size: 14.5px; /* fallback */
+    }
+    .row .label {
+      color: #4a544c;
+      font-style: italic;
+      font-size: var(--label-size);
+      transition: font-size 120ms ease;
+    }
+    .row .dotted {
+      border-bottom: 1px dotted #b8b0a0;
+      height: 1em;
+      transform: translateY(-3px);
+      min-width: 30px;
+    }
+    .row .value {
+      color: var(--forest);
+      font-weight: 600;
+      text-align: right;
+      font-family: Georgia, serif;
+      font-size: var(--value-size);
+      transition: font-size 120ms ease;
+      word-break: break-word;
+    }
+
+    /* MC block */
+    .mc-block {
+      margin-top: 30px;
+      text-align: center;
+      padding-top: 18px;
+      border-top: 1px solid #e0d7bf;
+    }
+    .mc-block .mc-label {
+      margin: 0;
+      color: #7a6b4f;
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: 11px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+    .mc-block .mc-name {
+      margin: 8px 0 0;
+      color: var(--forest);
+      font-family: Georgia, serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+    .mc-block .mc-line {
+      display: inline-block;
+      min-width: 240px;
+      padding: 0 12px 3px;
+      border-bottom: 1.5px solid var(--forest);
+      font-style: italic;
+    }
+
+    /* Bible verse */
+    .verse-block {
+      margin-top: 34px;
+      padding: 22px 24px;
+      border-top: 1px solid #e0d7bf;
+      border-bottom: 1px solid #e0d7bf;
+      background: #fdfaf1;
+      text-align: center;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    .verse-text {
+      margin: 0;
+      color: var(--forest);
+      font-family: Georgia, "Times New Roman", serif;
+      font-style: italic;
+      font-size: 15.5px;
+      line-height: 1.7;
+      letter-spacing: .01em;
+    }
+    .verse-text::before { content: "“"; color: var(--gold); font-size: 22px; vertical-align: middle; margin-right: 2px; }
+    .verse-text::after  { content: "”"; color: var(--gold); font-size: 22px; vertical-align: middle; margin-left: 2px; }
+    .verse-ref {
+      margin: 12px 0 0;
+      color: #7a6b4f;
+      font-family: "Segoe UI", Arial, sans-serif;
+      font-size: 11px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+    .verse-ref::before { content: "— "; }
+    .verse-ref::after  { content: " —"; }
+
+    /* Footer */
+    .sheet-footer {
+      margin-top: 30px;
+      padding-top: 14px;
+      border-top: 2px solid var(--gold);
+      text-align: center;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: #7a6b4f;
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .sheet-footer strong { color: var(--forest); display: block; margin-bottom: 4px; font-size: 12px; letter-spacing: .16em; }
+
+    /* Responsive */
+    @media (max-width: 680px) {
+      .toolbar { padding: 10px 14px; }
+      .font-tool { min-width: 0; flex: 1 1 100%; }
+      main { padding: 16px 12px 60px; }
+      .sheet { padding: 28px 20px 30px; }
+      .row {
+        grid-template-columns: minmax(0, 1fr) minmax(20px, auto) minmax(0, 1fr);
+      }
+      .sheet-logo { width: 70px; height: 70px; }
+      .verse-text { font-size: 14px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+
+    /* ============================================================
+       PRINT — hide navbar + toolbar + font tools
+       ============================================================ */
+    @media print {
+      @page { size: A4 portrait; margin: 14mm; }
+
+      html, body {
+        background: #fff !important;
+        padding-top: 0 !important;
+        margin: 0 !important;
+        min-height: auto !important;
+      }
+
+      .toolbar,
+      .font-tools,
+      #mcb-navbar,
+      .mcb-navbar,
+      .mcb-drawer,
+      .mcb-backdrop,
+      .navbar-slot,
+      .mcb-brand,
+      .mcb-clock,
+      .mcb-toggle,
+      .mcb-drawer__head,
+      .mcb-drawer__link {
+        display: none !important;
+        visibility: hidden !important;
+      }
+
+      main { padding: 0 !important; margin: 0 !important; width: 100% !important; max-width: 100% !important; }
+      .panel {
+        border: 0 !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+        background: #fff !important;
+      }
+      .sheet {
+        border: 0 !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        background: #fff !important;
+        margin: 0 !important;
+      }
+
+      .sheet-header { page-break-after: avoid; }
+      .part { page-break-inside: avoid; break-inside: avoid; }
+      .verse-block { page-break-inside: avoid; break-inside: avoid; }
+      .mc-block { page-break-inside: avoid; break-inside: avoid; }
+      .sheet-logo { width: 78px !important; height: 78px !important; }
+
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+
+    /* Navbar overrides */
+    .mcb-navbar__inner {
+      display: flex !important; align-items: center !important;
+      justify-content: space-between !important; gap: 16px !important;
+    }
+    .mcb-left {
+      display: flex !important; align-items: center !important;
+      gap: 12px !important; min-width: 0 !important; flex: 1 1 auto !important;
+    }
+    .mcb-navbar__inner > .mcb-toggle { order: -2 !important; flex: 0 0 42px !important; }
+    .mcb-navbar__inner > .mcb-brand  { order: -1 !important; flex: 1 1 auto !important; margin-right: auto !important; }
+    .mcb-navbar__inner > .mcb-clock  { order: 0 !important; flex: 0 0 auto !important; margin-left: 0 !important; }
+    .mcb-drawer__head { border-bottom: 1px solid rgba(255,255,255,.18) !important; }
+    .mcb-drawer__title { color: var(--gold-light) !important; font-weight: 500 !important; }
+    .mcb-drawer__subtitle { color: rgba(255,255,255,.55) !important; }
+    .mcb-drawer__link { color: rgba(255,255,255,.85) !important; background: transparent !important; }
+    .mcb-drawer__link:hover { background: rgba(233,216,181,.1) !important; color: var(--gold-light) !important; }
+    .mcb-drawer__link:focus-visible { outline: 2px solid var(--gold) !important; outline-offset: 2px !important; }
+    .mcb-drawer__link.is-active {
+      background: #16372e !important; color: #f5efe2 !important;
+      box-shadow: inset 3px 0 0 #c5a56b !important; font-weight: 600 !important;
+    }
+    .mcb-drawer__link.is-active:hover { background: #1b4437 !important; color: #ffffff !important; }
+    .mcb-drawer__link.is-active .mcb-drawer__icon { color: #f5efe2 !important; }
+    .mcb-drawer__link.is-active .mcb-drawer__icon svg { stroke: #f5efe2 !important; }
+    .mcb-drawer__link.is-danger { color: #f2b8b8 !important; background: transparent !important; }
+    .mcb-drawer__link.is-danger:hover { background: rgba(178,58,58,.12) !important; color: #ffd9d9 !important; }
+    .mcb-drawer__icon { color: inherit !important; }
+    .mcb-drawer__icon svg { stroke: currentColor !important; }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       STICKY TOOLBAR — actions + font size sliders
+       ============================================================ -->
+  <div class="toolbar">
+
+    <!-- Row 1: status + actions -->
+    <div class="toolbar-row">
+      <div class="left" id="toolbar-status">Loading program…</div>
+      <div class="right">
+        <a class="btn btn-ghost" href="table.html">
+          <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+          Back
+        </a>
+        <button class="btn btn-primary" type="button" id="btn-print">
+          <svg viewBox="0 0 24 24"><path d="M6 9V4h12v5"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 17h10v4H7z"/></svg>
+          Print
+        </button>
+        <button class="btn btn-gold" type="button" id="btn-download">
+          <svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+          Download HD
+        </button>
+      </div>
+    </div>
+
+    <!-- Row 2: font size sliders -->
+    <div class="font-tools" role="group" aria-label="Font size controls">
+      <div class="font-tool">
+        <label class="ft-label" for="range-label">
+          Left data
+          <span class="badge" id="label-pct">100%</span>
+        </label>
+        <input type="range" id="range-label" min="50" max="200" step="5" value="100">
+      </div>
+
+      <div class="font-tool">
+        <label class="ft-label" for="range-value">
+          Right data
+          <span class="badge" id="value-pct">100%</span>
+        </label>
+        <input type="range" id="range-value" min="50" max="200" step="5" value="100">
+      </div>
+
+      <button class="btn-reset-tools" type="button" id="btn-reset-fonts" title="Reset font sizes to 100%">
+        Reset
+      </button>
+    </div>
+
+  </div>
+
+  <main>
+    <div class="panel">
+
+      <div class="state" id="state-loading">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        Loading Sunday program…
+      </div>
+
+      <div class="state error" id="state-error" hidden></div>
+
+      <!-- ============================================================
+           PROGRAM SHEET
+           ============================================================ -->
+      <article class="sheet" id="sheet" hidden>
+
+        <header class="sheet-header">
+          <img class="sheet-logo" id="sheet-logo" src="mcb.jpg" alt="MCB Logo"
+               onerror="this.style.background='#c5a56b';this.alt='';">
+          <h1 class="sheet-church">Mobilization Church Balilihan</h1>
+          <p class="sheet-address">Del Carmen, Balilihan, Bohol — 6342</p>
+          <p class="sheet-title">Sunday Program</p>
+          <p class="sheet-date" id="sheet-date">Date to be announced</p>
+        </header>
+
+        <div class="welcome-line">
+          Welcome and Acknowledgement
+        </div>
+
+        <section class="part">
+          <h2 class="part-title">Part 1 · Sunday Service</h2>
+          <div class="row">
+            <span class="label">Opening Song</span>
+            <span class="dotted"></span>
+            <span class="value" id="v-opening-song">—</span>
+          </div>
+          <div class="row">
+            <span class="label">Opening Prayer</span>
+            <span class="dotted"></span>
+            <span class="value" id="v-opening-prayer">—</span>
+          </div>
+          <div class="row">
+            <span class="label">Praise and Worship</span>
+            <span class="dotted"></span>
+            <span class="value" id="v-worship-leader">—</span>
+          </div>
+          <p class="part-center">— Testimony —</p>
+        </section>
+
+        <section class="part">
+          <h2 class="part-title">Part 2 · Word of God</h2>
+          <div class="row">
+            <span class="label">Message</span>
+            <span class="dotted"></span>
+            <span class="value" id="v-pastor">—</span>
+          </div>
+        </section>
+
+        <section class="part" id="part-communion" hidden>
+          <h2 class="part-title">Part 3 · Holy Communion</h2>
+          <div class="row">
+            <span class="label">Officiating</span>
+            <span class="dotted"></span>
+            <span class="value" id="v-communion">—</span>
+          </div>
+        </section>
+
+        <section class="part">
+          <h2 class="part-title">Part 4 · Announcement</h2>
+          <div class="row">
+            <span class="label">c/o MC</span>
+            <span class="dotted"></span>
+            <span class="value" id="v-mc-announce">—</span>
+          </div>
+        </section>
+
+        <section class="part">
+          <h2 class="part-title">Part 5 · Closing Service</h2>
+          <div class="row">
+            <span class="label">Closing Song</span>
+            <span class="dotted"></span>
+            <span class="value" id="v-closing-song">—</span>
+          </div>
+          <div class="row">
+            <span class="label">Closing Prayer and Benediction</span>
+            <span class="dotted"></span>
+            <span class="value" id="v-closing-prayer">—</span>
+          </div>
+        </section>
+
+        <div class="mc-block">
+          <p class="mc-label">Master of Ceremony</p>
+          <p class="mc-name">
+            <span class="mc-line" id="v-mc">—</span>
+          </p>
+        </div>
+
+        <div class="verse-block">
+          <p class="verse-text">
+            For where two or three are gathered together in my name,
+            there am I in the midst of them.
+          </p>
+          <p class="verse-ref">Matthew 18:20</p>
+        </div>
+
+        <footer class="sheet-footer">
+          <strong>Mobilization Church Balilihan</strong>
+          Growing together in faith and service
+        </footer>
+
+      </article>
+
+    </div>
+  </main>
+
+  <script>
+    /* =========================================================
+       SUPABASE CONFIG
+       ========================================================= */
+    const SUPABASE_URL      = 'https://iebmvqdobsumzydhtlvf.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImllYm12cWRvYnN1bXp5ZGh0bHZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4NjYwNjAsImV4cCI6MjEwNzQ0MjA2MH0.ZBlazciC_su_tj5PUMryh02ZwA5JaDtOxucedi8IVDc';
+    const TABLE_NAME        = 'sunday_programs';
+
+    let sbClient = null;
+    try {
+      if (window.supabase && SUPABASE_URL.startsWith('https://')) {
+        sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('[MCB] Supabase client ready.');
+      }
+    } catch (e) {
+      console.error('[MCB] Supabase init failed:', e);
+    }
+
+    /* =========================================================
+       DOM refs
+       ========================================================= */
+    const stateLoading   = document.getElementById('state-loading');
+    const stateError     = document.getElementById('state-error');
+    const sheet          = document.getElementById('sheet');
+    const toolbarStatus  = document.getElementById('toolbar-status');
+
+    const vDate          = document.getElementById('sheet-date');
+    const vOpeningSong   = document.getElementById('v-opening-song');
+    const vOpeningPrayer = document.getElementById('v-opening-prayer');
+    const vWorship       = document.getElementById('v-worship-leader');
+    const vPastor        = document.getElementById('v-pastor');
+    const vCommunion     = document.getElementById('v-communion');
+    const partCommunion  = document.getElementById('part-communion');
+    const vMc            = document.getElementById('v-mc');
+    const vMcAnnounce    = document.getElementById('v-mc-announce');
+    const vClosingSong   = document.getElementById('v-closing-song');
+    const vClosingPrayer = document.getElementById('v-closing-prayer');
+
+    /* ---- Font-size tools refs ---- */
+    const rangeLabel  = document.getElementById('range-label');
+    const rangeValue  = document.getElementById('range-value');
+    const labelPct    = document.getElementById('label-pct');
+    const valuePct    = document.getElementById('value-pct');
+    const btnReset    = document.getElementById('btn-reset-fonts');
+
+    const STORAGE_KEY = 'mcb-view-fonts';
+
+    /* =========================================================
+       Helpers
+       ========================================================= */
+    function getParam(name) {
+      return new URLSearchParams(window.location.search).get(name);
+    }
+
+    function formatDateLong(dateStr) {
+      if (!dateStr) return 'Date to be announced';
+      const d = new Date(dateStr + 'T00:00:00');
+      if (isNaN(d)) return dateStr;
+      return d.toLocaleDateString(undefined, {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+      });
+    }
+
+    function isFirstSunday(dateStr) {
+      if (!dateStr) return false;
+      const d = new Date(dateStr + 'T00:00:00');
+      if (isNaN(d)) return false;
+      return d.getDay() === 0 && d.getDate() >= 1 && d.getDate() <= 7;
+    }
+
+    function setText(el, value) {
+      if (!el) return;
+      el.textContent = (value && String(value).trim()) ? value : '—';
+    }
+
+    function showError(msg) {
+      stateLoading.hidden = true;
+      stateError.hidden = false;
+      stateError.textContent = msg;
+      toolbarStatus.textContent = 'Error';
+    }
+
+    function escapeHtml(s) {
+      return String(s ?? '').replace(/[&<>"']/g, c => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      }[c]));
+    }
+
+    /* =========================================================
+       Font-size tools
+       ========================================================= */
+    function applyFontSizes(labelPctVal, valuePctVal) {
+      document.documentElement.style.setProperty('--label-size', labelPctVal + '%');
+      document.documentElement.style.setProperty('--value-size', valuePctVal + '%');
+      labelPct.textContent = labelPctVal + '%';
+      valuePct.textContent = valuePctVal + '%';
+    }
+
+    function saveFontSizes(labelPctVal, valuePctVal) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          label: labelPctVal,
+          value: valuePctVal
+        }));
+      } catch (e) {}
+    }
+
+    function loadFontSizes() {
+      let saved = null;
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) saved = JSON.parse(raw);
+      } catch (e) {}
+      const l = (saved && Number(saved.label)) || 100;
+      const v = (saved && Number(saved.value)) || 100;
+      rangeLabel.value = l;
+      rangeValue.value = v;
+      applyFontSizes(l, v);
+    }
+
+    /* Wire slider events */
+    rangeLabel.addEventListener('input', () => {
+      const l = Number(rangeLabel.value);
+      const v = Number(rangeValue.value);
+      applyFontSizes(l, v);
+      saveFontSizes(l, v);
+    });
+    rangeValue.addEventListener('input', () => {
+      const l = Number(rangeLabel.value);
+      const v = Number(rangeValue.value);
+      applyFontSizes(l, v);
+      saveFontSizes(l, v);
+    });
+    btnReset.addEventListener('click', () => {
+      rangeLabel.value = 100;
+      rangeValue.value = 100;
+      applyFontSizes(100, 100);
+      saveFontSizes(100, 100);
+    });
+
+    /* Apply saved sizes on load */
+    loadFontSizes();
+
+    /* =========================================================
+       Load and render
+       ========================================================= */
+    async function load() {
+      const id = getParam('id');
+      if (!id) {
+        showError('No program selected. Please return to the records page.');
+        return;
+      }
+      if (!sbClient) {
+        showError('Supabase is not configured.');
+        return;
+      }
+
+      try {
+        const { data, error } = await sbClient
+          .from(TABLE_NAME)
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (error) throw error;
+        if (!data) {
+          showError('Program not found.');
+          return;
+        }
+
+        console.log('[MCB] Loaded program:', data);
+
+        setText(vDate,          formatDateLong(data.program_date));
+        setText(vOpeningSong,   data.opening_song);
+        setText(vOpeningPrayer, data.opening_prayer);
+        setText(vWorship,       data.worship_leader);
+        setText(vPastor,        data.pastor);
+        setText(vMc,            data.mc_name);
+        setText(vMcAnnounce,    data.mc_name);
+        setText(vClosingSong,   data.closing_song);
+        setText(vClosingPrayer, data.closing_prayer);
+
+        const first = isFirstSunday(data.program_date);
+        if (first && data.communion_officiant) {
+          partCommunion.hidden = false;
+          setText(vCommunion, data.communion_officiant);
+        } else {
+          partCommunion.hidden = true;
+          vCommunion.textContent = '—';
+        }
+
+        stateLoading.hidden = true;
+        stateError.hidden = true;
+        sheet.hidden = false;
+
+        toolbarStatus.innerHTML = `Loaded: <strong>${escapeHtml(data.mc_name || 'Program')}</strong> · ${escapeHtml(formatDateLong(data.program_date))}`;
+
+      } catch (err) {
+        console.error('[MCB] Load failed:', err);
+        showError('Could not load the program: ' + (err.message || 'Unknown error.'));
+      }
+    }
+
+    /* =========================================================
+       Print
+       ========================================================= */
+    document.getElementById('btn-print').addEventListener('click', () => {
+      window.print();
+    });
+
+    /* =========================================================
+       Download as HD image (via html2canvas)
+       ========================================================= */
+    document.getElementById('btn-download').addEventListener('click', async () => {
+      const btn = document.getElementById('btn-download');
+      if (typeof html2canvas !== 'function') {
+        alert('Image library not loaded. Please try again.');
+        return;
+      }
+
+      btn.disabled = true;
+      const prevHTML = btn.innerHTML;
+      btn.innerHTML = `Rendering…`;
+
+      try {
+        const scale = 3;
+        const canvas = await html2canvas(sheet, {
+          scale,
+          backgroundColor: '#fffdf8',
+          useCORS: true,
+          logging: false
+        });
+
+        const safe = (v) => String(v || '').replace(/[^a-z0-9\-_]/gi, '_').slice(0, 40);
+        const filename = `MCB-Sunday-Program_${safe(vDate.textContent)}.png`;
+
+        const link = document.createElement('a');
+        link.download = filename;
+        link.href = canvas.toDataURL('image/png', 1.0);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        console.log('[MCB] Downloaded:', filename);
+      } catch (err) {
+        console.error('[MCB] Download failed:', err);
+        alert('Could not generate the image: ' + (err.message || 'Unknown error.'));
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = prevHTML;
+      }
+    });
+
+    /* Init */
+    load();
+  </script>
+</body>
+</html>
