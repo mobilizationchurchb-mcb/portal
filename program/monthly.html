@@ -935,6 +935,27 @@
       const dateLong = formatDateLong(rec.program_date);
       const dateShort = formatDateShort(rec.program_date);
 
+      // ✅ DYNAMIC NUMBERING LOGIC
+      let partCommunionHtml = '';
+      let nextPart = 3;
+
+      if (isFirst) {
+        // Kapag 1st Sunday, may Holy Communion
+        partCommunionHtml = `
+          <p class="p-part">Part ${nextPart} · Holy Communion</p>
+          <div class="p-row">
+            <span class="label">Officiating</span>
+            <span class="dotted"></span>
+            <span class="value">${escapeHtml(rec.communion_officiant || '—')}</span>
+          </div>
+        `;
+        nextPart++; // Magiging 4 na ang susunod (Tithes)
+      }
+
+      const partTithesNumber = nextPart; nextPart++;
+      const partAnnounceNumber = nextPart; nextPart++;
+      const partClosingNumber = nextPart;
+
       const wrap = document.createElement('article');
       wrap.className = 'prog';
 
@@ -973,23 +994,28 @@
           <span class="value">${escapeHtml(rec.pastor || '—')}</span>
         </div>
 
-        ${isFirst ? `
-          <p class="p-part">Part 3 · Holy Communion</p>
-          <div class="p-row">
-            <span class="label">Officiating</span>
-            <span class="dotted"></span>
-            <span class="value">${escapeHtml(rec.communion_officiant || '—')}</span>
-          </div>
-        ` : ''}
+        ${partCommunionHtml}
 
-        <p class="p-part">Part 4 · Announcement</p>
+        <p class="p-part">Part ${partTithesNumber} · Tithes and Offering</p>
+        <div class="p-row">
+          <span class="label">Tithes Prayer</span>
+          <span class="dotted"></span>
+          <span class="value">${escapeHtml(rec.tithes_prayer || '—')}</span>
+        </div>
+        <div class="p-row">
+          <span class="label">Offering Song</span>
+          <span class="dotted"></span>
+          <span class="value">${escapeHtml(rec.offering_song || '—')}</span>
+        </div>
+
+        <p class="p-part">Part ${partAnnounceNumber} · Announcement</p>
         <div class="p-row">
           <span class="label">c/o MC</span>
           <span class="dotted"></span>
           <span class="value">${escapeHtml(rec.mc_name || '—')}</span>
         </div>
 
-        <p class="p-part">Part 5 · Closing Service</p>
+        <p class="p-part">Part ${partClosingNumber} · Closing Service</p>
         <div class="p-row">
           <span class="label">Closing Song</span>
           <span class="dotted"></span>
