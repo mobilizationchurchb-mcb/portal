@@ -655,6 +655,7 @@
           Welcome and Acknowledgement
         </div>
 
+        <!-- PART 1 -->
         <section class="part">
           <h2 class="part-title">Part 1 · Sunday Service</h2>
           <div class="row">
@@ -675,6 +676,7 @@
           <p class="part-center">— Testimony —</p>
         </section>
 
+        <!-- PART 2 -->
         <section class="part">
           <h2 class="part-title">Part 2 · Word of God</h2>
           <div class="row">
@@ -684,8 +686,9 @@
           </div>
         </section>
 
+        <!-- PART 3 (Holy Communion - hidden if not 1st Sunday) -->
         <section class="part" id="part-communion" hidden>
-          <h2 class="part-title">Part 3 · Holy Communion</h2>
+          <h2 class="part-title" id="title-communion">Part 3 · Holy Communion</h2>
           <div class="row">
             <span class="label">Officiating</span>
             <span class="dotted"></span>
@@ -693,8 +696,24 @@
           </div>
         </section>
 
+        <!-- PART 4 (Tithes and Offering) -->
         <section class="part">
-          <h2 class="part-title">Part 4 · Announcement</h2>
+          <h2 class="part-title" id="title-tithes">Part 3 · Tithes and Offering</h2>
+          <div class="row">
+            <span class="label">Tithes Prayer</span>
+            <span class="dotted"></span>
+            <span class="value" id="v-tithes-prayer">—</span>
+          </div>
+          <div class="row">
+            <span class="label">Offering Song</span>
+            <span class="dotted"></span>
+            <span class="value" id="v-offering-song">—</span>
+          </div>
+        </section>
+
+        <!-- PART 5 -->
+        <section class="part">
+          <h2 class="part-title" id="title-announcement">Part 4 · Announcement</h2>
           <div class="row">
             <span class="label">c/o MC</span>
             <span class="dotted"></span>
@@ -702,8 +721,9 @@
           </div>
         </section>
 
+        <!-- PART 6 -->
         <section class="part">
-          <h2 class="part-title">Part 5 · Closing Service</h2>
+          <h2 class="part-title" id="title-closing">Part 5 · Closing Service</h2>
           <div class="row">
             <span class="label">Closing Song</span>
             <span class="dotted"></span>
@@ -772,12 +792,23 @@
     const vOpeningPrayer = document.getElementById('v-opening-prayer');
     const vWorship       = document.getElementById('v-worship-leader');
     const vPastor        = document.getElementById('v-pastor');
+    
+    // Tithes and Offering
+    const vTithesPrayer  = document.getElementById('v-tithes-prayer');
+    const vOfferingSong  = document.getElementById('v-offering-song');
+
     const vCommunion     = document.getElementById('v-communion');
     const partCommunion  = document.getElementById('part-communion');
     const vMc            = document.getElementById('v-mc');
     const vMcAnnounce    = document.getElementById('v-mc-announce');
     const vClosingSong   = document.getElementById('v-closing-song');
     const vClosingPrayer = document.getElementById('v-closing-prayer');
+
+    // Dynamic Titles
+    const titleCommunion    = document.getElementById('title-communion');
+    const titleTithes       = document.getElementById('title-tithes');
+    const titleAnnouncement = document.getElementById('title-announcement');
+    const titleClosing      = document.getElementById('title-closing');
 
     /* ---- Font-size tools refs ---- */
     const rangeLabel  = document.getElementById('range-label');
@@ -918,18 +949,36 @@
         setText(vOpeningPrayer, data.opening_prayer);
         setText(vWorship,       data.worship_leader);
         setText(vPastor,        data.pastor);
+        
+        setText(vTithesPrayer,  data.tithes_prayer);
+        setText(vOfferingSong,  data.offering_song);
+
         setText(vMc,            data.mc_name);
         setText(vMcAnnounce,    data.mc_name);
         setText(vClosingSong,   data.closing_song);
         setText(vClosingPrayer, data.closing_prayer);
 
         const first = isFirstSunday(data.program_date);
+        
+        // ✅ DYNAMIC NUMBERING LOGIC
         if (first && data.communion_officiant) {
+          // MAY HOLY COMMUNION
           partCommunion.hidden = false;
           setText(vCommunion, data.communion_officiant);
+          
+          // Ibalik sa Part 4 ang Tithes
+          titleTithes.textContent = "Part 4 · Tithes and Offering";
+          titleAnnouncement.textContent = "Part 5 · Announcement";
+          titleClosing.textContent = "Part 6 · Closing Service";
         } else {
+          // WALANG HOLY COMMUNION (Regular Sunday)
           partCommunion.hidden = true;
           vCommunion.textContent = '—';
+          
+          // Gawing Part 3 ang Tithes
+          titleTithes.textContent = "Part 3 · Tithes and Offering";
+          titleAnnouncement.textContent = "Part 4 · Announcement";
+          titleClosing.textContent = "Part 5 · Closing Service";
         }
 
         stateLoading.hidden = true;
