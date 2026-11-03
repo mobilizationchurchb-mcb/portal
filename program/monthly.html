@@ -264,13 +264,13 @@
     .state.error { color: var(--error); }
 
     /* ============================================================
-       LANDSCAPE SHEET — Bond Paper
+       LANDSCAPE SHEET — A4 Bond Paper (297mm x 210mm)
        ============================================================ */
     .sheet {
-      width: 100%;
-      max-width: 1320px;
+      width: 297mm;
+      min-height: 210mm;
       margin: 0 auto 24px;
-      padding: 32px 40px;
+      padding: 12mm 15mm;
       background: var(--paper);
       border: 1px solid #e0d7bf;
       border-radius: 6px;
@@ -280,6 +280,7 @@
       font-family: Georgia, "Times New Roman", serif;
       color: var(--ink);
       position: relative;
+      overflow: hidden;
     }
 
     .sheet-header {
@@ -344,12 +345,9 @@
     /* ============================================================
        LEFT / RIGHT COLUMN — font-size scoped styles
        ============================================================ */
-
-    /* Each column has its own font-size CSS variable */
     .col.col-left  { font-size: var(--col-left-size); }
     .col.col-right { font-size: var(--col-right-size); }
 
-    /* All body text inside cards inherits the column's font-size */
     .prog .p-welcome { font-size: 1em; }
     .prog .p-part    { font-size: .95em; }
     .prog .p-row     { font-size: 1em; }
@@ -359,7 +357,6 @@
     .prog .p-verse-text { font-size: .95em; }
     .prog .p-verse-ref  { font-size: .75em; }
 
-    /* Card header remains fixed — not affected by slider */
     .prog-head .prog-date { font-size: 15px; }
     .prog-head .prog-tag  { font-size: 10px; }
 
@@ -594,8 +591,13 @@
     }
 
     /* ---- Responsive ---- */
+    @media (max-width: 1100px) {
+      /* Zoom out the A4 sheet on smaller screens */
+      .sheet { transform: scale(0.9); transform-origin: top center; margin-bottom: -20px; }
+    }
     @media (max-width: 900px) {
       .cols { grid-template-columns: 1fr; }
+      .sheet { transform: scale(0.7); margin-bottom: -60px; }
       .sheet-header {
         grid-template-columns: 1fr;
         text-align: center;
@@ -606,7 +608,7 @@
       .toolbar { padding: 10px 14px; }
       .font-tool { min-width: 0; flex: 1 1 100%; }
       main { padding: 16px 12px 60px; }
-      .sheet { padding: 20px 14px; }
+      .sheet { transform: scale(0.5); margin-bottom: -100px; }
       .sheet-title { font-size: 18px; letter-spacing: .1em; }
     }
 
@@ -620,16 +622,18 @@
     }
 
     /* ============================================================
-       PRINT — LANDSCAPE A4, hide toolbar + font tools + navbar
+       PRINT — EXACT A4 LANDSCAPE
        ============================================================ */
     @media print {
-      @page { size: A4 landscape; margin: 8mm; }
+      @page { size: A4 landscape; margin: 0; }
 
       html, body {
         background: #fff !important;
         padding-top: 0 !important;
         margin: 0 !important;
         min-height: auto !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
 
       .toolbar,
@@ -645,31 +649,29 @@
       .mcb-clock,
       .mcb-toggle,
       .mcb-drawer__head,
-      .mcb-drawer__link {
+      .mcb-drawer__link,
+      .panel {
         display: none !important;
         visibility: hidden !important;
       }
 
       main { padding: 0 !important; margin: 0 !important; width: 100% !important; max-width: 100% !important; }
-      .panel {
-        border: 0 !important;
-        box-shadow: none !important;
-        padding: 0 !important;
-        border-radius: 0 !important;
-        background: #fff !important;
-      }
+      
       .sheet {
         border: 0 !important;
         box-shadow: none !important;
         border-radius: 0 !important;
-        padding: 0 !important;
         width: 100% !important;
         max-width: 100% !important;
-        background: #fff !important;
-        margin: 0 0 20mm 0 !important;
+        min-height: 100vh !important;
+        height: 100vh !important;
+        margin: 0 !important;
+        padding: 12mm 15mm !important;
         page-break-after: always;
+        transform: none !important;
+        box-sizing: border-box !important;
       }
-      .sheet:last-child { page-break-after: auto; margin-bottom: 0 !important; }
+      .sheet:last-child { page-break-after: auto; }
 
       .cols {
         display: grid !important;
@@ -678,11 +680,6 @@
       }
       .prog { page-break-inside: avoid; break-inside: avoid; }
       .sheet-logo { width: 64px !important; height: 64px !important; }
-
-      * {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-      }
     }
 
     /* Navbar overrides */
@@ -1278,12 +1275,14 @@
       btn.innerHTML = `Rendering…`;
 
       try {
-        const scale = 3;
+        const scale = 3; // HD scaling
         const canvas = await html2canvas(activeSheet, {
           scale,
           backgroundColor: '#fffdf8',
           useCORS: true,
-          logging: false
+          logging: false,
+          width: activeSheet.offsetWidth,
+          height: activeSheet.offsetHeight
         });
 
         const safe = (v) => String(v || '').replace(/[^a-z0-9\-_]/gi, '_').slice(0, 40);
