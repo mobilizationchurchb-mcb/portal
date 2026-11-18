@@ -244,7 +244,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         <li class="nav-space"></li>
 
                         <li class="nav-section-label">Daily Grace Devotional</li>
-                        <li class="nav-item"><a href="devotional.html" class="nav-link">📖 Table</a></li>
+                        <li class="nav-item"><a href="devotional.html" class="nav-link">📖 Devotional</a></li>
                         <li class="nav-item"><a href="certificate.html" class="nav-link">🎓 Certificate</a></li>
 
                         <li class="nav-space" style="border-bottom: none;"></li>
