@@ -119,6 +119,38 @@
             transform: translateY(-2px);
         }
 
+        .btn-install-ad {
+            border: 1px solid #fbbf24;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #172554;
+            cursor: pointer;
+            padding: 14px 30px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 1rem;
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.28);
+            transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+            text-align: center;
+        }
+
+        .btn-install-ad:hover {
+            background: linear-gradient(135deg, #fcd34d, #fbbf24);
+            box-shadow: 0 11px 24px rgba(245, 158, 11, 0.36);
+            transform: translateY(-2px);
+        }
+
+        .btn-install-ad:focus-visible {
+            outline: 3px solid #ffffff;
+            outline-offset: 3px;
+        }
+
+        #appInstallStatus {
+            margin-top: 14px;
+            color: #fef3c7;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
         /* --- TWO PILLARS ADVERTISEMENT SECTION --- */
         .pillars-section {
             max-width: 1100px;
@@ -450,7 +482,8 @@
                 align-items: stretch;
             }
             .btn-primary-ad,
-            .btn-outline-ad {
+            .btn-outline-ad,
+            .btn-install-ad {
                 width: 100%;
                 padding: 13px 20px;
                 font-size: 0.92rem;
@@ -578,7 +611,9 @@
             <div class="hero-cta-group">
                 <a href="monthly_schedule.html" class="btn-primary-ad">View Worship Schedule</a>
                 <a href="devotional.html" class="btn-outline-ad">Start Daily Devotional</a>
+                <button type="button" class="btn-install-ad" id="appInstallBtn">📲 Download App</button>
             </div>
+            <p id="appInstallStatus" role="status" aria-live="polite" hidden></p>
         </div>
     </section>
 
@@ -697,72 +732,156 @@
         });
 
         // ---------- 1. Register Service Worker ----------
+        let serviceWorkerRegistration = null;
+        async function registerServiceWorker() {
+            if (!('serviceWorker' in navigator)) {
+                return null;
+            }
+            if (!window.isSecureContext) {
+                throw new Error('App installation requires HTTPS or localhost.');
+            }
+            serviceWorkerRegistration = await navigator.serviceWorker.register('./sw.js');
+            console.log('✅ Service Worker registered:', serviceWorkerRegistration.scope);
+            return serviceWorkerRegistration;
+        }
+
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('✅ Service Worker registered:', reg.scope))
-                    .catch(err => console.error('❌ Service Worker failed:', err));
+                registerServiceWorker().catch(err => {
+                    console.error('❌ Service Worker failed:', err);
+                });
             });
         }
 
-        // ---------- 2. PWA Install Banner Logic ----------
+        // ---------- 2. PWA Install Buttons ----------
         (function () {
-            const banner     = document.getElementById('pwaInstallBanner');
-            const installBtn = document.getElementById('pwaInstallBtn');
-            const closeBtn   = document.getElementById('pwaCloseBtn');
-
-            // Kung dismissed na dati, huwag nang ipakita
-            const DISMISS_KEY = 'mcb_pwa_banner_dismissed';
-            if (localStorage.getItem(DISMISS_KEY) === '1') {
-                return;
-            }
-
+            const dismissKey = 'mcb_pwa_banner_dismissed';
             let deferredPrompt = null;
 
-            // Capture install prompt event
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();
-                deferredPrompt = e;
-
-                // Ipakita ang banner (may smooth slide-down animation)
-                banner.classList.add('show');
+            window.addEventListener('beforeinstallprompt', event => {
+                event.preventDefault();
+                deferredPrompt = event;
             });
 
-            // Install button
-            installBtn.addEventListener('click', async () => {
-                if (!deferredPrompt) {
-                    alert('Hindi pa available ang install prompt. Subukan sa Chrome/Edge (HTTPS o localhost).');
-                    return;
+            document.addEventListener('DOMContentLoaded', () => {
+                const banner = document.getElementById('pwaInstallBanner');
+                const closeBtn = document.getElementById('pwaCloseBtn');
+                const status = document.getElementById('appInstallStatus');
+                const installButtons = [
+                    document.getElementById('pwaInstallBtn'),
+                    document.getElementById('appInstallBtn')
+                ].filter(Boolean);
+
+                function isInstalled() {
+                    return window.matchMedia('(display-mode: standalone)').matches ||
+                        window.navigator.standalone === true;
                 }
-                deferredPrompt.prompt();
-                const choice = await deferredPrompt.userChoice;
-                console.log('PWA install choice:', choice.outcome);
-                deferredPrompt = null;
 
-                // Itago ang banner pagkatapos ng prompt
-                hideBanner();
-            });
+                function hideBanner() {
+                    if (banner) banner.classList.remove('show');
+                }
 
-            // Close button
-            closeBtn.addEventListener('click', () => {
-                hideBanner();
-                localStorage.setItem(DISMISS_KEY, '1');   // huwag nang ipakita muli
-            });
+                function showBanner() {
+                    if (!banner || isInstalled() || !deferredPrompt) return;
+                    try {
+                        if (localStorage.getItem(dismissKey) !== '1') {
+                            banner.classList.add('show');
+                        }
+                    } catch (error) {
+                        console.error('Could not read the install-banner preference:', error);
+                        banner.classList.add('show');
+                    }
+                }
+                window.addEventListener('beforeinstallprompt', showBanner);
 
-            function hideBanner() {
-                banner.classList.remove('show');
-            }
+                function showInstallHelp() {
+                    const isIOS = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+                    const message = !window.isSecureContext
+                        ? 'To install MCB Grace, open the website using HTTPS (or localhost while developing).'
+                        : isIOS
+                            ? 'To install MCB Grace on iPhone or iPad, open this page in Safari, tap Share, then choose “Add to Home Screen”.'
+                            : 'Your browser has not offered the install prompt yet. Open the browser menu and choose “Install app” or “Add to Home screen”. Make sure the site is opened over HTTPS.';
 
-            // Kung naka-install na (standalone mode), huwag na ipakita
-            if (window.matchMedia('(display-mode: standalone)').matches) {
-                hideBanner();
-            }
+                    if (status) {
+                        status.textContent = message;
+                        status.hidden = false;
+                    }
+                    alert(message);
+                }
 
-            // Kapag nag-install na, itago
-            window.addEventListener('appinstalled', () => {
-                hideBanner();
-                localStorage.setItem(DISMISS_KEY, '1');
-                console.log('✅ PWA installed');
+                async function installApp() {
+                    if (isInstalled()) {
+                        alert('MCB Grace is already installed on this device.');
+                        return;
+                    }
+
+                    if (deferredPrompt) {
+                        const promptEvent = deferredPrompt;
+                        deferredPrompt = null;
+                        try {
+                            await promptEvent.prompt();
+                            const choice = await promptEvent.userChoice;
+                            console.log('PWA install choice:', choice.outcome);
+                            if (choice.outcome === 'accepted') {
+                                hideBanner();
+                                if (status) {
+                                    status.textContent = 'MCB Grace is installing.';
+                                    status.hidden = false;
+                                }
+                            }
+                        } catch (error) {
+                            console.error('❌ Could not open the app install prompt:', error);
+                            alert('The app install prompt could not be opened. Please use your browser menu to install the app.');
+                        }
+                        return;
+                    }
+
+                    if ('serviceWorker' in navigator && window.isSecureContext && !serviceWorkerRegistration) {
+                        registerServiceWorker().catch(error => {
+                            console.error('❌ Could not prepare the app for installation:', error);
+                        });
+                    }
+                    showInstallHelp();
+                }
+
+                installButtons.forEach(button => {
+                    button.addEventListener('click', installApp);
+                });
+
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', () => {
+                        hideBanner();
+                        try {
+                            localStorage.setItem(dismissKey, '1');
+                        } catch (error) {
+                            console.error('Could not save the install-banner preference:', error);
+                        }
+                    });
+                }
+
+                if (isInstalled()) {
+                    hideBanner();
+                    const appButton = document.getElementById('appInstallBtn');
+                    if (appButton) appButton.hidden = true;
+                }
+
+                showBanner();
+
+                window.addEventListener('appinstalled', () => {
+                    hideBanner();
+                    const appButton = document.getElementById('appInstallBtn');
+                    if (appButton) appButton.hidden = true;
+                    if (status) {
+                        status.textContent = 'MCB Grace has been installed.';
+                        status.hidden = false;
+                    }
+                    try {
+                        localStorage.setItem(dismissKey, '1');
+                    } catch (error) {
+                        console.error('Could not save the install-banner preference:', error);
+                    }
+                    console.log('✅ PWA installed');
+                });
             });
         })();
     </script>
