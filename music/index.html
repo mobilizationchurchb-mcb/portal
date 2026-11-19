@@ -221,6 +221,63 @@
             text-decoration: underline;
         }
 
+        /* --- MINISTRY TOTALS --- */
+        .ministry-totals {
+            max-width: 1052px;
+            margin: -12px auto 48px auto;
+            padding: 0 24px;
+        }
+
+        .totals-title {
+            margin-bottom: 16px;
+            color: #0f172a;
+            font-size: 1.25rem;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .totals-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .total-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px 24px;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            background: #ffffff;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+        }
+
+        .total-icon {
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            border-radius: 13px;
+            background: #eff6ff;
+            font-size: 1.4rem;
+        }
+
+        .total-value {
+            color: #1e3a8a;
+            font-size: 1.75rem;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        .total-label {
+            margin-top: 4px;
+            color: #64748b;
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+
         /* --- CALLOUT / INVITATION BANNER --- */
         .invite-banner {
             max-width: 1052px;
@@ -452,6 +509,12 @@
                 font-size: 0.82rem;
                 display: block;
             }
+            .ministry-totals {
+                margin: 0 auto 32px;
+                padding: 0 14px;
+            }
+            .totals-grid { grid-template-columns: 1fr; gap: 12px; }
+            .total-card { padding: 18px; }
 
             /* PWA banner: mas manipis sa phone, ilalim ng 60px header */
             .pwa-install-banner {
@@ -566,7 +629,28 @@
         </article>
     </section>
 
-    <!-- 3. SCRIPTURE & SERVICE INVITATION BANNER -->
+    <!-- 3. SAVED MINISTRY TOTALS -->
+    <section class="ministry-totals" aria-labelledby="totalsTitle">
+        <h2 class="totals-title" id="totalsTitle">Ministry at a glance</h2>
+        <div class="totals-grid">
+            <article class="total-card">
+                <div class="total-icon" aria-hidden="true">🎶</div>
+                <div>
+                    <div class="total-value" id="totalLineups" aria-live="polite">0</div>
+                    <div class="total-label">Music lineups saved</div>
+                </div>
+            </article>
+            <article class="total-card">
+                <div class="total-icon" aria-hidden="true">📖</div>
+                <div>
+                    <div class="total-value" id="totalDevotionals" aria-live="polite">0</div>
+                    <div class="total-label">Devotionals recorded</div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- 4. SCRIPTURE & SERVICE INVITATION BANNER -->
     <section class="invite-banner">
         <blockquote>
             “Sing to the Lord a new song; sing to the Lord, all the earth. Let the word of Christ dwell in you richly.”
@@ -584,6 +668,34 @@
          PWA: SERVICE WORKER REGISTRATION + INSTALL BANNER LOGIC
          ============================================================ -->
     <script>
+        // ---------- SAVED MINISTRY TOTALS ----------
+        document.addEventListener('DOMContentLoaded', () => {
+            function readSavedCount(key) {
+                try {
+                    const raw = localStorage.getItem(key);
+                    if (!raw) return 0;
+                    const records = JSON.parse(raw);
+                    if (!Array.isArray(records)) {
+                        throw new TypeError(`Expected an array in localStorage key "${key}".`);
+                    }
+                    return records.length;
+                } catch (error) {
+                    console.error(`Could not read ministry total for "${key}":`, error);
+                    return 0;
+                }
+            }
+
+            const lineupsTotal = document.getElementById('totalLineups');
+            const devotionalsTotal = document.getElementById('totalDevotionals');
+            if (!lineupsTotal || !devotionalsTotal) {
+                console.error('Ministry total display elements are missing.');
+                return;
+            }
+
+            lineupsTotal.textContent = readSavedCount('mcb_music_lineups_v1');
+            devotionalsTotal.textContent = readSavedCount('mcb_devotionals_v1');
+        });
+
         // ---------- 1. Register Service Worker ----------
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
