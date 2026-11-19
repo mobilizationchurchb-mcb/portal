@@ -329,6 +329,40 @@
         .view-canvas-wrap {
             display: flex; justify-content: center; margin-bottom: 18px;
         }
+        .preview-controls {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(180px, 0.8fr);
+            gap: 16px;
+            margin-bottom: 18px;
+            padding: 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+        }
+        .preview-control label {
+            display: block;
+            margin-bottom: 8px;
+            color: #334155;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        .preview-control input,
+        .preview-control select {
+            width: 100%;
+            accent-color: #2563eb;
+        }
+        .preview-control select {
+            padding: 8px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            background: #ffffff;
+            color: #0f172a;
+            font-size: 0.9rem;
+        }
+        .preview-font-size {
+            color: #1e40af;
+            font-weight: 700;
+        }
         #lineupPreview {
             width: 100%; max-width: 480px; border-radius: 10px;
             box-shadow: 0 8px 24px rgba(15, 23, 42, 0.15);
@@ -360,6 +394,7 @@
             .modal-body { padding: 16px; }
             .modal-header, .modal-footer { padding: 14px 16px; }
             .saving-box { padding: 30px 35px; }
+            .preview-controls { grid-template-columns: 1fr; gap: 12px; }
         }
     </style>
 </head>
@@ -376,7 +411,7 @@
                 </p>
             </div>
             <button type="button" class="btn-add" id="openAddModal">
-                ✨ Add New Lineup
+                🎶 Add New Lineup
             </button>
         </div>
 
@@ -498,6 +533,22 @@
                 <button type="button" class="modal-close" id="closeViewModal">✕</button>
             </div>
             <div class="modal-body">
+                <div class="preview-controls">
+                    <div class="preview-control">
+                        <label for="previewFontSize">Font size: <span class="preview-font-size" id="previewFontSizeValue">52 px</span></label>
+                        <input type="range" id="previewFontSize" min="1" max="100" step="1" value="52">
+                    </div>
+                    <div class="preview-control">
+                        <label for="previewFontFamily">Font style</label>
+                        <select id="previewFontFamily">
+                            <option value="Arial">Arial</option>
+                            <option value="Georgia">Georgia</option>
+                            <option value="Times New Roman">Times New Roman</option>
+                            <option value="Verdana">Verdana</option>
+                            <option value="Courier New">Courier New</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="view-canvas-wrap">
                     <canvas id="lineupCanvas" width="1240" height="1754" style="display:none;"></canvas>
                     <img id="lineupPreview" alt="Lineup preview">
@@ -505,7 +556,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn-cancel" id="closeViewBtn">Close</button>
-                <button type="button" class="btn-download" id="downloadImage">⬇️ Download HD (1/4 Paper)</button>
+                <button type="button" class="btn-download" id="downloadImage">⬇️ Download HD PNG</button>
             </div>
         </div>
     </div>
@@ -517,6 +568,7 @@
          APP LOGIC
          ============================================================ -->
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
         // ---------- PWA: register service worker ----------
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -575,6 +627,9 @@
         const lineupPreview = $('lineupPreview');
         const lineupCanvas  = $('lineupCanvas');
         const downloadImage = $('downloadImage');
+        const previewFontSize = $('previewFontSize');
+        const previewFontSizeValue = $('previewFontSizeValue');
+        const previewFontFamily = $('previewFontFamily');
 
         // ---------- HELPERS ----------
         function saveToStorage() {
@@ -829,98 +884,145 @@
         // ---------- DRAW CANVAS ----------
         function drawLineupCanvas(item) {
             const ctx = lineupCanvas.getContext('2d');
-            const W = lineupCanvas.width;
-            const H = lineupCanvas.height;
+            const W = 1240;
+            const fontSize = Number(previewFontSize.value);
+            const fontFamily = previewFontFamily.value;
+            const lines = [];
+            let y = 0;
 
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, W, H);
+            function wrapText(text, size, weight, maxWidth) {
+                ctx.font = `${weight} ${size}px "${fontFamily}"`;
+                const words = String(text || '—').split(/\s+/);
+                const result = [];
+                let line = '';
 
-            const grad = ctx.createLinearGradient(0, 0, W, 260);
-            grad.addColorStop(0, '#1e3a8a');
-            grad.addColorStop(1, '#2563eb');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, W, 260);
+                words.forEach(word => {
+                    if (ctx.measureText(word).width > maxWidth) {
+                        if (line) {
+                            result.push(line);
+                            line = '';
+                        }
+                        let part = '';
+                        for (const character of word) {
+                            if (part && ctx.measureText(part + character).width > maxWidth) {
+                                result.push(part);
+                                part = character;
+                            } else {
+                                part += character;
+                            }
+                        }
+                        line = part;
+                    } else {
+                        const candidate = line ? `${line} ${word}` : word;
+                        if (line && ctx.measureText(candidate).width > maxWidth) {
+                            result.push(line);
+                            line = word;
+                        } else {
+                            line = candidate;
+                        }
+                    }
+                });
+                if (line) result.push(line);
+                return result;
+            }
 
-            ctx.fillStyle = '#ffffff';
-            ctx.textAlign = 'center';
-            ctx.font = 'bold 54px Segoe UI, sans-serif';
-            ctx.fillText('MUSIC LINE UP', W / 2, 110);
-            ctx.font = '600 30px Segoe UI, sans-serif';
-            ctx.fillStyle = '#bfdbfe';
-            ctx.fillText('Mobilization Church Balilihan', W / 2, 165);
-            ctx.font = 'italic 24px Segoe UI, sans-serif';
-            ctx.fillStyle = '#dbeafe';
-            ctx.fillText('"Sing to the Lord a new song" — Psalm 96:1', W / 2, 215);
+            function addText(text, size, weight, color, x, maxWidth, align = 'left', gap = 0) {
+                const lineHeight = Math.max(8, size * 1.3);
+                wrapText(text, size, weight, maxWidth).forEach(line => {
+                    lines.push({ text: line, size, weight, color, x, y: y + lineHeight, align });
+                    y += lineHeight;
+                });
+                y += gap;
+            }
 
-            let y = 340;
+            const headerPadding = Math.max(24, fontSize * 0.75);
+            y = headerPadding;
+            addText('MUSIC LINE UP', fontSize * 1.15, 'bold', '#ffffff', W / 2, W - 100, 'center', fontSize * 0.18);
+            addText('Mobilization Church Balilihan', fontSize, 'bold', '#bfdbfe', W / 2, W - 100, 'center', fontSize * 0.18);
+            addText('"Sing to the Lord a new song" — Psalm 96:1', fontSize * 0.82, 'italic', '#dbeafe', W / 2, W - 100, 'center');
+            const headerHeight = Math.max(260, y + headerPadding);
+
+            y = headerHeight + Math.max(36, fontSize);
             const leftX = 100;
-            const valueX = 420;
+            const bodyWidth = W - 200;
 
             function drawRow(label, value) {
-                ctx.textAlign = 'left';
-                ctx.font = 'bold 30px Segoe UI, sans-serif';
-                ctx.fillStyle = '#1e3a8a';
-                ctx.fillText(label, leftX, y);
+                addText(label, fontSize, 'bold', '#1e3a8a', leftX, bodyWidth, 'left', fontSize * 0.12);
+                addText(value || '—', fontSize, 'normal', '#0f172a', leftX, bodyWidth, 'left', fontSize * 0.25);
+                lines.push({ divider: true, y: y });
+                y += Math.max(22, fontSize * 0.35);
+            }
 
-                ctx.font = '500 30px Segoe UI, sans-serif';
-                ctx.fillStyle = '#0f172a';
-                ctx.fillText(value || '—', valueX, y);
-
-                y += 60;
-                ctx.strokeStyle = '#e2e8f0';
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.moveTo(leftX, y - 28);
-                ctx.lineTo(W - 100, y - 28);
-                ctx.stroke();
+            function drawSongSection(title, songs) {
+                addText(title, fontSize * 1.05, 'bold', '#2563eb', leftX, bodyWidth, 'left', fontSize * 0.12);
+                const entries = songs && songs.length ? songs : ['—'];
+                entries.forEach((song, index) => {
+                    addText(`${index + 1}. ${song}`, fontSize, 'normal', song ? '#0f172a' : '#94a3b8',
+                        leftX + fontSize * 0.6, bodyWidth - fontSize * 0.6, 'left', fontSize * 0.08);
+                });
+                y += fontSize * 0.3;
             }
 
             drawRow('Music Leader:', item.musicLead);
             drawRow('Date:', formatDate(item.date));
-            y += 10;
-
-            function drawSongSection(title, songs) {
-                ctx.textAlign = 'left';
-                ctx.font = 'bold 34px Segoe UI, sans-serif';
-                ctx.fillStyle = '#2563eb';
-                ctx.fillText(title, leftX, y);
-                y += 46;
-
-                if (!songs || songs.length === 0) {
-                    ctx.font = '500 28px Segoe UI, sans-serif';
-                    ctx.fillStyle = '#94a3b8';
-                    ctx.fillText('—', leftX + 30, y);
-                    y += 44;
-                    return;
-                }
-
-                songs.forEach((s, i) => {
-                    ctx.font = '500 28px Segoe UI, sans-serif';
-                    ctx.fillStyle = '#0f172a';
-                    ctx.fillText(`${i + 1}.  ${s}`, leftX + 30, y);
-                    y += 44;
-                });
-                y += 14;
-            }
-
-            drawSongSection('Opening Song', [item.opening]);
-            drawSongSection('Welcome Song', [item.welcome]);
+            drawSongSection('Opening Song', item.opening ? [item.opening] : []);
+            drawSongSection('Welcome Song', item.welcome ? [item.welcome] : []);
             drawSongSection('Praise', item.praise);
             drawSongSection('Worship', item.worship);
-            drawSongSection('Closing Song', [item.closing]);
+            drawSongSection('Closing Song', item.closing ? [item.closing] : []);
+
+            const footerHeight = Math.max(170, fontSize * 3);
+            const H = Math.ceil(Math.max(1754, y + fontSize + footerHeight));
+            lineupCanvas.width = W;
+            lineupCanvas.height = H;
+
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, W, H);
+
+            const grad = ctx.createLinearGradient(0, 0, W, headerHeight);
+            grad.addColorStop(0, '#1e3a8a');
+            grad.addColorStop(1, '#2563eb');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, W, headerHeight);
+
+            lines.forEach(line => {
+                if (line.divider) {
+                    ctx.strokeStyle = '#e2e8f0';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(leftX, line.y);
+                    ctx.lineTo(W - 100, line.y);
+                    ctx.stroke();
+                    return;
+                }
+                ctx.textAlign = line.align;
+                ctx.font = `${line.weight} ${line.size}px "${fontFamily}"`;
+                ctx.fillStyle = line.color;
+                ctx.fillText(line.text, line.x, line.y);
+            });
 
             ctx.fillStyle = '#0f172a';
-            ctx.fillRect(0, H - 130, W, 130);
+            ctx.fillRect(0, H - footerHeight, W, footerHeight);
             ctx.fillStyle = '#ffffff';
             ctx.textAlign = 'center';
-            ctx.font = '600 26px Segoe UI, sans-serif';
-            ctx.fillText('Mobilization Church Balilihan  •  Music Ministry', W / 2, H - 70);
-            ctx.font = '400 20px Segoe UI, sans-serif';
+            ctx.font = `bold ${fontSize * 0.82}px "${fontFamily}"`;
+            ctx.fillText('Mobilization Church Balilihan  •  Music Ministry', W / 2, H - footerHeight * 0.58, W - 100);
+            ctx.font = `normal ${fontSize * 0.65}px "${fontFamily}"`;
             ctx.fillStyle = '#94a3b8';
-            ctx.fillText('Generated by MCB Grace • version 1 build by IT MCB', W / 2, H - 30);
+            ctx.fillText('Generated by MCB Grace • version 1 build by IT MCB', W / 2, H - footerHeight * 0.2, W - 100);
 
             lineupPreview.src = lineupCanvas.toDataURL('image/png');
         }
+
+        function redrawCurrentPreview() {
+            const item = lineups.find(l => l.id === currentViewId);
+            if (item) drawLineupCanvas(item);
+        }
+        previewFontSize.addEventListener('input', () => {
+            previewFontSizeValue.textContent = `${previewFontSize.value} px`;
+            redrawCurrentPreview();
+        });
+        previewFontFamily.addEventListener('change', redrawCurrentPreview);
 
         // ---------- VIEW CLOSE ----------
         function hideView() {
@@ -948,6 +1050,7 @@
 
         // ---------- INIT ----------
         renderTable();
+        });
     </script>
 </body>
 </html>
