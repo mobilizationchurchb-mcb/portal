@@ -170,13 +170,11 @@
 
         .col-date    { width: 14%; }
         .col-leader  { width: 24%; }
-        .col-songs   { width: 38%; }
-        .col-notes   { width: 24%; }
+        .col-songs   { width: 62%; }
 
         .cell-date    { font-weight: 700; color: #1e3a8a; }
         .cell-leader  { font-weight: 600; color: #0f172a; }
         .cell-songs   { font-size: 0.78rem; line-height: 1.45; color: #475569; text-align: left; }
-        .cell-notes   { font-size: 0.78rem; color: #64748b; }
 
         .empty-state {
             text-align: center;
@@ -256,7 +254,7 @@
             .schedule-controls { gap: 8px; }
             table.schedule-table th { font-size: 0.68rem; padding: 8px 4px; }
             table.schedule-table td { font-size: 0.72rem; padding: 8px 4px; }
-            .cell-songs, .cell-notes { font-size: 0.68rem; }
+            .cell-songs { font-size: 0.68rem; }
         }
 
         /* ===== PRINT ===== */
@@ -354,7 +352,6 @@
                         <th class="col-date">📅 Date</th>
                         <th class="col-leader">🎤 Music Leader</th>
                         <th class="col-songs">🎵 Songs</th>
-                        <th class="col-notes">📝 Notes</th>
                     </tr>
                 </thead>
                 <tbody id="scheduleTableBody"></tbody>
@@ -513,7 +510,6 @@
                     <td class="cell-date">${formatDate(item.date)}</td>
                     <td class="cell-leader">${item.musicLead || '—'}</td>
                     <td class="cell-songs">${songsSummary(item)}</td>
-                    <td class="cell-notes">${item.notes || '—'}</td>
                 `;
                 scheduleBody.appendChild(tr);
             });
@@ -568,7 +564,7 @@
             const tableX = PAD;
             const tableY = headerH + 30;
             const tableW = W - PAD * 2;
-            const colW = [tableW * 0.14, tableW * 0.24, tableW * 0.38, tableW * 0.24];
+            const colW = [tableW * 0.14, tableW * 0.24, tableW * 0.62];
             const rowH = 70;
             const headerRowH = 46;
 
@@ -579,7 +575,7 @@
             ctx.fillStyle = '#ffffff';
             ctx.font = 'bold 18px Segoe UI, sans-serif';
             ctx.textAlign = 'left';
-            const headers = ['📅 Date', '🎤 Music Leader', '🎵 Songs', '📝 Notes'];
+            const headers = ['📅 Date', '🎤 Music Leader', '🎵 Songs'];
             let cx = tableX + 12;
             headers.forEach((h, i) => {
                 ctx.fillText(h, cx, tableY + 30);
@@ -642,10 +638,6 @@
                     ctx.fillText(line.length > 40 ? line.slice(0, 40) + '…' : line, tableX + colW[0] + colW[1] + 12, sy);
                     sy += 15;
                 });
-
-                ctx.font = '500 14px Segoe UI, sans-serif';
-                ctx.fillStyle = '#64748b';
-                ctx.fillText((item.notes || '—').slice(0, 20), tableX + colW[0] + colW[1] + colW[2] + 12, ty + 30);
 
                 ty += rowH;
             });
