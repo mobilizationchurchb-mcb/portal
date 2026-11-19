@@ -413,6 +413,41 @@
         }
         .modal-overlay.show .notebook-modal { transform: translateY(0) scale(1); }
 
+        .preview-controls {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(180px, 0.8fr);
+            gap: 16px;
+            margin: 16px 22px;
+            padding: 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+        }
+        .preview-control label {
+            display: block;
+            margin-bottom: 8px;
+            color: #334155;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        .preview-control input,
+        .preview-control select {
+            width: 100%;
+            accent-color: #7c3aed;
+        }
+        .preview-control select {
+            padding: 8px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            background: #ffffff;
+            color: #0f172a;
+            font-size: 0.9rem;
+        }
+        .preview-font-size {
+            color: #6d28d9;
+            font-weight: 700;
+        }
+
         .notebook-page {
             background: #fffdf5;
             background-image:
@@ -558,6 +593,7 @@
             .nb-title { font-size: 1.2rem; }
             .nb-scripture { font-size: 0.82rem; }
             .nb-section-text { font-size: 0.85rem; }
+            .preview-controls { grid-template-columns: 1fr; gap: 12px; margin: 12px 16px; }
         }
     </style>
 </head>
@@ -575,7 +611,7 @@
                 </p>
             </div>
             <button type="button" class="btn-add" id="openAddModal">
-                ✨ Add New Devotional
+                📖 Add New Devotional
             </button>
         </div>
 
@@ -686,6 +722,23 @@
                 <button type="button" class="modal-close" id="closeViewModal">✕</button>
             </div>
 
+            <div class="preview-controls">
+                <div class="preview-control">
+                    <label for="previewFontSize">Font size: <span class="preview-font-size" id="previewFontSizeValue">16 px</span></label>
+                    <input type="range" id="previewFontSize" min="1" max="100" step="1" value="16">
+                </div>
+                <div class="preview-control">
+                    <label for="previewFontFamily">Font style</label>
+                    <select id="previewFontFamily">
+                        <option value="Arial">Arial</option>
+                        <option value="Georgia">Georgia</option>
+                        <option value="Times New Roman">Times New Roman</option>
+                        <option value="Verdana">Verdana</option>
+                        <option value="Courier New">Courier New</option>
+                    </select>
+                </div>
+            </div>
+
             <div class="notebook-page">
                 <div class="nb-day" id="nbDay">DAY 1</div>
                 <div class="nb-date" id="nbDate">Date</div>
@@ -696,6 +749,11 @@
                 <div class="nb-section">
                     <div class="nb-section-label">💬 Message</div>
                     <div class="nb-section-text" id="nbMessage">Message</div>
+                </div>
+
+                <div class="nb-section">
+                    <div class="nb-section-label">🪞 Reflection</div>
+                    <div class="nb-section-text" id="nbReflection">Reflection</div>
                 </div>
 
                 <div class="nb-section">
@@ -727,6 +785,7 @@
          APP LOGIC
          ============================================================ -->
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
         // ---------- PWA ----------
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -787,9 +846,13 @@
         const nbTitle        = $('nbTitle');
         const nbScripture    = $('nbScripture');
         const nbMessage      = $('nbMessage');
+        const nbReflection   = $('nbReflection');
         const nbScriptureFull= $('nbScriptureFull');
         const nbApplication  = $('nbApplication');
         const nbPrayer       = $('nbPrayer');
+        const previewFontSize = $('previewFontSize');
+        const previewFontSizeValue = $('previewFontSizeValue');
+        const previewFontFamily = $('previewFontFamily');
 
         // ---------- HELPERS ----------
         function saveToStorage() {
@@ -1006,10 +1069,40 @@
             nbTitle.textContent          = item.title || 'Untitled Devotional';
             nbScripture.textContent      = item.scripture || '—';
             nbMessage.textContent        = item.message || '—';
+            nbReflection.textContent     = item.reflection || '—';
             nbScriptureFull.textContent  = item.scripture || '—';
             nbApplication.textContent    = item.application || '—';
             nbPrayer.textContent         = item.prayer || '—';
+            applyPreviewTypography();
         }
+
+        function applyPreviewTypography() {
+            const size = Number(previewFontSize.value);
+            const family = `"${previewFontFamily.value}", sans-serif`;
+            const fontSizes = [
+                ['.nb-day', 0.85],
+                ['.nb-date', 0.85],
+                ['.nb-title', 1.55],
+                ['.nb-scripture', 0.9],
+                ['.nb-section-label', 0.72],
+                ['.nb-section-text', 0.92]
+            ];
+
+            fontSizes.forEach(([selector, scale]) => {
+                viewModal.querySelectorAll(selector).forEach(element => {
+                    element.style.fontSize = `${size * scale}px`;
+                    element.style.fontFamily = family;
+                });
+            });
+            viewModal.querySelector('.notebook-page').style.backgroundSize =
+                `100% ${Math.max(20, size * 2)}px`;
+        }
+
+        previewFontSize.addEventListener('input', () => {
+            previewFontSizeValue.textContent = `${previewFontSize.value} px`;
+            applyPreviewTypography();
+        });
+        previewFontFamily.addEventListener('change', applyPreviewTypography);
 
         // ---------- VIEW CLOSE ----------
         function hideView() {
@@ -1023,6 +1116,7 @@
 
         // ---------- INIT ----------
         renderTable();
+        });
     </script>
 </body>
 </html>
