@@ -359,7 +359,7 @@
     // 4. Redirect to logout.html
     //    Admin pages live in /admin/, login + logout live in the root,
     //    so we go up one level.
-    const logoutURL = new URL("../logout.html", window.location.href);
+    const logoutURL = new URL("logout.html", window.location.href);
     window.location.replace(logoutURL.href);
   });
 
