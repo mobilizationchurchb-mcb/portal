@@ -1,0 +1,2376 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#07111f">
+  <meta name="description" content="Mobilization Church Balilihan - Daily Grace, Scripture, devotionals, worship schedules, and certificates.">
+
+  <title>Home | Daily Grace - Mobilization Church Balilihan</title>
+
+  <link rel="manifest" href="./manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+  <style>
+    :root {
+      --primary: #38bdf8;
+      --secondary: #818cf8;
+      --accent: #22d3ee;
+      --background: #07111f;
+      --surface: #101e30;
+      --surface2: #14243a;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --border: rgba(255,255,255,.09);
+      --green: #22c55e;
+      --font: "Poppins", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(56,189,248,.09), transparent 30%),
+        radial-gradient(circle at 90% 35%, rgba(129,140,248,.08), transparent 30%),
+        var(--background);
+      font-family: var(--font);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+    .page-container {
+      width: min(1440px, calc(100% - 48px));
+      margin: auto;
+    }
+
+    .section {
+      padding: 36px 0;
+    }
+
+    .glass {
+      background: rgba(17, 30, 48, .78);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      box-shadow: 0 15px 45px rgba(0,0,0,.18);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    /* HERO SECTION */
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 25px;
+      align-items: stretch;
+    }
+
+    .hero-content {
+      padding: 34px 12px 25px 5px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .church-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      width: fit-content;
+      padding: 8px 13px;
+      margin-bottom: 19px;
+      border: 1px solid rgba(56,189,248,.22);
+      border-radius: 50px;
+      background: rgba(56,189,248,.08);
+      color: var(--primary);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .church-label i {
+      font-size: 12px;
+    }
+
+    .hero-title {
+      max-width: 700px;
+      font-size: clamp(35px, 5vw, 62px);
+      line-height: 1.13;
+      font-weight: 800;
+      letter-spacing: -2px;
+      margin-bottom: 18px;
+      overflow-wrap: anywhere;
+    }
+
+    .hero-title span {
+      background: linear-gradient(
+        110deg,
+        var(--primary),
+        var(--secondary),
+        var(--accent)
+      );
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-description {
+      max-width: 650px;
+      color: #a9b8ca;
+      font-size: 14px;
+      line-height: 2;
+      margin-bottom: 27px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 47px;
+      padding: 0 20px;
+      border-radius: 13px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: .25s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+    }
+
+    .btn-primary {
+      color: #071321;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      box-shadow: 0 8px 22px rgba(56,189,248,.2);
+    }
+
+    .btn-outline {
+      color: var(--text);
+      border-color: rgba(255,255,255,.15);
+      background: rgba(255,255,255,.045);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--primary);
+      background: rgba(56,189,248,.08);
+    }
+
+    /* SANCTUARY IMAGE */
+
+    .hero-image-card {
+      position: relative;
+      min-height: 440px;
+      overflow: hidden;
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: var(--surface);
+      box-shadow: 0 20px 55px rgba(0,0,0,.3);
+    }
+
+    .hero-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: linear-gradient(135deg, #14243a, #07111f);
+    }
+
+    .hero-image-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        transparent 30%,
+        rgba(3,9,18,.25) 50%,
+        rgba(3,9,18,.94) 100%
+      );
+    }
+
+    .image-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 27px;
+      z-index: 2;
+    }
+
+    .image-location {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .service-time {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 7px;
+      color: white;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .service-time i {
+      width: 18px;
+      color: var(--primary);
+    }
+
+    .service-small {
+      margin: 5px 0 0 28px;
+      color: rgba(255,255,255,.65);
+      font-size: 10px;
+    }
+
+    /* FEATURED DAILY DEVOTIONAL */
+
+    .featured-card {
+      padding: 26px;
+      margin-top: 25px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .featured-card::after {
+      content: "";
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      right: -80px;
+      top: -100px;
+      border-radius: 50%;
+      background: rgba(56,189,248,.08);
+      pointer-events: none;
+    }
+
+    .featured-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 22px;
+    }
+
+    .section-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--primary);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .featured-date {
+      color: var(--muted);
+      font-size: 11px;
+      text-align: right;
+    }
+
+    .featured-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+    }
+
+    .featured-title {
+      font-size: clamp(20px, 2.5vw, 28px);
+      line-height: 1.4;
+      font-weight: 700;
+      margin: 12px 0;
+    }
+
+    .featured-subtitle {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    .featured-scripture {
+      padding: 20px;
+      border-radius: 16px;
+      background: rgba(56,189,248,.07);
+      border: 1px solid rgba(56,189,248,.14);
+    }
+
+    .featured-scripture h4 {
+      color: var(--primary);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      margin-bottom: 10px;
+    }
+
+    .scripture-text {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.8;
+      color: #e2e8f0;
+      white-space: pre-line;
+    }
+
+    .featured-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 21px;
+    }
+
+    /* SECTION HEADINGS */
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 22px;
+    }
+
+    .section-heading h2 {
+      font-size: clamp(21px, 3vw, 28px);
+      font-weight: 800;
+    }
+
+    .section-heading p {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 6px;
+    }
+
+    .heading-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 39px;
+      height: 39px;
+      margin-right: 9px;
+      border-radius: 12px;
+      color: var(--primary);
+      background: rgba(56,189,248,.1);
+    }
+
+    /* MONTHLY OVERVIEW */
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .stat-card {
+      position: relative;
+      padding: 21px;
+      min-height: 150px;
+      overflow: hidden;
+      transition: .25s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(56,189,248,.3);
+    }
+
+    .stat-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .stat-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      color: var(--primary);
+      background: rgba(56,189,248,.1);
+      font-size: 15px;
+    }
+
+    .stat-label {
+      color: #a7b5c7;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .stat-number {
+      font-size: 29px;
+      font-weight: 800;
+      line-height: 1.3;
+    }
+
+    .stat-description {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.7;
+    }
+
+    .stat-card.highlight {
+      border-color: rgba(56,189,248,.23);
+      background: linear-gradient(
+        135deg,
+        rgba(56,189,248,.12),
+        rgba(17,30,48,.85)
+      );
+    }
+
+    /* MONTHLY PROGRESS */
+
+    .progress-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 245px;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .progress-main {
+      padding: 25px;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 15px;
+      margin-bottom: 17px;
+    }
+
+    .progress-header h3 {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .progress-header p {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .progress-count {
+      color: var(--primary);
+      font-size: 18px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 10px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      border-radius: 50px;
+      background: rgba(255,255,255,.09);
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--primary), var(--green));
+      transition: width .5s ease;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .day-grid {
+      display: grid;
+      grid-template-columns: repeat(10, minmax(0, 1fr));
+      gap: 9px;
+      margin-top: 24px;
+    }
+
+    .day-box {
+      min-width: 0;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      border: 1px solid rgba(255,255,255,.11);
+      border-radius: 12px;
+      color: #94a3b8;
+      background: rgba(255,255,255,.035);
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .day-box:hover {
+      transform: translateY(-3px);
+      border-color: var(--primary);
+      background: rgba(56,189,248,.1);
+    }
+
+    .day-box .day-number {
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .day-box i {
+      font-size: 10px;
+    }
+
+    .day-box.completed {
+      color: #bbf7d0;
+      border-color: rgba(34,197,94,.5);
+      background: rgba(34,197,94,.14);
+    }
+
+    .day-box.completed i {
+      color: var(--green);
+    }
+
+    .day-box.today {
+      border: 2px solid var(--primary);
+      color: white;
+      box-shadow: 0 0 0 3px rgba(56,189,248,.08);
+    }
+
+    .day-box.today.completed {
+      border-color: var(--green);
+    }
+
+    .day-box.selected {
+      outline: 2px solid var(--secondary);
+      outline-offset: 2px;
+    }
+
+    .day-box:disabled {
+      cursor: not-allowed;
+      opacity: .45;
+    }
+
+    .progress-side {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .progress-side-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border-radius: 15px;
+      color: var(--primary);
+      background: rgba(56,189,248,.1);
+      font-size: 20px;
+    }
+
+    .progress-side h3 {
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .progress-side p {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.8;
+    }
+
+    .certificate-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      color: var(--primary);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .certificate-link:hover {
+      color: var(--accent);
+    }
+
+    /* LEGEND */
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 17px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .legend-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 3px;
+      background: #64748b;
+    }
+
+    .legend-dot.green {
+      background: var(--green);
+    }
+
+    .legend-dot.blue {
+      background: var(--primary);
+    }
+
+
+    /* SECTION 4: UPCOMING DEVOTIONAL + WORSHIP LINEUP */
+    .upcoming-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .upcoming-panel {
+      min-width: 0;
+      padding: 23px;
+      overflow: hidden;
+    }
+
+    .upcoming-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 17px;
+    }
+
+    .upcoming-panel-header h3 {
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .upcoming-panel-header p {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 5px;
+    }
+
+    .schedule-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      flex-shrink: 0;
+      min-height: 34px;
+      padding: 0 11px;
+      border: 1px solid rgba(56,189,248,.25);
+      border-radius: 10px;
+      color: var(--primary);
+      background: rgba(56,189,248,.08);
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .schedule-link:hover {
+      background: rgba(56,189,248,.16);
+    }
+
+    .upcoming-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .upcoming-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 390px;
+    }
+
+    .upcoming-table th {
+      padding: 11px 9px;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .7px;
+      text-transform: uppercase;
+    }
+
+    .upcoming-table td {
+      padding: 13px 9px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+      font-size: 11px;
+    }
+
+    .upcoming-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .table-main-text {
+      display: block;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .table-sub-text {
+      display: block;
+      color: var(--muted);
+      margin-top: 4px;
+      font-size: 10px;
+      line-height: 1.5;
+    }
+
+    .table-read-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 10px;
+      border-radius: 9px;
+      color: #071321;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      font-size: 10px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .table-key {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 38px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      color: var(--primary);
+      background: rgba(56,189,248,.1);
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .lineup-leader {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin: 0 0 13px;
+      padding: 11px 13px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255,255,255,.035);
+      font-size: 11px;
+    }
+
+    .lineup-leader i {
+      color: var(--primary);
+    }
+
+    .empty-table {
+      padding: 23px 12px !important;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.8;
+    }
+
+    /* LIGHT THEME */
+    body[data-theme="light"] {
+      --background: #f1f5f9;
+      --surface: #ffffff;
+      --surface2: #e8eef5;
+      --text: #172033;
+      --muted: #64748b;
+      --border: rgba(15,23,42,.12);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(56,189,248,.10), transparent 30%),
+        radial-gradient(circle at 90% 35%, rgba(129,140,248,.09), transparent 30%),
+        var(--background);
+      color: var(--text);
+    }
+
+    body[data-theme="light"] .glass {
+      background: rgba(255,255,255,.88);
+      border-color: rgba(15,23,42,.10);
+      box-shadow: 0 12px 35px rgba(15,23,42,.07);
+    }
+
+    body[data-theme="light"] .hero-description,
+    body[data-theme="light"] .stat-label,
+    body[data-theme="light"] .scripture-text {
+      color: #475569;
+    }
+
+    body[data-theme="light"] .btn-outline {
+      color: var(--text);
+      border-color: rgba(15,23,42,.16);
+      background: rgba(255,255,255,.75);
+    }
+
+    body[data-theme="light"] .day-box {
+      color: #64748b;
+      border-color: rgba(15,23,42,.13);
+      background: rgba(255,255,255,.75);
+    }
+
+    body[data-theme="light"] .day-box.today {
+      color: #0f172a;
+    }
+
+    body[data-theme="light"] .day-box.completed {
+      color: #166534;
+      background: rgba(34,197,94,.12);
+    }
+
+    body[data-theme="light"] .featured-scripture {
+      background: rgba(56,189,248,.08);
+    }
+
+    body[data-theme="light"] .table-main-text {
+      color: var(--text);
+    }
+
+    body[data-theme="light"] .lineup-leader {
+      background: rgba(15,23,42,.025);
+    }
+
+    body[data-theme="light"] .stat-card.highlight {
+      background: linear-gradient(135deg, rgba(56,189,248,.12), rgba(255,255,255,.94));
+    }
+
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 37px;
+      padding: 0 13px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      color: var(--text);
+      background: rgba(255,255,255,.06);
+      font-family: inherit;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 850px) {
+      .upcoming-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      .upcoming-panel { padding: 16px; }
+      .upcoming-panel-header { flex-direction: column; }
+      .schedule-link { min-height: 32px; }
+    }
+
+    /* FOOTER */
+
+    .site-footer {
+      margin-top: 40px;
+      padding: 25px 0;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-brand {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    /* LOADING AND EMPTY STATES */
+
+    .loading-message {
+      color: var(--muted);
+      font-size: 12px;
+      padding: 15px 0;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      right: 22px;
+      z-index: 10000;
+      max-width: min(360px, calc(100% - 40px));
+      padding: 14px 18px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      color: white;
+      background: #14243a;
+      box-shadow: 0 12px 30px rgba(0,0,0,.3);
+      font-size: 12px;
+      opacity: 0;
+      transform: translateY(15px);
+      pointer-events: none;
+      transition: .25s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 950px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-content {
+        padding: 25px 5px;
+      }
+
+      .hero-image-card {
+        min-height: 390px;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .progress-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .progress-side {
+        min-height: 180px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .page-container {
+        width: min(100% - 28px, 1440px);
+      }
+
+      .section {
+        padding: 25px 0;
+      }
+
+      .hero-title {
+        font-size: 37px;
+        letter-spacing: -1.5px;
+      }
+
+      .hero-description {
+        font-size: 12px;
+        line-height: 1.9;
+      }
+
+      .hero-image-card {
+        min-height: 330px;
+      }
+
+      .image-caption {
+        padding: 19px;
+      }
+
+      .featured-card {
+        padding: 18px;
+      }
+
+      .featured-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .featured-top {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .featured-date {
+        text-align: left;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .stat-card {
+        min-height: 137px;
+        padding: 14px;
+      }
+
+      .stat-number {
+        font-size: 23px;
+      }
+
+      .stat-label {
+        font-size: 10px;
+      }
+
+      .day-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .day-box {
+        border-radius: 10px;
+      }
+
+      .progress-main {
+        padding: 17px;
+      }
+
+      .progress-header {
+        flex-direction: column;
+      }
+
+      .progress-meta {
+        font-size: 9px;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR IS AUTOMATICALLY INSERTED BY navbar.js -->
+
+  <main class="page-container">
+
+    <!-- =========================================
+         SECTION 1: HERO
+    ========================================== -->
+
+    <section class="section">
+
+      <div class="hero-grid">
+
+        <!-- LEFT SIDE -->
+        <div class="hero-content">
+
+          <div class="church-label">
+            <i class="fa-solid fa-church"></i>
+            <span id="church-brand">Mobilization Church Balilihan</span>
+            <span>•</span>
+            <span id="church-location">Balilihan, Bohol</span>
+          </div>
+
+          <h1 class="hero-title">
+            <span id="system-title">Daily Grace</span>
+          </h1>
+
+          <p class="hero-description">
+            Read daily Scripture meditations, complete your personal
+            reflection, application, and prayer, follow our church
+            calendar and worship music lineups, and earn an official
+            completion certificate—accessible immediately with no
+            account required.
+          </p>
+
+          <div class="hero-buttons">
+            <a href="./devotional_challenge.html" class="btn btn-primary">
+              <i class="fa-solid fa-book-open"></i>
+              Open Daily Devotional
+            </a>
+
+            <a href="./generate_certificate.html" class="btn btn-outline">
+              <i class="fa-solid fa-award"></i>
+              Certificate Challenge
+            </a>
+          </div>
+
+        </div>
+
+        <!-- RIGHT SIDE: SANCTUARY IMAGE -->
+        <div class="hero-image-card">
+
+          <img
+            src=""
+            alt="Church Sanctuary"
+            class="hero-image"
+            id="sanctuary-image"
+          >
+
+          <div class="hero-image-overlay"></div>
+
+          <div class="image-caption">
+
+            <div class="image-location">
+              <i class="fa-solid fa-location-dot"></i>
+              <span id="image-location-label">Our Church Location</span>
+            </div>
+
+            <div class="service-time">
+              <i class="fa-solid fa-book-bible"></i>
+              <span>Sunday School</span>
+            </div>
+
+            <div class="service-small">
+              9:30 AM – 10:00 AM
+            </div>
+
+            <div class="service-time">
+              <i class="fa-solid fa-church"></i>
+              <span>Sunday Service Worship</span>
+            </div>
+
+            <div class="service-small">
+              10:00 AM – 12:00 NN
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FEATURED DAILY DEVOTIONAL -->
+      <div class="featured-card glass">
+
+        <div class="featured-top">
+
+          <div class="section-eyebrow">
+            <i class="fa-solid fa-book-open"></i>
+            Featured Daily Reading
+          </div>
+
+          <div class="featured-date">
+            <i class="fa-regular fa-calendar"></i>
+            <span id="featured-date">Loading reading date...</span>
+          </div>
+
+        </div>
+
+        <div class="featured-grid">
+
+          <div>
+            <div class="section-eyebrow">
+              TODAY'S DEVOTIONAL
+            </div>
+
+            <h2 class="featured-title" id="featured-title">
+              Loading Daily Devotional...
+            </h2>
+
+            <p class="featured-subtitle" id="featured-description">
+              Your daily Scripture meditation and reflection.
+            </p>
+
+            <div class="featured-actions">
+              <a href="./devotional_challenge.html" class="btn btn-primary">
+                <i class="fa-solid fa-book-open"></i>
+                Read Daily Devotional
+              </a>
+
+              <a href="./generate_certificate.html" class="btn btn-outline">
+                <i class="fa-solid fa-certificate"></i>
+                Certificate Challenge
+              </a>
+            </div>
+          </div>
+
+          <div class="featured-scripture">
+            <h4>
+              <i class="fa-solid fa-book-bible"></i>
+              Scripture Reading
+            </h4>
+
+            <div class="scripture-text" id="featured-scripture">
+              Loading Scripture...
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- =========================================
+         SECTION 2: MONTHLY GRACE OVERVIEW
+    ========================================== -->
+
+    <section class="section">
+
+      <div class="section-heading">
+        <div>
+          <h2>
+            <span class="heading-icon">
+              <i class="fa-solid fa-chart-pie"></i>
+            </span>
+            Monthly Grace Overview
+          </h2>
+          <p>Track your devotional journey and monthly challenge.</p>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+
+        <div class="stat-card glass">
+          <div class="stat-top">
+            <span class="stat-label">Total Devotionals</span>
+            <span class="stat-icon">
+              <i class="fa-solid fa-book-open"></i>
+            </span>
+          </div>
+          <div class="stat-number" id="total-devotionals">92</div>
+          <div class="stat-description" id="total-devotionals-note">
+            30 scheduled in November 2026
+          </div>
+        </div>
+
+        <div class="stat-card glass">
+          <div class="stat-top">
+            <span class="stat-label">Completed Devotionals</span>
+            <span class="stat-icon">
+              <i class="fa-solid fa-circle-check"></i>
+            </span>
+          </div>
+          <div class="stat-number" id="completed-devotionals">0</div>
+          <div class="stat-description" id="completed-devotionals-note">
+            Completed on this browser
+          </div>
+        </div>
+
+        <div class="stat-card glass">
+          <div class="stat-top">
+            <span class="stat-label">Remaining Devotionals</span>
+            <span class="stat-icon">
+              <i class="fa-solid fa-hourglass-half"></i>
+            </span>
+          </div>
+          <div class="stat-number" id="remaining-devotionals">30</div>
+          <div class="stat-description" id="remaining-devotionals-note">
+            Days left in November 2026
+          </div>
+        </div>
+
+        <div class="stat-card glass">
+          <div class="stat-top">
+            <span class="stat-label">Completion Percentage</span>
+            <span class="stat-icon">
+              <i class="fa-solid fa-chart-line"></i>
+            </span>
+          </div>
+          <div class="stat-number" id="completion-percentage">0%</div>
+          <div class="stat-description">
+            Certificate requires 100% completion and admin approval.
+          </div>
+        </div>
+
+        <div class="stat-card glass">
+          <div class="stat-top">
+            <span class="stat-label">Certificates Generated</span>
+            <span class="stat-icon">
+              <i class="fa-solid fa-award"></i>
+            </span>
+          </div>
+          <div class="stat-number" id="certificates-generated">0</div>
+          <div class="stat-description">
+            Recorded in church certificate registry
+          </div>
+        </div>
+
+        <div class="stat-card glass highlight">
+          <div class="stat-top">
+            <span class="stat-label">Current Monthly Challenge</span>
+            <span class="stat-icon">
+              <i class="fa-solid fa-calendar-check"></i>
+            </span>
+          </div>
+          <div class="stat-number" id="current-challenge-month">
+            November 2026
+          </div>
+          <div class="stat-description" id="current-challenge-note">
+            0 of 30 days · In Progress
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- =========================================
+         SECTION 3: MONTHLY CHALLENGE PROGRESS
+    ========================================== -->
+
+    <section class="section">
+
+      <div class="section-heading">
+        <div>
+          <h2>
+            <span class="heading-icon">
+              <i class="fa-solid fa-calendar-days"></i>
+            </span>
+            Monthly Challenge Progress
+          </h2>
+          <p>Select any day block below to open and complete that day's devotional.</p>
+        </div>
+      </div>
+
+      <div class="progress-layout">
+
+        <!-- PROGRESS CALENDAR -->
+        <div class="progress-main glass">
+
+          <div class="progress-header">
+            <div>
+              <h3 id="progress-month-title">November 2026 Challenge</h3>
+              <p>Your personal Daily Grace progress</p>
+            </div>
+
+            <div class="progress-count">
+              <span id="progress-count">0/30</span>
+              <span id="progress-percent">0%</span>
+            </div>
+          </div>
+
+          <div class="progress-track">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+
+          <div class="progress-meta">
+            <span id="progress-completed-label">0 completed days</span>
+            <span id="progress-remaining-label">30 days remaining</span>
+          </div>
+
+          <div class="day-grid" id="day-grid">
+            <div class="loading-message">Loading challenge calendar...</div>
+          </div>
+
+          <div class="legend">
+            <div class="legend-item">
+              <span class="legend-dot green"></span>
+              Completed Day
+            </div>
+
+            <div class="legend-item">
+              <span class="legend-dot blue"></span>
+              Today
+            </div>
+
+            <div class="legend-item">
+              <span class="legend-dot"></span>
+              Not Completed
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT SIDE CERTIFICATE LINK -->
+        <aside class="progress-side glass">
+
+          <div>
+            <div class="progress-side-icon">
+              <i class="fa-solid fa-award"></i>
+            </div>
+
+            <h3 style="margin-top:18px;">
+              Your Certificate Challenge
+            </h3>
+
+            <p style="margin-top:10px;">
+              Complete all 30 daily devotionals and submit your
+              certificate request for administrator approval.
+            </p>
+          </div>
+
+          <a href="./generate_certificate.html" class="certificate-link">
+            Open Certificate Challenge
+            <i class="fa-solid fa-arrow-right"></i>
+          </a>
+
+        </aside>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================================
+         SECTION 4: UPCOMING DEVOTIONAL + WORSHIP LINEUP
+    ========================================== -->
+    <section class="section" id="upcoming-schedules">
+      <div class="section-heading">
+        <div>
+          <h2>
+            <span class="heading-icon"><i class="fa-solid fa-calendar-week"></i></span>
+            Upcoming Church Schedules
+          </h2>
+          <p>Stay updated with the next devotional readings and worship music lineup.</p>
+        </div>
+      </div>
+
+      <div class="upcoming-grid">
+        <!-- LEFT: UPCOMING DAILY DEVOTIONAL -->
+        <div class="upcoming-panel glass">
+          <div class="upcoming-panel-header">
+            <div>
+              <h3><i class="fa-solid fa-book-open" style="color:var(--primary);margin-right:7px;"></i>Upcoming Daily Devotional</h3>
+              <p>Prepare your heart for the next Scripture readings.</p>
+            </div>
+            <a class="schedule-link" href="./monthly_sched.html">
+              View Monthly Schedule <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </div>
+
+          <div class="upcoming-table-wrap">
+            <table class="upcoming-table">
+              <thead>
+                <tr>
+                  <th>Devotional / Date / Scripture</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="upcoming-devotional-body">
+                <tr><td colspan="2" class="empty-table">Loading upcoming devotionals...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- RIGHT: NEXT WORSHIP MUSIC LINEUP -->
+        <div class="upcoming-panel glass">
+          <div class="upcoming-panel-header">
+            <div>
+              <h3><i class="fa-solid fa-music" style="color:var(--primary);margin-right:7px;"></i>Next Worship Music Line Up</h3>
+              <p>Upcoming songs prepared for our worship service.</p>
+            </div>
+            <a class="schedule-link" href="./monthly_sched.html">
+              View Monthly Schedule <i class="fa-solid fa-arrow-right"></i>
+            </a>
+          </div>
+
+          <div class="lineup-leader">
+            <i class="fa-solid fa-microphone-lines"></i>
+            <span><strong>Song Lead:</strong> <span id="next-lineup-leader">Loading...</span></span>
+            <span style="margin-left:auto;color:var(--muted);" id="next-lineup-date"></span>
+          </div>
+
+          <div class="upcoming-table-wrap">
+            <table class="upcoming-table">
+              <thead>
+                <tr>
+                  <th>Song List</th>
+                  <th>Key</th>
+                </tr>
+              </thead>
+              <tbody id="upcoming-music-body">
+                <tr><td colspan="2" class="empty-table">Loading worship music lineup...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+
+  <footer class="site-footer">
+    <div class="page-container footer-inner">
+
+      <div>
+        <span class="footer-brand" id="footer-church-name">
+          Mobilization Church Balilihan
+        </span>
+        <div style="margin-top:5px;">
+          Growing in God's Word, one day at a time.
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+        <span>
+          © <span id="footer-year"></span>
+          <span id="footer-system-name">Daily Grace</span>.
+          All Rights Reserved.
+        </span>
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch color theme">
+          <i class="fa-solid fa-sun" id="theme-toggle-icon"></i>
+          <span id="theme-toggle-label">Light Mode</span>
+        </button>
+      </div>
+
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    /* =====================================================
+       1. SUPABASE CONFIGURATION
+    ===================================================== */
+
+    const SUPABASE_URL =
+      "https://gcmsypmigipyizwcoflw.supabase.co";
+
+    const SUPABASE_PUBLISHABLE_KEY =
+      "sb_publishable_LRvaH2X8ZuJz8q17_JkxOg_lbi3ob_s";
+
+    const db = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
+
+    const SETTINGS_ID = 1;
+
+    /* =====================================================
+       2. DEFAULT CONFIGURATION
+    ===================================================== */
+
+    const DEFAULTS = {
+      church_name: "Mobilization Church Balilihan",
+      system_name: "Daily Grace",
+      location_label: "Balilihan, Bohol",
+      colors: {
+        primary: "#38bdf8",
+        secondary: "#818cf8",
+        accent: "#22d3ee",
+        background: "#07111f",
+        text: "#f8fafc",
+        surface: "#111e30"
+      },
+      font_style: "Poppins",
+      images: {
+        logo: "",
+        home_sanctuary: ""
+      }
+    };
+
+    let appSettings = { ...DEFAULTS };
+    let devotionalRecords = [];
+    let completedDays = new Set();
+
+    const now = new Date();
+    const CHALLENGE_YEAR = now.getFullYear();
+    const CHALLENGE_MONTH = now.getMonth();
+
+    const MONTH_NAME = new Intl.DateTimeFormat("en", {
+      month: "long"
+    }).format(now);
+
+    const DAYS_IN_MONTH = new Date(
+      CHALLENGE_YEAR,
+      CHALLENGE_MONTH + 1,
+      0
+    ).getDate();
+
+    const TODAY = now.getDate();
+
+    // Use the same completion data saved by devotional_challenge.html.
+    const RESPONSE_STORAGE_KEY = "dailyGraceResponses_v1";
+
+    /* =====================================================
+       3. HELPERS
+    ===================================================== */
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 3000);
+    }
+
+    function formatDate(dateValue) {
+      if (!dateValue) return "Date not available";
+
+      const date = new Date(dateValue + "T00:00:00");
+
+      if (isNaN(date.getTime())) return dateValue;
+
+      return date.toLocaleDateString("en-PH", {
+        month: "long",
+        day: "numeric",
+        year: "numeric"
+      });
+    }
+
+    function getDateKey(year, month, day) {
+      return (
+        year + "-" +
+        String(month + 1).padStart(2, "0") + "-" +
+        String(day).padStart(2, "0")
+      );
+    }
+
+    function getRecordDate(record) {
+      return record.date ||
+        record.devotional_date ||
+        record.reading_date ||
+        record.challenge_date ||
+        "";
+    }
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[char]);
+    }
+
+    function safeImageURL(value) {
+      if (!value) return "";
+
+      try {
+        const url = new URL(value, window.location.href);
+
+        if (
+          url.protocol === "https:" ||
+          url.protocol === "http:"
+        ) {
+          return url.href;
+        }
+      } catch (error) {
+        console.warn("Invalid image URL:", error);
+      }
+
+      return "";
+    }
+
+    function getSettingImage(settings, keys) {
+      const sources = [
+        settings.images || {},
+        settings
+      ];
+
+      for (const source of sources) {
+        for (const key of keys) {
+          if (source[key]) return source[key];
+        }
+      }
+
+      return "";
+    }
+
+    /* =====================================================
+       4. LOAD APP SETTINGS - ID 1
+    ===================================================== */
+
+    async function loadAppSettings() {
+      const { data, error } = await db
+        .from("app_settings")
+        .select("id, settings")
+        .eq("id", SETTINGS_ID)
+        .maybeSingle();
+
+      if (error) {
+        console.error("App settings error:", error);
+        showToast("Unable to load church settings. Using defaults.");
+        return;
+      }
+
+      if (!data || !data.settings) {
+        console.warn("app_settings ID 1 was not found.");
+        return;
+      }
+
+      appSettings = {
+        ...DEFAULTS,
+        ...data.settings,
+        colors: {
+          ...DEFAULTS.colors,
+          ...(data.settings.colors || {})
+        },
+        images: {
+          ...DEFAULTS.images,
+          ...(data.settings.images || {})
+        }
+      };
+
+      applyAppSettings();
+    }
+
+    function applyAppSettings() {
+      const settings = appSettings;
+      const colors = settings.colors || {};
+
+      document.getElementById("church-brand").textContent =
+        settings.church_name || DEFAULTS.church_name;
+
+      document.getElementById("church-location").textContent =
+        settings.location_label || DEFAULTS.location_label;
+
+      document.getElementById("system-title").textContent =
+        settings.system_name || DEFAULTS.system_name;
+
+      document.getElementById("image-location-label").textContent =
+        settings.location_label || DEFAULTS.location_label;
+
+      document.getElementById("footer-church-name").textContent =
+        settings.church_name || DEFAULTS.church_name;
+
+      document.getElementById("footer-system-name").textContent =
+        settings.system_name || DEFAULTS.system_name;
+
+      const fontName = typeof settings.font_style === "string"
+        ? settings.font_style
+        : settings.font_style?.family || "Poppins";
+
+      const safeFonts = [
+        "Poppins",
+        "Inter",
+        "Roboto",
+        "Montserrat",
+        "Open Sans",
+        "Lato",
+        "Nunito",
+        "Playfair Display"
+      ];
+
+      const selectedFont = safeFonts.includes(fontName)
+        ? fontName
+        : "Poppins";
+
+      document.documentElement.style.setProperty(
+        "--primary",
+        colors.primary
+      );
+
+      document.documentElement.style.setProperty(
+        "--secondary",
+        colors.secondary
+      );
+
+      document.documentElement.style.setProperty(
+        "--accent",
+        colors.accent
+      );
+
+      document.documentElement.style.setProperty(
+        "--background",
+        colors.background
+      );
+
+      document.documentElement.style.setProperty(
+        "--text",
+        colors.text
+      );
+
+      document.documentElement.style.setProperty(
+        "--surface",
+        colors.surface
+      );
+
+      document.documentElement.style.setProperty(
+        "--font",
+        `"${selectedFont}", sans-serif`
+      );
+
+      const imageURL = safeImageURL(
+        getSettingImage(settings, [
+          "home_sanctuary",
+          "sanctuary",
+          "home_hero",
+          "hero_image",
+          "church_image"
+        ])
+      );
+
+      const image = document.getElementById("sanctuary-image");
+
+      if (imageURL) {
+        image.src = imageURL;
+      } else {
+        image.style.display = "none";
+        document.querySelector(".hero-image-card").style.background =
+          "linear-gradient(135deg, #14243a, #07111f)";
+      }
+
+      document.title =
+        (settings.system_name || "Daily Grace") +
+        " | " +
+        (settings.church_name || "Mobilization Church Balilihan");
+    }
+
+    /* =====================================================
+       5. LOAD DAILY CHALLENGES
+       Expected fields: date, title, scripture, key_message
+    ===================================================== */
+
+    async function loadDailyChallenges() {
+      const { data, error } = await db
+        .from("daily_challenges")
+        .select("*")
+        .order("date", { ascending: true });
+
+      if (error) {
+        console.error("Daily challenges error:", error);
+
+        document.getElementById("featured-title").textContent =
+          "Daily devotional is currently unavailable.";
+
+        document.getElementById("featured-scripture").textContent =
+          "Please check again later.";
+
+        document.getElementById("day-grid").innerHTML =
+          '<p class="loading-message">Unable to load devotional calendar. Please check the database connection and public read permissions.</p>';
+
+        const upcomingBody = document.getElementById("upcoming-devotional-body");
+        if (upcomingBody) {
+          upcomingBody.innerHTML = '<tr><td colspan="2" class="empty-table">Unable to load upcoming devotionals.</td></tr>';
+        }
+
+        updateOverview([]);
+        return;
+      }
+
+      devotionalRecords = data || [];
+
+      loadLocalProgress();
+      renderFeaturedDevotional();
+      renderDayGrid();
+      updateOverview(devotionalRecords);
+      renderUpcomingDevotionals();
+    }
+
+    /* =====================================================
+       6. FEATURED DEVOTIONAL
+    ===================================================== */
+
+    function renderFeaturedDevotional() {
+      const todayKey = getDateKey(
+        CHALLENGE_YEAR,
+        CHALLENGE_MONTH,
+        TODAY
+      );
+
+      let featured = devotionalRecords.find(record => {
+        return getRecordDate(record) === todayKey;
+      });
+
+      if (!featured) {
+        featured = devotionalRecords
+          .filter(record => {
+            return getRecordDate(record) <= todayKey;
+          })
+          .sort((a, b) => {
+            return getRecordDate(b).localeCompare(
+              getRecordDate(a)
+            );
+          })[0];
+      }
+
+      if (!featured) {
+        document.getElementById("featured-date").textContent =
+          formatDate(todayKey);
+
+        document.getElementById("featured-title").textContent =
+          "Your Daily Grace Journey";
+
+        document.getElementById("featured-description").textContent =
+          "A new devotional reading will appear here once it is published by the administrator.";
+
+        document.getElementById("featured-scripture").textContent =
+          "Open the Daily Grace page to explore the devotional challenge.";
+
+        return;
+      }
+
+      const date = getRecordDate(featured);
+
+      document.getElementById("featured-date").textContent =
+        formatDate(date);
+
+      document.getElementById("featured-title").textContent =
+        featured.title || "Daily Devotional";
+
+      document.getElementById("featured-description").textContent =
+        featured.key_message ||
+        featured.description ||
+        "Take time to reflect on God's Word and apply it in your daily life.";
+
+      document.getElementById("featured-scripture").textContent =
+        featured.scripture || "Scripture reading will be available soon.";
+    }
+
+    /* =====================================================
+       7. LOCAL COMPLETION TRACKING
+       No account required
+    ===================================================== */
+
+    function loadLocalProgress() {
+      try {
+        const saved = JSON.parse(
+          localStorage.getItem(RESPONSE_STORAGE_KEY) || "{}"
+        );
+
+        completedDays = new Set(
+          Object.entries(saved)
+            .filter(([date, response]) => {
+              return /^\d{4}-\d{2}-\d{2}$/.test(date) &&
+                response &&
+                response.completed === true;
+            })
+            .map(([date]) => date)
+        );
+      } catch (error) {
+        console.error("Unable to load devotional progress:", error);
+        completedDays = new Set();
+      }
+    }
+
+    // Refresh the homepage if the devotional page changes progress
+    // in another browser tab/window.
+    window.addEventListener("storage", event => {
+      if (event.key === RESPONSE_STORAGE_KEY) {
+        loadLocalProgress();
+        renderDayGrid();
+        updateOverview(devotionalRecords);
+      }
+    });
+
+    function getMonthRecords() {
+      const monthPrefix =
+        CHALLENGE_YEAR + "-" +
+        String(CHALLENGE_MONTH + 1).padStart(2, "0");
+
+      return devotionalRecords.filter(record => {
+        return getRecordDate(record).startsWith(monthPrefix);
+      });
+    }
+
+    function getAvailableMonthDays() {
+      return new Set(
+        getMonthRecords()
+          .map(record => Number(getRecordDate(record).slice(8, 10)))
+          .filter(day => day >= 1 && day <= DAYS_IN_MONTH)
+      );
+    }
+
+    /* =====================================================
+       8. RENDER MONTHLY CALENDAR
+    ===================================================== */
+
+    function renderDayGrid() {
+      const grid = document.getElementById("day-grid");
+      const availableDays = getAvailableMonthDays();
+
+      grid.innerHTML = "";
+
+      for (let day = 1; day <= DAYS_IN_MONTH; day++) {
+        const key = getDateKey(
+          CHALLENGE_YEAR,
+          CHALLENGE_MONTH,
+          day
+        );
+
+        const isCompleted = completedDays.has(key);
+        const isToday = day === TODAY;
+        const hasDevotional = availableDays.has(day);
+
+        const button = document.createElement("button");
+        button.type = "button";
+
+        button.className = "day-box";
+
+        if (isCompleted) button.classList.add("completed");
+        if (isToday) button.classList.add("today");
+
+        button.disabled = !hasDevotional;
+
+        button.title = hasDevotional
+          ? `Open devotional for ${formatDate(key)}`
+          : `No devotional published for ${formatDate(key)}`;
+
+        button.innerHTML = `
+          <span class="day-number">${day}</span>
+          <i class="fa-solid ${
+            isCompleted
+              ? "fa-check"
+              : isToday
+                ? "fa-calendar-day"
+                : "fa-circle"
+          }"></i>
+        `;
+
+        button.addEventListener("click", () => {
+          openDevotionalDay(key);
+        });
+
+        grid.appendChild(button);
+      }
+    }
+
+    /* =====================================================
+       9. OPEN SELECTED DEVOTIONAL DAY
+    ===================================================== */
+
+    function openDevotionalDay(dateKey) {
+      const record = devotionalRecords.find(item => {
+        return getRecordDate(item) === dateKey;
+      });
+
+      if (!record) {
+        showToast("No devotional is available for this date yet.");
+        return;
+      }
+
+      /*
+        The Daily Grace page can read this date parameter
+        and open the corresponding devotional.
+      */
+
+      window.location.href =
+        "./devotional_challenge.html?date=" +
+        encodeURIComponent(dateKey);
+    }
+
+    /* =====================================================
+       10. MONTHLY OVERVIEW
+    ===================================================== */
+
+    function updateOverview(records) {
+      const totalAll = records.length;
+      const monthRecords = getMonthRecords();
+
+      const completedRecords = monthRecords.filter(record => {
+        return completedDays.has(getRecordDate(record));
+      });
+
+      const scheduledThisMonth = monthRecords.length;
+      const completedThisMonth = completedRecords.length;
+      const remaining = Math.max(
+        scheduledThisMonth - completedThisMonth,
+        0
+      );
+
+      const percentage = scheduledThisMonth > 0
+        ? Math.round((completedThisMonth / scheduledThisMonth) * 100)
+        : 0;
+
+      document.getElementById("total-devotionals").textContent = totalAll;
+      document.getElementById("total-devotionals-note").textContent =
+        `${scheduledThisMonth} published in ${MONTH_NAME} ${CHALLENGE_YEAR}`;
+
+      document.getElementById("completed-devotionals").textContent =
+        completedThisMonth;
+      document.getElementById("completed-devotionals-note").textContent =
+        "Successfully completed devotional readings";
+
+      document.getElementById("remaining-devotionals").textContent = remaining;
+      document.getElementById("remaining-devotionals-note").textContent =
+        `${remaining} published readings remaining`;
+
+      document.getElementById("completion-percentage").textContent =
+        percentage + "%";
+
+      document.getElementById("current-challenge-month").textContent =
+        `${MONTH_NAME} ${CHALLENGE_YEAR}`;
+      document.getElementById("current-challenge-note").textContent =
+        `${completedThisMonth} of ${scheduledThisMonth} days · ${
+          percentage === 100 && scheduledThisMonth > 0
+            ? "Completed"
+            : "In Progress"
+        }`;
+
+      document.getElementById("progress-month-title").textContent =
+        `${MONTH_NAME} ${CHALLENGE_YEAR} Challenge`;
+      document.getElementById("progress-count").textContent =
+        `${completedThisMonth}/${scheduledThisMonth}`;
+      document.getElementById("progress-percent").textContent =
+        percentage + "%";
+      document.getElementById("progress-fill").style.width =
+        percentage + "%";
+      document.getElementById("progress-completed-label").textContent =
+        `${completedThisMonth} completed days`;
+      document.getElementById("progress-remaining-label").textContent =
+        `${remaining} days remaining`;
+
+      document.getElementById("footer-year").textContent =
+        new Date().getFullYear();
+
+      // Uses the configured value until a certificate registry is connected.
+      const certificateCount =
+        Number(appSettings.stats?.certificates_generated || 0);
+      document.getElementById("certificates-generated").textContent =
+        certificateCount;
+    }
+
+    /* =====================================================
+       11. LIGHT / DARK THEME TOGGLE
+       Theme preference is saved on this browser.
+    ===================================================== */
+    const THEME_STORAGE_KEY = "dailyGraceHomeTheme";
+
+    function applyTheme(theme) {
+      const selectedTheme = theme === "light" ? "light" : "dark";
+      document.body.setAttribute("data-theme", selectedTheme);
+
+      const icon = document.getElementById("theme-toggle-icon");
+      const label = document.getElementById("theme-toggle-label");
+
+      if (icon && label) {
+        icon.className = selectedTheme === "dark"
+          ? "fa-solid fa-sun"
+          : "fa-solid fa-moon";
+        label.textContent = selectedTheme === "dark"
+          ? "Light Mode"
+          : "Dark Mode";
+      }
+
+      const themeColor = document.querySelector('meta[name="theme-color"]');
+      if (themeColor) {
+        themeColor.setAttribute("content",
+          selectedTheme === "light" ? "#f1f5f9" : "#07111f");
+      }
+    }
+
+    function initializeThemeToggle() {
+      let savedTheme = "";
+      try {
+        savedTheme = localStorage.getItem(THEME_STORAGE_KEY) || "";
+      } catch (error) {
+        console.warn("Theme preference could not be read.", error);
+      }
+
+      const settingsTheme = String(appSettings.theme || "dark").toLowerCase();
+      applyTheme(savedTheme || (settingsTheme === "light" ? "light" : "dark"));
+
+      const toggle = document.getElementById("theme-toggle");
+      if (toggle) {
+        toggle.addEventListener("click", () => {
+          const nextTheme =
+            document.body.getAttribute("data-theme") === "dark"
+              ? "light"
+              : "dark";
+          applyTheme(nextTheme);
+          try {
+            localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+          } catch (error) {
+            console.warn("Theme preference could not be saved.", error);
+          }
+        });
+      }
+    }
+
+    /* =====================================================
+       12. LOAD UPCOMING DAILY DEVOTIONALS
+    ===================================================== */
+    function renderUpcomingDevotionals() {
+      const tbody = document.getElementById("upcoming-devotional-body");
+      if (!tbody) return;
+
+      const todayKey = getDateKey(CHALLENGE_YEAR, CHALLENGE_MONTH, TODAY);
+      const upcoming = devotionalRecords
+        .filter(record => {
+          const date = getRecordDate(record);
+          return date && date >= todayKey;
+        })
+        .sort((a, b) => getRecordDate(a).localeCompare(getRecordDate(b)))
+        .slice(0, 5);
+
+      if (!upcoming.length) {
+        tbody.innerHTML = '<tr><td colspan="2" class="empty-table">No upcoming devotional readings have been published yet.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = upcoming.map(record => {
+        const date = getRecordDate(record);
+        const title = escapeHTML(record.title || "Daily Devotional");
+        const scripture = escapeHTML(record.scripture || "Scripture to be announced");
+        const url = "./devotional_challenge.html?date=" + encodeURIComponent(date);
+
+        return `
+          <tr>
+            <td>
+              <span class="table-main-text">${title}</span>
+              <span class="table-sub-text"><i class="fa-regular fa-calendar"></i> ${escapeHTML(formatDate(date))}</span>
+              <span class="table-sub-text"><i class="fa-solid fa-book-bible"></i> ${scripture}</span>
+            </td>
+            <td><a class="table-read-btn" href="${url}"><i class="fa-solid fa-book-open"></i> Read</a></td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    /* =====================================================
+       13. LOAD NEXT WORSHIP MUSIC LINEUP
+       Uses music_lineups: service_date, worship_leader, songs (JSONB)
+    ===================================================== */
+    function normalizeSongs(value) {
+      if (Array.isArray(value)) return value;
+      if (value && Array.isArray(value.songs)) return value.songs;
+      if (typeof value === "string") {
+        try {
+          const parsed = JSON.parse(value);
+          if (Array.isArray(parsed)) return parsed;
+          if (parsed && Array.isArray(parsed.songs)) return parsed.songs;
+        } catch (error) {
+          return value.split(/\r?\n/).map(song => song.trim()).filter(Boolean);
+        }
+      }
+      return [];
+    }
+
+    async function loadNextWorshipLineup() {
+      const body = document.getElementById("upcoming-music-body");
+      const leaderEl = document.getElementById("next-lineup-leader");
+      const dateEl = document.getElementById("next-lineup-date");
+
+      try {
+        const todayKey = getDateKey(CHALLENGE_YEAR, CHALLENGE_MONTH, TODAY);
+        const { data, error } = await db
+          .from("music_lineups")
+          .select("id, service_date, worship_leader, songs")
+          .gte("service_date", todayKey)
+          .order("service_date", { ascending: true })
+          .limit(1);
+
+        if (error) throw error;
+
+        const lineup = data && data.length ? data[0] : null;
+        if (!lineup) {
+          leaderEl.textContent = "Not yet announced";
+          dateEl.textContent = "";
+          body.innerHTML = '<tr><td colspan="2" class="empty-table">No upcoming worship music lineup has been published yet.</td></tr>';
+          return;
+        }
+
+        leaderEl.textContent = lineup.worship_leader || "To be announced";
+        dateEl.textContent = formatDate(lineup.service_date);
+
+        const songs = normalizeSongs(lineup.songs);
+        if (!songs.length) {
+          body.innerHTML = '<tr><td colspan="2" class="empty-table">Song list will be announced soon.</td></tr>';
+          return;
+        }
+
+        body.innerHTML = songs.map(item => {
+          const songName = typeof item === "string"
+            ? item
+            : (item.title || item.song_title || item.song || item.name || "Untitled Song");
+          const songKey = typeof item === "string"
+            ? "—"
+            : (item.key || item.musical_key || item.song_key || "—");
+
+          return `
+            <tr>
+              <td><span class="table-main-text">${escapeHTML(songName)}</span></td>
+              <td><span class="table-key">${escapeHTML(songKey)}</span></td>
+            </tr>
+          `;
+        }).join("");
+      } catch (error) {
+        console.error("Worship lineup loading error:", error);
+        leaderEl.textContent = "Unavailable";
+        dateEl.textContent = "";
+        body.innerHTML = '<tr><td colspan="2" class="empty-table">Unable to load the worship music lineup. Please check public read access for music_lineups.</td></tr>';
+      }
+    }
+
+    /* =====================================================
+       14. INITIALIZE PAGE
+    ===================================================== */
+
+    async function initializeHomePage() {
+      document.getElementById("footer-year").textContent =
+        new Date().getFullYear();
+
+      await loadAppSettings();
+      initializeThemeToggle();
+      await loadDailyChallenges();
+      renderUpcomingDevotionals();
+      await loadNextWorshipLineup();
+
+      console.log("Daily Grace homepage initialized.");
+    }
+
+    initializeHomePage();
+
+  </script>
+
+  <!-- SHARED NAVBAR -->
+  <script src="./navbar.js"></script>
+
+  <!-- PWA SERVICE WORKER -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js")
+          .then(registration => {
+            console.log(
+              "Service Worker registered:",
+              registration.scope
+            );
+          })
+          .catch(error => {
+            console.error(
+              "Service Worker registration failed:",
+              error
+            );
+          });
+      });
+    }
+  </script>
+
+</body>
+</html>

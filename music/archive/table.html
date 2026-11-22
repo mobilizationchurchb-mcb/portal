@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Line Up | Mobilization Church Balilihan</title>
+
+    <!-- ===== PWA: MANIFEST & ICONS ===== -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1e3a8a">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MCB Grace">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* ===== PAGE-LEVEL FIX ===== */
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .mcb-main-content {
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            padding: 0 !important;
+            /* MAHALAGA: para lumabas ang fixed modals sa tamang lugar */
+            position: relative;
+            transform: none;
+        }
+
+        .table-page {
+            background-color: #f8fafc;
+            color: #0f172a;
+            padding: 24px;
+            min-height: 100%;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #1e3a8a;
+            letter-spacing: -0.3px;
+            margin-bottom: 4px;
+        }
+
+        .page-sub {
+            font-size: 0.92rem;
+            color: #64748b;
+            line-height: 1.5;
+            max-width: 520px;
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 22px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+            transition: transform 0.2s, box-shadow 0.2s;
+            white-space: nowrap;
+        }
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(37, 99, 235, 0.45);
+        }
+        .btn-add:active { transform: translateY(0); }
+
+        /* ===== TABLE ===== */
+        .table-wrap {
+            background: #ffffff;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+            overflow: hidden;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        thead { background: linear-gradient(135deg, #1e3a8a, #1e40af); color: #ffffff; }
+        th {
+            text-align: left; padding: 14px 18px; font-size: 0.82rem;
+            font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+            white-space: nowrap;
+        }
+        td {
+            padding: 14px 18px; font-size: 0.92rem; color: #334155;
+            border-bottom: 1px solid #f1f5f9; vertical-align: middle;
+        }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover { background: #f8fafc; }
+
+        .leader-cell { display: flex; align-items: center; gap: 10px; font-weight: 600; color: #0f172a; }
+        .avatar {
+            width: 34px; height: 34px; border-radius: 50%;
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            color: #ffffff; display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.85rem; flex-shrink: 0;
+        }
+        .date-cell { color: #475569; font-size: 0.88rem; }
+
+        .actions { display: flex; gap: 6px; flex-wrap: wrap; }
+        .btn-icon {
+            border: none; border-radius: 7px; padding: 7px 10px;
+            font-size: 0.85rem; cursor: pointer; display: inline-flex;
+            align-items: center; gap: 4px; font-weight: 600;
+            transition: transform 0.15s, background 0.2s;
+        }
+        .btn-icon:hover { transform: translateY(-1px); }
+
+        .btn-view   { background: #eff6ff; color: #1d4ed8; }
+        .btn-view:hover   { background: #dbeafe; }
+        .btn-edit   { background: #fef3c7; color: #b45309; }
+        .btn-edit:hover   { background: #fde68a; }
+        .btn-delete { background: #fee2e2; color: #b91c1c; }
+        .btn-delete:hover { background: #fecaca; }
+
+        .empty-state { text-align: center; padding: 50px 20px; color: #94a3b8; }
+        .empty-state .emoji { font-size: 2.5rem; display: block; margin-bottom: 8px; }
+
+        /* ============================================================
+           MODAL — naka-fixed para lumabas sa buong screen
+           ============================================================ */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(3px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            z-index: 9999;            /* mas mataas sa navbar at sidebar */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: #ffffff;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 620px;
+            max-height: 92vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 60px rgba(15, 23, 42, 0.35);
+            transform: translateY(20px) scale(0.97);
+            transition: transform 0.3s ease;
+        }
+        .modal-overlay.show .modal {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 18px 22px; border-bottom: 1px solid #e2e8f0;
+            position: sticky; top: 0; background: #ffffff; z-index: 2;
+            border-radius: 16px 16px 0 0;
+        }
+        .modal-title { font-size: 1.15rem; font-weight: 800; color: #1e3a8a; }
+        .modal-close {
+            background: #f1f5f9; border: none; width: 34px; height: 34px;
+            border-radius: 8px; font-size: 1rem; cursor: pointer;
+            color: #475569; transition: background 0.2s;
+        }
+        .modal-close:hover { background: #e2e8f0; }
+
+        .modal-body { padding: 22px; }
+
+        .form-group { margin-bottom: 16px; }
+        .form-label {
+            display: block; font-size: 0.82rem; font-weight: 700;
+            color: #334155; margin-bottom: 6px;
+            text-transform: uppercase; letter-spacing: 0.4px;
+        }
+        .form-input {
+            width: 100%; padding: 11px 14px;
+            border: 1.5px solid #cbd5e1; border-radius: 9px;
+            font-size: 0.92rem; color: #0f172a; outline: none;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+        .form-input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .dynamic-group {
+            background: #f8fafc; border: 1px dashed #cbd5e1;
+            border-radius: 10px; padding: 14px; margin-bottom: 16px;
+        }
+        .dynamic-label {
+            display: flex; justify-content: space-between;
+            align-items: center; margin-bottom: 10px;
+        }
+        .dynamic-label span {
+            font-size: 0.82rem; font-weight: 700; color: #334155;
+            text-transform: uppercase; letter-spacing: 0.4px;
+        }
+        .btn-counter { display: flex; gap: 6px; }
+        .btn-counter button {
+            width: 30px; height: 30px; border-radius: 7px; border: none;
+            font-size: 1.1rem; font-weight: 800; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s, transform 0.15s;
+        }
+        .btn-plus  { background: #dcfce7; color: #16a34a; }
+        .btn-plus:hover  { background: #bbf7d0; transform: scale(1.05); }
+        .btn-minus { background: #fee2e2; color: #b91c1c; }
+        .btn-minus:hover { background: #fecaca; transform: scale(1.05); }
+
+        .dynamic-inputs .form-group { margin-bottom: 10px; }
+        .dynamic-inputs .form-group:last-child { margin-bottom: 0; }
+
+        .modal-footer {
+            padding: 16px 22px; border-top: 1px solid #e2e8f0;
+            display: flex; justify-content: flex-end; gap: 10px;
+            position: sticky; bottom: 0; background: #ffffff;
+            border-radius: 0 0 16px 16px;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            color: #ffffff; border: none; border-radius: 9px;
+            padding: 11px 26px; font-size: 0.92rem; font-weight: 700;
+            cursor: pointer; display: inline-flex; align-items: center;
+            gap: 8px; transition: transform 0.15s, box-shadow 0.2s;
+        }
+        .btn-save:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(37, 99, 235, 0.4);
+        }
+        .btn-save:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .btn-cancel {
+            background: #f1f5f9; color: #475569; border: none;
+            border-radius: 9px; padding: 11px 22px; font-size: 0.92rem;
+            font-weight: 700; cursor: pointer; transition: background 0.2s;
+        }
+        .btn-cancel:hover { background: #e2e8f0; }
+
+        /* ============================================================
+           SAVING OVERLAY
+           ============================================================ */
+        .saving-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 10000;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s;
+        }
+        .saving-overlay.show { opacity: 1; visibility: visible; }
+
+        .saving-box {
+            background: #ffffff; border-radius: 16px;
+            padding: 40px 50px; text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            min-width: 260px;
+        }
+        .spinner {
+            width: 48px; height: 48px;
+            border: 4px solid #e2e8f0; border-top-color: #2563eb;
+            border-radius: 50%; margin: 0 auto 16px auto;
+            animation: spin 0.9s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .saving-text { font-size: 0.95rem; font-weight: 600; color: #334155; }
+
+        .success-check {
+            display: none; width: 72px; height: 72px;
+            margin: 0 auto 14px auto;
+        }
+        .success-check.show { display: block; }
+        .checkmark-circle {
+            stroke: #16a34a; stroke-width: 3; fill: none;
+            stroke-dasharray: 166; stroke-dashoffset: 166;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+        .checkmark-check {
+            stroke: #16a34a; stroke-width: 4; fill: none;
+            stroke-linecap: round; stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards;
+        }
+        @keyframes stroke { to { stroke-dashoffset: 0; } }
+
+        .success-text {
+            display: none; font-size: 1rem; font-weight: 700; color: #16a34a;
+        }
+        .success-text.show { display: block; }
+
+        /* ============================================================
+           VIEW MODAL
+           ============================================================ */
+        .view-canvas-wrap {
+            display: flex; justify-content: center; margin-bottom: 18px;
+        }
+        .preview-controls {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(180px, 0.8fr);
+            gap: 16px;
+            margin-bottom: 18px;
+            padding: 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+        }
+        .preview-control label {
+            display: block;
+            margin-bottom: 8px;
+            color: #334155;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        .preview-control input,
+        .preview-control select {
+            width: 100%;
+            accent-color: #2563eb;
+        }
+        .preview-control select {
+            padding: 8px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            background: #ffffff;
+            color: #0f172a;
+            font-size: 0.9rem;
+        }
+        .preview-font-size {
+            color: #1e40af;
+            font-weight: 700;
+        }
+        #lineupPreview {
+            width: 100%; max-width: 480px; border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.15);
+            border: 1px solid #e2e8f0;
+        }
+        .btn-download {
+            background: linear-gradient(135deg, #16a34a, #15803d);
+            color: #ffffff; border: none; border-radius: 9px;
+            padding: 11px 26px; font-size: 0.92rem; font-weight: 700;
+            cursor: pointer; display: inline-flex; align-items: center;
+            gap: 8px; transition: transform 0.15s, box-shadow 0.2s;
+        }
+        .btn-download:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(22, 163, 74, 0.4);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 767px) {
+            .table-page { padding: 16px; }
+            .page-title { font-size: 1.35rem; }
+            .page-sub { font-size: 0.85rem; }
+            .btn-add { padding: 10px 16px; font-size: 0.85rem; }
+            table { font-size: 0.85rem; }
+            th, td { padding: 10px 12px; }
+            .actions { flex-direction: column; }
+            .btn-icon { justify-content: center; }
+            .modal { max-width: 100%; }
+            .modal-body { padding: 16px; }
+            .modal-header, .modal-footer { padding: 14px 16px; }
+            .saving-box { padding: 30px 35px; }
+            .preview-controls { grid-template-columns: 1fr; gap: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== PAGE CONTENT ===== -->
+    <div class="table-page">
+
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">🎵 Add Music Line Up</h1>
+                <p class="page-sub">
+                    Manage weekly worship lineups — add song assignments, review details, and export HD preview cards for your team.
+                </p>
+            </div>
+            <button type="button" class="btn-add" id="openAddModal">
+                🎶 Add New Lineup
+            </button>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Music Leader</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="lineupTableBody"></tbody>
+            </table>
+            <div class="empty-state" id="emptyState" style="display:none;">
+                <span class="emoji">🎼</span>
+                No lineups yet. Click <strong>Add New Lineup</strong> to get started.
+            </div>
+        </div>
+
+    </div><!-- /.table-page -->
+
+    <!-- ============================================================
+         ADD / EDIT MODAL (nasa body pero naka-fixed, tataas sa z-index)
+         ============================================================ -->
+    <div class="modal-overlay" id="lineupModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">🎶 Add New Music Lineup</div>
+                <button type="button" class="modal-close" id="closeModal">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editId">
+
+                <div class="form-group">
+                    <label class="form-label" for="musicLead">🎤 Music Lead (Name)</label>
+                    <input type="text" class="form-input" id="musicLead" placeholder="e.g. Bro. Juan dela Cruz">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="lineupDate">📅 Date</label>
+                    <input type="date" class="form-input" id="lineupDate">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="openingSong">🎵 Opening Song (Title)</label>
+                    <input type="text" class="form-input" id="openingSong" placeholder="e.g. Great Are You Lord">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="welcomeSong">👋 Welcome Song (Title)</label>
+                    <input type="text" class="form-input" id="welcomeSong" placeholder="e.g. This Is The Day">
+                </div>
+
+                <div class="dynamic-group">
+                    <div class="dynamic-label">
+                        <span>🙌 Praise (Songs)</span>
+                        <div class="btn-counter">
+                            <button type="button" class="btn-minus" id="praiseMinus">−</button>
+                            <button type="button" class="btn-plus"  id="praisePlus">+</button>
+                        </div>
+                    </div>
+                    <div class="dynamic-inputs" id="praiseInputs">
+                        <div class="form-group">
+                            <input type="text" class="form-input praise-input" placeholder="Praise song title 1">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dynamic-group">
+                    <div class="dynamic-label">
+                        <span>🙏 Worship (Songs)</span>
+                        <div class="btn-counter">
+                            <button type="button" class="btn-minus" id="worshipMinus">−</button>
+                            <button type="button" class="btn-plus"  id="worshipPlus">+</button>
+                        </div>
+                    </div>
+                    <div class="dynamic-inputs" id="worshipInputs">
+                        <div class="form-group">
+                            <input type="text" class="form-input worship-input" placeholder="Worship song title 1">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label" for="closingSong">🎬 Closing Song (Title)</label>
+                    <input type="text" class="form-input" id="closingSong" placeholder="e.g. Shout To The Lord">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" id="cancelModal">Cancel</button>
+                <button type="button" class="btn-save" id="saveLineup">💾 Save Lineup</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         SAVING / SUCCESS OVERLAY
+         ============================================================ -->
+    <div class="saving-overlay" id="savingOverlay">
+        <div class="saving-box">
+            <div class="spinner" id="spinner"></div>
+            <svg class="success-check" id="successCheck" viewBox="0 0 100 100">
+                <circle class="checkmark-circle" cx="50" cy="50" r="44" />
+                <path class="checkmark-check" d="M30 52 L44 66 L72 38" />
+            </svg>
+            <div class="saving-text" id="savingText">Saving lineup...</div>
+            <div class="success-text" id="successText">✅ Saved successfully!</div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         VIEW MODAL
+         ============================================================ -->
+    <div class="modal-overlay" id="viewModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">👁️ Lineup Preview</div>
+                <button type="button" class="modal-close" id="closeViewModal">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="preview-controls">
+                    <div class="preview-control">
+                        <label for="previewFontSize">Font size: <span class="preview-font-size" id="previewFontSizeValue">52 px</span></label>
+                        <input type="range" id="previewFontSize" min="1" max="100" step="1" value="52">
+                    </div>
+                    <div class="preview-control">
+                        <label for="previewFontFamily">Font style</label>
+                        <select id="previewFontFamily">
+                            <option value="Arial">Arial</option>
+                            <option value="Georgia">Georgia</option>
+                            <option value="Times New Roman">Times New Roman</option>
+                            <option value="Verdana">Verdana</option>
+                            <option value="Courier New">Courier New</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="view-canvas-wrap">
+                    <canvas id="lineupCanvas" width="1240" height="1754" style="display:none;"></canvas>
+                    <img id="lineupPreview" alt="Lineup preview">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" id="closeViewBtn">Close</button>
+                <button type="button" class="btn-download" id="downloadImage">⬇️ Download HD PNG</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== NAVBAR ===== -->
+    <script src="navbar.js"></script>
+
+    <!-- ============================================================
+         APP LOGIC
+         ============================================================ -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        // ---------- PWA: register service worker ----------
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('✅ SW registered:', reg.scope))
+                    .catch(err => console.error('❌ SW failed:', err));
+            });
+        }
+
+        // ---------- LOCAL STORAGE SAFE INIT ----------
+        const STORAGE_KEY = 'mcb_music_lineups_v1';
+        let lineups = [];
+
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            lineups = raw ? JSON.parse(raw) : [];
+            if (!Array.isArray(lineups)) lineups = [];
+        } catch (e) {
+            console.warn('Invalid localStorage data, resetting.', e);
+            lineups = [];
+        }
+
+        let currentViewId = null;
+
+        // ---------- DOM CACHE ----------
+        const $ = (id) => document.getElementById(id);
+
+        const tableBody     = $('lineupTableBody');
+        const emptyState    = $('emptyState');
+
+        const lineupModal   = $('lineupModal');
+        const openAddModal  = $('openAddModal');
+        const closeModal    = $('closeModal');
+        const cancelModal   = $('cancelModal');
+        const modalTitle    = $('modalTitle');
+
+        const editId        = $('editId');
+        const musicLead     = $('musicLead');
+        const lineupDate    = $('lineupDate');
+        const openingSong   = $('openingSong');
+        const welcomeSong   = $('welcomeSong');
+        const closingSong   = $('closingSong');
+
+        const praiseInputs  = $('praiseInputs');
+        const worshipInputs = $('worshipInputs');
+
+        const savingOverlay = $('savingOverlay');
+        const spinner       = $('spinner');
+        const successCheck  = $('successCheck');
+        const savingText    = $('savingText');
+        const successText   = $('successText');
+
+        const viewModal     = $('viewModal');
+        const closeViewModal= $('closeViewModal');
+        const closeViewBtn  = $('closeViewBtn');
+        const lineupPreview = $('lineupPreview');
+        const lineupCanvas  = $('lineupCanvas');
+        const downloadImage = $('downloadImage');
+        const previewFontSize = $('previewFontSize');
+        const previewFontSizeValue = $('previewFontSizeValue');
+        const previewFontFamily = $('previewFontFamily');
+
+        // ---------- HELPERS ----------
+        function saveToStorage() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(lineups));
+                return true;
+            } catch (e) {
+                console.error('localStorage save failed:', e);
+                return false;
+            }
+        }
+
+        function initials(name) {
+            if (!name) return '?';
+            return name.trim().split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase();
+        }
+
+        function formatDate(d) {
+            if (!d) return '—';
+            try {
+                const dt = new Date(d + 'T00:00:00');
+                return dt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+            } catch { return d; }
+        }
+
+        // ---------- RENDER TABLE ----------
+        function renderTable() {
+            tableBody.innerHTML = '';
+            if (!lineups || lineups.length === 0) {
+                emptyState.style.display = 'block';
+                return;
+            }
+            emptyState.style.display = 'none';
+
+            lineups.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <div class="leader-cell">
+                            <div class="avatar">${initials(item.musicLead)}</div>
+                            <span>${item.musicLead || '—'}</span>
+                        </div>
+                    </td>
+                    <td class="date-cell">${formatDate(item.date)}</td>
+                    <td>
+                        <div class="actions">
+                            <button type="button" class="btn-icon btn-view"   data-id="${item.id}">👁️ View</button>
+                            <button type="button" class="btn-icon btn-edit"   data-id="${item.id}">✏️ Edit</button>
+                            <button type="button" class="btn-icon btn-delete" data-id="${item.id}">🗑️ Delete</button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        }
+
+        // ---------- DYNAMIC PRAISE / WORSHIP ----------
+        function addDynamicInput(container, type) {
+            const count = container.querySelectorAll('input').length + 1;
+            const div = document.createElement('div');
+            div.className = 'form-group';
+            div.innerHTML = `<input type="text" class="form-input ${type}-input" placeholder="${type === 'praise' ? 'Praise' : 'Worship'} song title ${count}">`;
+            container.appendChild(div);
+        }
+
+        function removeDynamicInput(container) {
+            if (container.querySelectorAll('input').length > 1) {
+                container.removeChild(container.lastElementChild);
+            }
+        }
+
+        function resetDynamic(container, type) {
+            container.innerHTML = `
+                <div class="form-group">
+                    <input type="text" class="form-input ${type}-input" placeholder="${type === 'praise' ? 'Praise' : 'Worship'} song title 1">
+                </div>
+            `;
+        }
+
+        // ---------- OPEN / CLOSE MODAL ----------
+        // MAHALAGA: i-reparent ang modal sa document.body para hindi ma-clip ng overflow
+        function openModal() {
+            if (lineupModal.parentNode !== document.body) {
+                document.body.appendChild(lineupModal);
+            }
+            lineupModal.classList.add('show');
+        }
+        function hideModal() {
+            lineupModal.classList.remove('show');
+        }
+
+        function resetForm() {
+            editId.value = '';
+            musicLead.value = '';
+            lineupDate.value = '';
+            openingSong.value = '';
+            welcomeSong.value = '';
+            closingSong.value = '';
+            resetDynamic(praiseInputs, 'praise');
+            resetDynamic(worshipInputs, 'worship');
+        }
+
+        // ---------- EVENT BINDINGS ----------
+        if (openAddModal) {
+            openAddModal.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                resetForm();
+                modalTitle.textContent = '🎶 Add New Music Lineup';
+                openModal();
+            });
+        }
+
+        if (closeModal)  closeModal.addEventListener('click', hideModal);
+        if (cancelModal) cancelModal.addEventListener('click', hideModal);
+        if (lineupModal) lineupModal.addEventListener('click', (e) => {
+            if (e.target === lineupModal) hideModal();
+        });
+
+        // +/- buttons
+        const praisePlus  = $('praisePlus');
+        const praiseMinus = $('praiseMinus');
+        const worshipPlus = $('worshipPlus');
+        const worshipMinus= $('worshipMinus');
+
+        if (praisePlus)   praisePlus.addEventListener('click',  () => addDynamicInput(praiseInputs, 'praise'));
+        if (praiseMinus)  praiseMinus.addEventListener('click', () => removeDynamicInput(praiseInputs));
+        if (worshipPlus)  worshipPlus.addEventListener('click',  () => addDynamicInput(worshipInputs, 'worship'));
+        if (worshipMinus) worshipMinus.addEventListener('click', () => removeDynamicInput(worshipInputs));
+
+        // ---------- SAVE ----------
+        function showSavingAnimation() {
+            spinner.style.display = 'block';
+            successCheck.classList.remove('show');
+            savingText.style.display = 'block';
+            successText.classList.remove('show');
+            savingOverlay.classList.add('show');
+        }
+
+        function showSuccessAnimation() {
+            spinner.style.display = 'none';
+            savingText.style.display = 'none';
+            successCheck.classList.add('show');
+            successText.classList.add('show');
+        }
+
+        function hideSavingOverlay() {
+            savingOverlay.classList.remove('show');
+        }
+
+        const saveBtn = $('saveLineup');
+        if (saveBtn) {
+            saveBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                if (!musicLead.value.trim() || !lineupDate.value) {
+                    alert('⚠️ Please fill in Music Leader and Date.');
+                    return;
+                }
+
+                const praiseSongs  = [...praiseInputs.querySelectorAll('input')].map(i => i.value.trim()).filter(Boolean);
+                const worshipSongs = [...worshipInputs.querySelectorAll('input')].map(i => i.value.trim()).filter(Boolean);
+
+                const data = {
+                    id:        editId.value || 'mc_' + Date.now(),
+                    musicLead: musicLead.value.trim(),
+                    date:      lineupDate.value,
+                    opening:   openingSong.value.trim(),
+                    welcome:   welcomeSong.value.trim(),
+                    praise:    praiseSongs,
+                    worship:   worshipSongs,
+                    closing:   closingSong.value.trim()
+                };
+
+                saveBtn.disabled = true;
+                showSavingAnimation();
+
+                setTimeout(() => {
+                    if (editId.value) {
+                        const idx = lineups.findIndex(l => l.id === editId.value);
+                        if (idx > -1) lineups[idx] = data;
+                    } else {
+                        lineups.unshift(data);
+                    }
+
+                    const ok = saveToStorage();
+                    renderTable();
+                    showSuccessAnimation();
+
+                    setTimeout(() => {
+                        hideSavingOverlay();
+                        hideModal();
+                        saveBtn.disabled = false;
+                        if (!ok) alert('⚠️ Could not save to localStorage. Check browser privacy settings.');
+                    }, 1300);
+                }, 900);
+            });
+        }
+
+        // ---------- TABLE ACTIONS ----------
+        tableBody.addEventListener('click', (e) => {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            const id = btn.dataset.id;
+            const item = lineups.find(l => l.id === id);
+
+            if (btn.classList.contains('btn-edit') && item) {
+                editId.value      = item.id;
+                musicLead.value   = item.musicLead;
+                lineupDate.value  = item.date;
+                openingSong.value = item.opening || '';
+                welcomeSong.value = item.welcome || '';
+                closingSong.value = item.closing || '';
+
+                praiseInputs.innerHTML = '';
+                (item.praise && item.praise.length ? item.praise : ['']).forEach((s, i) => {
+                    const div = document.createElement('div');
+                    div.className = 'form-group';
+                    div.innerHTML = `<input type="text" class="form-input praise-input" placeholder="Praise song title ${i + 1}" value="${s}">`;
+                    praiseInputs.appendChild(div);
+                });
+
+                worshipInputs.innerHTML = '';
+                (item.worship && item.worship.length ? item.worship : ['']).forEach((s, i) => {
+                    const div = document.createElement('div');
+                    div.className = 'form-group';
+                    div.innerHTML = `<input type="text" class="form-input worship-input" placeholder="Worship song title ${i + 1}" value="${s}">`;
+                    worshipInputs.appendChild(div);
+                });
+
+                modalTitle.textContent = '✏️ Edit Music Lineup';
+                openModal();
+
+            } else if (btn.classList.contains('btn-delete')) {
+                if (confirm('🗑️ Delete this lineup? This cannot be undone.')) {
+                    lineups = lineups.filter(l => l.id !== id);
+                    saveToStorage();
+                    renderTable();
+                }
+
+            } else if (btn.classList.contains('btn-view') && item) {
+                currentViewId = id;
+                drawLineupCanvas(item);
+                // I-reparent din ang view modal para sure
+                if (viewModal.parentNode !== document.body) {
+                    document.body.appendChild(viewModal);
+                }
+                viewModal.classList.add('show');
+            }
+        });
+
+        // ---------- DRAW CANVAS ----------
+        function drawLineupCanvas(item) {
+            const ctx = lineupCanvas.getContext('2d');
+            const W = 1240;
+            const fontSize = Number(previewFontSize.value);
+            const fontFamily = previewFontFamily.value;
+            const lines = [];
+            let y = 0;
+
+            function wrapText(text, size, weight, maxWidth) {
+                ctx.font = `${weight} ${size}px "${fontFamily}"`;
+                const words = String(text || '—').split(/\s+/);
+                const result = [];
+                let line = '';
+
+                words.forEach(word => {
+                    if (ctx.measureText(word).width > maxWidth) {
+                        if (line) {
+                            result.push(line);
+                            line = '';
+                        }
+                        let part = '';
+                        for (const character of word) {
+                            if (part && ctx.measureText(part + character).width > maxWidth) {
+                                result.push(part);
+                                part = character;
+                            } else {
+                                part += character;
+                            }
+                        }
+                        line = part;
+                    } else {
+                        const candidate = line ? `${line} ${word}` : word;
+                        if (line && ctx.measureText(candidate).width > maxWidth) {
+                            result.push(line);
+                            line = word;
+                        } else {
+                            line = candidate;
+                        }
+                    }
+                });
+                if (line) result.push(line);
+                return result;
+            }
+
+            function addText(text, size, weight, color, x, maxWidth, align = 'left', gap = 0) {
+                const lineHeight = Math.max(8, size * 1.3);
+                wrapText(text, size, weight, maxWidth).forEach(line => {
+                    lines.push({ text: line, size, weight, color, x, y: y + lineHeight, align });
+                    y += lineHeight;
+                });
+                y += gap;
+            }
+
+            const headerPadding = Math.max(24, fontSize * 0.75);
+            y = headerPadding;
+            addText('MUSIC LINE UP', fontSize * 1.15, 'bold', '#ffffff', W / 2, W - 100, 'center', fontSize * 0.18);
+            addText('Mobilization Church Balilihan', fontSize, 'bold', '#bfdbfe', W / 2, W - 100, 'center', fontSize * 0.18);
+            addText('"Sing to the Lord a new song" — Psalm 96:1', fontSize * 0.82, 'italic', '#dbeafe', W / 2, W - 100, 'center');
+            const headerHeight = Math.max(260, y + headerPadding);
+
+            y = headerHeight + Math.max(36, fontSize);
+            const leftX = 100;
+            const bodyWidth = W - 200;
+
+            function drawRow(label, value) {
+                addText(label, fontSize, 'bold', '#1e3a8a', leftX, bodyWidth, 'left', fontSize * 0.12);
+                addText(value || '—', fontSize, 'normal', '#0f172a', leftX, bodyWidth, 'left', fontSize * 0.25);
+                lines.push({ divider: true, y: y });
+                y += Math.max(22, fontSize * 0.35);
+            }
+
+            function drawSongSection(title, songs) {
+                addText(title, fontSize * 1.05, 'bold', '#2563eb', leftX, bodyWidth, 'left', fontSize * 0.12);
+                const entries = songs && songs.length ? songs : ['—'];
+                entries.forEach((song, index) => {
+                    addText(`${index + 1}. ${song}`, fontSize, 'normal', song ? '#0f172a' : '#94a3b8',
+                        leftX + fontSize * 0.6, bodyWidth - fontSize * 0.6, 'left', fontSize * 0.08);
+                });
+                y += fontSize * 0.3;
+            }
+
+            drawRow('Music Leader:', item.musicLead);
+            drawRow('Date:', formatDate(item.date));
+            drawSongSection('Opening Song', item.opening ? [item.opening] : []);
+            drawSongSection('Welcome Song', item.welcome ? [item.welcome] : []);
+            drawSongSection('Praise', item.praise);
+            drawSongSection('Worship', item.worship);
+            drawSongSection('Closing Song', item.closing ? [item.closing] : []);
+
+            const footerHeight = Math.max(170, fontSize * 3);
+            const H = Math.ceil(Math.max(1754, y + fontSize + footerHeight));
+            lineupCanvas.width = W;
+            lineupCanvas.height = H;
+
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, W, H);
+
+            const grad = ctx.createLinearGradient(0, 0, W, headerHeight);
+            grad.addColorStop(0, '#1e3a8a');
+            grad.addColorStop(1, '#2563eb');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, W, headerHeight);
+
+            lines.forEach(line => {
+                if (line.divider) {
+                    ctx.strokeStyle = '#e2e8f0';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(leftX, line.y);
+                    ctx.lineTo(W - 100, line.y);
+                    ctx.stroke();
+                    return;
+                }
+                ctx.textAlign = line.align;
+                ctx.font = `${line.weight} ${line.size}px "${fontFamily}"`;
+                ctx.fillStyle = line.color;
+                ctx.fillText(line.text, line.x, line.y);
+            });
+
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(0, H - footerHeight, W, footerHeight);
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'center';
+            ctx.font = `bold ${fontSize * 0.82}px "${fontFamily}"`;
+            ctx.fillText('Mobilization Church Balilihan  •  Music Ministry', W / 2, H - footerHeight * 0.58, W - 100);
+            ctx.font = `normal ${fontSize * 0.65}px "${fontFamily}"`;
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillText('Generated by MCB Grace • version 1 build by IT MCB', W / 2, H - footerHeight * 0.2, W - 100);
+
+            lineupPreview.src = lineupCanvas.toDataURL('image/png');
+        }
+
+        function redrawCurrentPreview() {
+            const item = lineups.find(l => l.id === currentViewId);
+            if (item) drawLineupCanvas(item);
+        }
+        previewFontSize.addEventListener('input', () => {
+            previewFontSizeValue.textContent = `${previewFontSize.value} px`;
+            redrawCurrentPreview();
+        });
+        previewFontFamily.addEventListener('change', redrawCurrentPreview);
+
+        // ---------- VIEW CLOSE ----------
+        function hideView() {
+            viewModal.classList.remove('show');
+        }
+        if (closeViewModal) closeViewModal.addEventListener('click', hideView);
+        if (closeViewBtn)   closeViewBtn.addEventListener('click', hideView);
+        if (viewModal) viewModal.addEventListener('click', (e) => {
+            if (e.target === viewModal) hideView();
+        });
+
+        // ---------- DOWNLOAD ----------
+        if (downloadImage) {
+            downloadImage.addEventListener('click', () => {
+                const item = lineups.find(l => l.id === currentViewId);
+                if (!item) return;
+
+                const link = document.createElement('a');
+                const safeName = (item.musicLead || 'lineup').replace(/\s+/g, '_');
+                link.download = `MCB_Lineup_${safeName}_${item.date}.png`;
+                link.href = lineupCanvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        // ---------- INIT ----------
+        renderTable();
+        });
+    </script>
+</body>
+</html>

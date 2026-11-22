@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07111f">
+<title>Daily Grace Devotional | Mobilization Church Balilihan</title>
+
+<!-- Fonts and Icons -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root {
+    --bg: #07111f;
+    --bg2: #0b1728;
+    --panel: rgba(17, 31, 51, .88);
+    --panel2: #13243a;
+    --input: #0b192b;
+    --text: #edf4ff;
+    --muted: #9aabc1;
+    --line: rgba(148, 163, 184, .17);
+    --accent: #d9a441;
+    --accent2: #f1c66f;
+    --green: #22c55e;
+    --red: #f97316;
+    --shadow: 0 18px 50px rgba(0,0,0,.22);
+    --radius: 20px;
+}
+body[data-theme="light"] {
+    --bg: #f1f5f9;
+    --bg2: #e9eff6;
+    --panel: rgba(255,255,255,.94);
+    --panel2: #f8fafc;
+    --input: #ffffff;
+    --text: #172337;
+    --muted: #64748b;
+    --line: rgba(100,116,139,.2);
+    --accent: #a66b0b;
+    --accent2: #d49a32;
+    --green: #15803d;
+    --red: #c2410c;
+    --shadow: 0 16px 40px rgba(15,23,42,.08);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+    margin: 0;
+    font-family: 'DM Sans', sans-serif;
+    background:
+      radial-gradient(circle at 10% 5%, rgba(217,164,65,.08), transparent 28%),
+      var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    transition: background .25s, color .25s;
+}
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+.page-wrap { width: min(1450px, 94%); margin: auto; padding: 28px 0 60px; }
+
+/* SECTION ONE */
+.hero {
+    display: grid;
+    grid-template-columns: 1.15fr .85fr;
+    gap: 25px;
+    align-items: stretch;
+    margin: 25px 0;
+}
+.hero-copy, .hero-visual, .panel {
+    border: 1px solid var(--line);
+    background: var(--panel);
+    box-shadow: var(--shadow);
+    border-radius: var(--radius);
+}
+.hero-copy {
+    padding: clamp(25px, 4vw, 48px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 320px;
+}
+.eyebrow {
+    color: var(--accent2);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2.1px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+}
+.hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 5vw, 58px);
+    line-height: 1.08;
+    margin: 0 0 16px;
+}
+.hero-copy p { color: var(--muted); line-height: 1.8; max-width: 680px; margin: 0; }
+.hero-visual {
+    min-height: 320px;
+    overflow: hidden;
+    position: relative;
+    background: linear-gradient(135deg, #172b42, #0c1727);
+}
+.hero-visual img {
+    width: 100%;
+    height: 100%;
+    min-height: 320px;
+    object-fit: cover;
+    display: block;
+}
+.banner-placeholder {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: 25px;
+    color: #dce8f7;
+    background: linear-gradient(135deg, #1b344e, #101b2d);
+}
+.banner-placeholder i { font-size: 42px; color: var(--accent2); margin-bottom: 12px; }
+.banner-placeholder strong { display: block; font-size: 18px; }
+.banner-placeholder span { display: block; color: #a9b8cb; font-size: 12px; margin-top: 6px; }
+
+/* FILTER BAR */
+.filter-bar {
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) 170px 130px;
+    gap: 12px;
+    margin: 20px 0 28px;
+}
+.field, .select-field, .text-area {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--input);
+    color: var(--text);
+    outline: none;
+    padding: 13px 14px;
+    transition: border .2s, box-shadow .2s;
+}
+.field:focus, .select-field:focus, .text-area:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(217,164,65,.12);
+}
+.search-wrap { position: relative; }
+.search-wrap i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+}
+.search-wrap input { padding-left: 43px; }
+.select-field { cursor: pointer; }
+
+/* MAIN GRID */
+.content-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(300px, .8fr);
+    gap: 22px;
+    align-items: start;
+}
+.left-column, .right-column { display: grid; gap: 22px; }
+.panel { padding: clamp(18px, 2.5vw, 27px); }
+.panel-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+.panel-heading h2 { margin: 0; font-size: 20px; }
+.panel-heading p { color: var(--muted); font-size: 12px; line-height: 1.6; margin: 7px 0 0; }
+.date-meta { color: var(--muted); font-size: 12px; font-weight: 700; }
+.status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    border-radius: 30px;
+    padding: 7px 11px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.status.pending { color: #fdba74; background: rgba(249,115,22,.13); }
+.status.completed { color: #4ade80; background: rgba(34,197,94,.13); }
+.status i { font-size: 11px; }
+
+.devotional-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(27px, 3vw, 36px);
+    line-height: 1.2;
+    margin: 6px 0 12px;
+}
+.prepared { color: var(--muted); font-size: 12px; margin-bottom: 20px; }
+.scripture-box {
+    padding: 18px 20px;
+    border-radius: 15px;
+    border-left: 3px solid var(--accent);
+    background: rgba(217,164,65,.08);
+    margin-bottom: 20px;
+}
+.scripture-label {
+    color: var(--accent2);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+.scripture-text { font-size: 17px; font-weight: 700; line-height: 1.5; }
+.reading-line { color: var(--muted); font-size: 12px; margin-top: 9px; }
+.message-content {
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.9;
+    white-space: pre-wrap;
+}
+.message-content:empty::before {
+    content: "The devotional message will appear here once it is added by the church administrator.";
+    color: var(--muted);
+    font-style: italic;
+}
+.message-divider { height: 1px; background: var(--line); margin: 23px 0; }
+.nav-day {
+    display: flex;
+    gap: 8px;
+}
+.icon-btn {
+    width: 38px; height: 38px;
+    display: grid; place-items: center;
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    background: var(--panel2);
+    color: var(--text);
+}
+.icon-btn:hover { border-color: var(--accent); color: var(--accent2); }
+
+/* RESPONSE FORM */
+.response-intro {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.75;
+    margin: -8px 0 20px;
+}
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-group { margin-bottom: 15px; }
+.form-group.full { grid-column: 1 / -1; }
+.form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+.form-group label span { color: var(--muted); font-weight: 400; }
+.form-group .field, .form-group .select-field, .form-group .text-area { font-size: 13px; }
+.text-area { min-height: 110px; resize: vertical; line-height: 1.65; }
+.device-note { color: var(--muted); font-size: 11px; margin-top: 7px; }
+.check-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 13px;
+    background: var(--panel2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    margin: 5px 0 17px;
+    font-size: 12px;
+    line-height: 1.5;
+}
+.check-row input { accent-color: var(--green); width: 17px; height: 17px; margin: 1px 0 0; flex-shrink: 0; }
+.btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 9px;
+    border: 0;
+    border-radius: 11px;
+    padding: 12px 18px;
+    font-weight: 800;
+    font-size: 12px;
+    transition: .2s;
+}
+.btn-primary { background: linear-gradient(135deg, var(--accent2), var(--accent)); color: #1b2430; }
+.btn-primary:hover { filter: brightness(1.07); transform: translateY(-1px); }
+.btn-secondary { background: var(--panel2); border: 1px solid var(--line); color: var(--text); }
+.btn:disabled { opacity: .6; cursor: wait; transform: none; }
+.form-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.hidden { display: none !important; }
+.success-note { color: #4ade80; font-size: 12px; margin-top: 12px; }
+
+/* CALENDAR */
+.calendar-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+.calendar-month { font-size: 15px; font-weight: 800; }
+.month-progress { text-align: right; }
+.month-progress strong { display: block; font-size: 15px; }
+.month-progress span { color: var(--muted); font-size: 10px; }
+.progress-track {
+    height: 7px; background: var(--panel2);
+    border-radius: 20px; overflow: hidden; margin: 12px 0 17px;
+}
+.progress-fill { height: 100%; width: 0; background: linear-gradient(90deg, #16a34a, #4ade80); border-radius: inherit; transition: width .25s; }
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+}
+.calendar-weekday {
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 800;
+    text-align: center;
+    padding: 5px 0;
+}
+.calendar-day {
+    min-width: 0;
+    aspect-ratio: 1;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: var(--panel2);
+    color: var(--text);
+    display: grid;
+    place-items: center;
+    position: relative;
+    font-size: 11px;
+    font-weight: 700;
+}
+.calendar-day:hover { border-color: var(--accent); }
+.calendar-day.selected { background: var(--accent); color: #1b2430; }
+.calendar-day.done::after {
+    content: "✓";
+    position: absolute;
+    right: 3px; top: 1px;
+    color: #4ade80;
+    font-size: 9px;
+    font-weight: 900;
+}
+.calendar-day.selected.done::after { color: #14532d; }
+.calendar-day.today { outline: 1px solid var(--accent2); outline-offset: 1px; }
+.calendar-day.empty { background: transparent; pointer-events: none; }
+.calendar-legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 15px; color: var(--muted); font-size: 10px; }
+.legend-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 5px; background: var(--green); }
+.legend-dot.pending-dot { background: var(--red); }
+
+/* DAILY LIST */
+.reading-list { display: grid; gap: 9px; }
+.reading-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--panel2);
+    cursor: pointer;
+    transition: border .2s, transform .2s;
+}
+.reading-item:hover { border-color: var(--accent); transform: translateY(-1px); }
+.reading-item.active { border-color: var(--accent); }
+.reading-item strong { display: block; font-size: 12px; line-height: 1.4; }
+.reading-item small { display: block; color: var(--muted); font-size: 10px; margin-top: 5px; }
+.reading-check {
+    flex-shrink: 0;
+    width: 23px; height: 23px;
+    display: grid; place-items: center;
+    border-radius: 50%;
+    background: rgba(249,115,22,.13);
+    color: #fb923c;
+    font-size: 10px;
+}
+.reading-check.done { background: rgba(34,197,94,.15); color: #4ade80; }
+.empty-state { color: var(--muted); font-size: 12px; text-align: center; padding: 25px 10px; line-height: 1.7; }
+.loading-state { text-align: center; padding: 35px 10px; color: var(--muted); font-size: 13px; }
+.loading-state i { margin-right: 7px; color: var(--accent2); }
+.toast {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 9999;
+    background: var(--panel2);
+    color: var(--text);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+    border-radius: 12px;
+    padding: 13px 17px;
+    font-size: 12px;
+    display: none;
+}
+.toast.show { display: block; animation: toastIn .25s ease; }
+@keyframes toastIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+@media(max-width: 900px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-visual, .hero-visual img { min-height: 240px; max-height: 300px; }
+    .content-grid { grid-template-columns: 1fr; }
+    .right-column { grid-template-columns: 1fr 1fr; align-items: start; }
+}
+@media(max-width: 600px) {
+    .page-wrap { width: 93%; padding-top: 15px; }
+    .filter-bar { grid-template-columns: 1fr 1fr; }
+    .search-wrap { grid-column: 1 / -1; }
+    .hero-copy { min-height: auto; }
+    .hero-visual, .hero-visual img { min-height: 190px; }
+    .right-column { grid-template-columns: 1fr; }
+    .form-grid { grid-template-columns: 1fr; gap: 0; }
+    .panel-heading { align-items: flex-start; }
+    .devotional-title { font-size: 29px; }
+    .calendar-grid { gap: 4px; }
+    .calendar-day { border-radius: 8px; }
+}
+
+
+/* =========================================================
+   GLOBAL THEME + READABILITY OVERRIDES
+   Keep every page element readable in both themes.
+========================================================= */
+body[data-theme="light"] {
+    color-scheme: light;
+    --bg: #f4f7fb;
+    --bg2: #eaf0f7;
+    --panel: #ffffff;
+    --panel2: #f1f5f9;
+    --input: #ffffff;
+    --text: #172337;
+    --muted: #526176;
+    --line: rgba(51, 65, 85, .20);
+    --accent: #94600c;
+    --accent2: #80520a;
+    --green: #166534;
+    --red: #9a3412;
+    --shadow: 0 12px 32px rgba(15, 23, 42, .08);
+}
+body[data-theme="dark"] { color-scheme: dark; }
+body[data-theme="light"] {
+    background: radial-gradient(circle at 10% 5%, rgba(217,164,65,.07), transparent 28%), var(--bg);
+}
+body[data-theme="light"] .hero-copy,
+body[data-theme="light"] .panel,
+body[data-theme="light"] .hero-visual {
+    background-color: #ffffff;
+    border-color: #d8e1ec;
+}
+body[data-theme="light"] .hero h1,
+body[data-theme="light"] .panel-heading h2,
+body[data-theme="light"] .devotional-title,
+body[data-theme="light"] .scripture-text,
+body[data-theme="light"] .reading-item strong,
+body[data-theme="light"] .form-group label,
+body[data-theme="light"] .calendar-month,
+body[data-theme="light"] .month-progress strong {
+    color: #172337;
+}
+body[data-theme="light"] .hero-copy p,
+body[data-theme="light"] .panel-heading p,
+body[data-theme="light"] .prepared,
+body[data-theme="light"] .date-meta,
+body[data-theme="light"] .reading-line,
+body[data-theme="light"] .response-intro,
+body[data-theme="light"] .device-note,
+body[data-theme="light"] .empty-state,
+body[data-theme="light"] .loading-state,
+body[data-theme="light"] .calendar-legend,
+body[data-theme="light"] .reading-item small,
+body[data-theme="light"] .month-progress span {
+    color: #526176;
+}
+body[data-theme="light"] .scripture-box {
+    background: #fff8e8;
+    border-left-color: #94600c;
+}
+body[data-theme="light"] .scripture-label,
+body[data-theme="light"] .eyebrow {
+    color: #80520a;
+}
+body[data-theme="light"] .message-content { color: #243247; }
+body[data-theme="light"] .field,
+body[data-theme="light"] .select-field,
+body[data-theme="light"] .text-area {
+    background: #ffffff;
+    color: #172337;
+    border-color: #cbd5e1;
+}
+body[data-theme="light"] .field::placeholder,
+body[data-theme="light"] .text-area::placeholder { color: #718096; opacity: 1; }
+body[data-theme="light"] .field:focus,
+body[data-theme="light"] .select-field:focus,
+body[data-theme="light"] .text-area:focus {
+    border-color: #94600c;
+    box-shadow: 0 0 0 3px rgba(148,96,12,.13);
+}
+body[data-theme="light"] .icon-btn,
+body[data-theme="light"] .btn-secondary,
+body[data-theme="light"] .check-row,
+body[data-theme="light"] .reading-item,
+body[data-theme="light"] .calendar-day {
+    background: #f1f5f9;
+    color: #172337;
+    border-color: #d7e0eb;
+}
+body[data-theme="light"] .calendar-day.selected {
+    background: #94600c;
+    color: #ffffff;
+    border-color: #94600c;
+}
+body[data-theme="light"] .calendar-day.done::after { color: #166534; }
+body[data-theme="light"] .calendar-day.selected.done::after { color: #ffffff; }
+body[data-theme="light"] .status.pending {
+    color: #9a3412;
+    background: #ffedd5;
+}
+body[data-theme="light"] .status.completed {
+    color: #166534;
+    background: #dcfce7;
+}
+body[data-theme="light"] .reading-check {
+    color: #9a3412;
+    background: #ffedd5;
+}
+body[data-theme="light"] .reading-check.done {
+    color: #166534;
+    background: #dcfce7;
+}
+body[data-theme="light"] .success-note { color: #166534; }
+body[data-theme="light"] .toast {
+    background: #ffffff;
+    color: #172337;
+    border-color: #cbd5e1;
+}
+body[data-theme="light"] .banner-placeholder {
+    color: #172337;
+    background: linear-gradient(135deg, #fff7e6, #eaf0f7);
+}
+body[data-theme="light"] .banner-placeholder span { color: #526176; }
+body[data-theme="light"] #completedView .check-row { background: #f0fdf4; }
+body[data-theme="light"] #completedView .check-row strong { color: #166534 !important; }
+body[data-theme="light"] #completedView .check-row > i { color: #166534 !important; }
+body[data-theme="light"] #savedSummary { color: #526176 !important; }
+body[data-theme="light"] #savedSummary strong { color: #172337 !important; }
+body[data-theme="light"] .btn-primary { color: #ffffff; }
+
+</style>
+</head>
+
+<body data-theme="dark">
+
+<!-- YOUR EXISTING PUBLIC NAVBAR -->
+<script src="./navbar.js"></script>
+
+<main class="page-wrap">
+
+    <!-- SECTION ONE -->
+    <section class="hero">
+        <div class="hero-copy">
+            <div class="eyebrow" id="churchBrand">Mobilization Church Balilihan</div>
+            <h1>Daily Grace<br>Devotional</h1>
+            <p>
+                Read the Scripture, daily Bible reading assignment, and devotional
+                message prepared by church leadership. Then enter your name, device
+                details, reflection, application, and prayer to complete the day.
+                Progress is saved locally in this browser.
+            </p>
+        </div>
+
+        <div class="hero-visual">
+            <div class="banner-placeholder" id="bannerPlaceholder">
+                <div>
+                    <i class="fa-solid fa-book-bible"></i>
+                    <strong>Daily Grace Devotional</strong>
+                    <span>Daily Scripture • Reflection • Prayer</span>
+                </div>
+            </div>
+            <img id="devotionalBanner" alt="Daily Grace Devotional Banner" hidden>
+        </div>
+    </section>
+
+    <!-- SEARCH AND FILTER -->
+    <section class="filter-bar">
+        <div class="search-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input class="field" id="searchInput" type="search"
+                   placeholder="Search title, Bible verse, message...">
+        </div>
+        <select class="select-field" id="monthFilter" aria-label="Select month"></select>
+        <select class="select-field" id="yearFilter" aria-label="Select year"></select>
+    </section>
+
+    <!-- SECTION TWO -->
+    <section class="content-grid">
+
+        <!-- LEFT SIDE -->
+        <div class="left-column">
+
+            <!-- DEVOTIONAL CONTENT -->
+            <article class="panel">
+                <div class="panel-heading">
+                    <div>
+                        <div class="date-meta" id="devotionalDate">Loading date...</div>
+                        <div style="margin-top:9px" id="devotionalStatus">
+                            <span class="status pending"><i class="fa-regular fa-clock"></i> Not Yet Completed</span>
+                        </div>
+                    </div>
+                    <div class="nav-day">
+                        <button class="icon-btn" id="previousDay" title="Previous devotional">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <button class="icon-btn" id="nextDay" title="Next devotional">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <h2 class="devotional-title" id="devotionalTitle">Loading devotional...</h2>
+                <div class="prepared" id="preparedBy">Prepared by: Church Administrator</div>
+
+                <div class="scripture-box">
+                    <div class="scripture-label"><i class="fa-solid fa-book-open"></i> Scripture</div>
+                    <div class="scripture-text" id="scriptureText">Loading Scripture...</div>
+                    <div class="reading-line" id="readingAssignment"></div>
+                </div>
+
+                <div class="scripture-label">Devotional Message</div>
+                <div class="message-content" id="devotionalMessage"></div>
+                <div class="message-divider"></div>
+
+                <div style="color:var(--muted);font-size:11px;line-height:1.7">
+                    <i class="fa-solid fa-heart" style="color:var(--accent2)"></i>
+                    Take time to understand God's Word, reflect on its meaning,
+                    and apply it to your daily life.
+                </div>
+            </article>
+
+            <!-- PERSONAL RESPONSE -->
+            <section class="panel" id="responsePanel">
+                <div class="panel-heading">
+                    <div>
+                        <h2>Your Personal Devotional Response</h2>
+                        <p>Complete your personal response for the selected devotional.</p>
+                    </div>
+                    <span class="status pending" id="responseStatus">
+                        <i class="fa-regular fa-clock"></i> Not Yet
+                    </span>
+                </div>
+
+                <p class="response-intro">
+                    Enter your name, the gadget you are using, check off the Bible
+                    reading, and write your own reflection, application, and prayer
+                    to complete this day.
+                </p>
+
+                <!-- STEP ONE: PERSONAL DETAILS -->
+                <form id="profileForm">
+                    <div class="form-grid">
+                        <div class="form-group full">
+                            <label for="fullName">Full Name</label>
+                            <input class="field" id="fullName" type="text"
+                                   placeholder="Enter your complete name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="deviceType">Device Used</label>
+                            <select class="select-field" id="deviceType" required>
+                                <option value="">Select device</option>
+                                <option value="iPhone">iPhone</option>
+                                <option value="Android">Android</option>
+                                <option value="Tablet">Tablet</option>
+                                <option value="PC">PC / Laptop</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="deviceBrand">Device Brand / Model</label>
+                            <input class="field" id="deviceBrand" type="text"
+                                   placeholder="e.g. Samsung A55, iPhone 15">
+                        </div>
+                    </div>
+
+                    <label class="check-row">
+                        <input type="checkbox" id="readingDone">
+                        <span>
+                            <strong>I have completed the Bible reading assignment.</strong><br>
+                            <span style="color:var(--muted)">I have read the Scripture and devotional message for this day.</span>
+                        </span>
+                    </label>
+
+                    <div class="form-actions">
+                        <button class="btn btn-primary" id="proceedBtn" type="submit">
+                            <i class="fa-solid fa-arrow-right"></i> Save &amp; Proceed
+                        </button>
+                    </div>
+                </form>
+
+                <!-- STEP TWO: REFLECTION / APPLICATION / PRAYER -->
+                <form id="reflectionForm" class="hidden">
+                    <div class="form-group">
+                        <label for="reflection">My Reflection</label>
+                        <textarea class="text-area" id="reflection"
+                                  placeholder="What did you learn from today's Scripture?"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="application">My Application</label>
+                        <textarea class="text-area" id="application"
+                                  placeholder="How will you apply God's Word in your daily life?"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="prayer">My Prayer</label>
+                        <textarea class="text-area" id="prayer"
+                                  placeholder="Write your personal prayer..."></textarea>
+                    </div>
+
+                    <label class="check-row">
+                        <input type="checkbox" id="completeCheck">
+                        <span>
+                            <strong>I have completed today's Daily Grace Devotional.</strong><br>
+                            <span style="color:var(--muted)">I have read, reflected, applied, and prayed.</span>
+                        </span>
+                    </label>
+
+                    <div class="form-actions">
+                        <button class="btn btn-primary" id="completeBtn" type="submit">
+                            <i class="fa-solid fa-check"></i> Save &amp; Complete
+                        </button>
+                        <button class="btn btn-secondary" type="button" id="backToProfile">
+                            <i class="fa-solid fa-arrow-left"></i> Back
+                        </button>
+                    </div>
+                </form>
+
+                <!-- COMPLETED VIEW -->
+                <div id="completedView" class="hidden">
+                    <div class="check-row" style="border-color:rgba(34,197,94,.35)">
+                        <i class="fa-solid fa-circle-check" style="color:#4ade80;font-size:21px"></i>
+                        <span>
+                            <strong style="color:#4ade80">Devotional Completed!</strong><br>
+                            Your personal response has been saved in this browser.
+                        </span>
+                    </div>
+
+                    <div id="savedSummary" style="font-size:12px;line-height:1.8;color:var(--muted);margin:15px 0"></div>
+
+                    <div class="form-actions">
+                        <button class="btn btn-secondary" type="button" id="editResponse">
+                            <i class="fa-solid fa-pen"></i> Edit My Response
+                        </button>
+                    </div>
+                </div>
+
+                <div class="success-note hidden" id="saveMessage">
+                    <i class="fa-solid fa-circle-check"></i> Your progress has been saved.
+                </div>
+            </section>
+        </div>
+
+        <!-- RIGHT SIDE -->
+        <aside class="right-column">
+
+            <!-- CALENDAR -->
+            <section class="panel">
+                <div class="panel-heading">
+                    <div>
+                        <h2>Devotional Calendar</h2>
+                        <p>Select a date to read its devotional.</p>
+                    </div>
+                    <i class="fa-regular fa-calendar-days" style="font-size:22px;color:var(--accent2)"></i>
+                </div>
+
+                <div class="calendar-top">
+                    <div class="calendar-month" id="calendarMonth">Month Year</div>
+                    <div class="month-progress">
+                        <strong id="monthCount">0/0</strong>
+                        <span id="monthPercent">0% completed</span>
+                    </div>
+                </div>
+
+                <div class="progress-track">
+                    <div class="progress-fill" id="monthProgressFill"></div>
+                </div>
+
+                <div class="calendar-grid" id="calendarGrid"></div>
+
+                <div class="calendar-legend">
+                    <span><i class="legend-dot"></i> Completed</span>
+                    <span><i class="legend-dot pending-dot"></i> Not yet</span>
+                </div>
+            </section>
+
+            <!-- DAILY READING LIST -->
+            <section class="panel">
+                <div class="panel-heading">
+                    <div>
+                        <h2>Daily Readings List</h2>
+                        <p>Choose a devotional from the selected month.</p>
+                    </div>
+                </div>
+                <div class="reading-list" id="readingList">
+                    <div class="loading-state">
+                        <i class="fa-solid fa-spinner fa-spin"></i> Loading daily readings...
+                    </div>
+                </div>
+            </section>
+        </aside>
+    </section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   SUPABASE CONNECTION
+========================================================= */
+const SUPABASE_URL = "https://gcmsypmigipyizwcoflw.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_LRvaH2X8ZuJz8q17_JkxOg_lbi3ob_s";
+
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+/* =========================================================
+   APP STATE
+========================================================= */
+const THEME_STORAGE_KEY = "dailyGraceHomeTheme";
+const RESPONSE_STORAGE_KEY = "dailyGraceResponses_v1";
+
+let devotionals = [];
+let selectedDate = localDateString(new Date());
+let selectedMonth = new Date().getMonth();
+let selectedYear = new Date().getFullYear();
+let searchTerm = "";
+let responseData = readResponses();
+
+const $ = id => document.getElementById(id);
+
+function localDateString(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const d = String(date.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+}
+
+function parseLocalDate(value) {
+    const parts = String(value || "").split("-").map(Number);
+    if (parts.length !== 3 || parts.some(Number.isNaN)) return new Date();
+    return new Date(parts[0], parts[1] - 1, parts[2]);
+}
+
+function formatDate(value) {
+    if (!value) return "Date not available";
+    return parseLocalDate(value).toLocaleDateString("en-US", {
+        month: "long", day: "numeric", year: "numeric"
+    });
+}
+
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;",
+        '"': "&quot;", "'": "&#39;"
+    })[char]);
+}
+
+function readResponses() {
+    try {
+        return JSON.parse(localStorage.getItem(RESPONSE_STORAGE_KEY) || "{}");
+    } catch (error) {
+        console.warn("Could not read saved devotional responses:", error);
+        return {};
+    }
+}
+
+function saveResponses() {
+    try {
+        localStorage.setItem(RESPONSE_STORAGE_KEY, JSON.stringify(responseData));
+        return true;
+    } catch (error) {
+        console.error("Could not save devotional response:", error);
+        showToast("Unable to save. Your browser storage may be full or disabled.");
+        return false;
+    }
+}
+
+function responseFor(date) {
+    return responseData[date] || null;
+}
+
+function isCompleted(date) {
+    return responseFor(date)?.completed === true;
+}
+
+function showToast(message) {
+    const toast = $("toast");
+    toast.textContent = message;
+    toast.classList.add("show");
+    clearTimeout(showToast.timer);
+    showToast.timer = setTimeout(() => toast.classList.remove("show"), 2800);
+}
+
+/* =========================================================
+   SHARED LIGHT / DARK THEME
+   Uses the same localStorage key as index.html and navbar.js.
+========================================================= */
+function getSharedTheme() {
+    try {
+        return localStorage.getItem(THEME_STORAGE_KEY) === "light" ? "light" : "dark";
+    } catch (error) {
+        console.warn("Theme preference unavailable:", error);
+        return "dark";
+    }
+}
+
+function applySharedTheme(theme, savePreference = false) {
+    const selected = theme === "light" ? "light" : "dark";
+    document.body.setAttribute("data-theme", selected);
+
+    const themeColor = document.querySelector('meta[name="theme-color"]');
+    if (themeColor) {
+        themeColor.setAttribute("content", selected === "light" ? "#f4f7fb" : "#07111f");
+    }
+
+    if (savePreference) {
+        try {
+            localStorage.setItem(THEME_STORAGE_KEY, selected);
+        } catch (error) {
+            console.warn("Theme preference could not be saved:", error);
+        }
+    }
+}
+
+// Load the exact theme selected on the Home page.
+applySharedTheme(getSharedTheme());
+
+// Sync changes made in another browser tab.
+window.addEventListener("storage", event => {
+    if (event.key === THEME_STORAGE_KEY) {
+        applySharedTheme(event.newValue === "light" ? "light" : "dark");
+    }
+});
+
+// navbar.js or another page control may change data-theme in this same tab.
+// Save that change so every page uses the same preference after navigation.
+const sharedThemeObserver = new MutationObserver(() => {
+    const current = document.body.getAttribute("data-theme") === "light" ? "light" : "dark";
+    try {
+        if (localStorage.getItem(THEME_STORAGE_KEY) !== current) {
+            localStorage.setItem(THEME_STORAGE_KEY, current);
+        }
+    } catch (error) {
+        console.warn("Could not synchronize theme preference:", error);
+    }
+});
+sharedThemeObserver.observe(document.body, {
+    attributes: true,
+    attributeFilter: ["data-theme"]
+});
+
+// Optional event for theme buttons that dispatch a shared theme event.
+window.addEventListener("dailyGraceThemeChanged", event => {
+    const theme = event.detail?.theme === "light" ? "light" : "dark";
+    applySharedTheme(theme, true);
+});
+
+/* =========================================================
+   LOAD CHURCH BRAND AND DAILY GRACE BANNER
+========================================================= */
+async function loadAppSettings() {
+    const { data, error } = await db
+        .from("app_settings")
+        .select("id,settings")
+        .eq("id", 1)
+        .maybeSingle();
+
+    if (error) {
+        console.error("App settings error:", error);
+        return;
+    }
+
+    const settings = data?.settings || {};
+    const images = settings.images || {};
+
+    const churchName =
+        settings.church_name ||
+        settings.brand_name ||
+        settings.app_name ||
+        "Mobilization Church Balilihan";
+
+    $("churchBrand").textContent = churchName;
+
+    // Daily Grace banner: app_settings -> settings.images.devotional
+    const bannerURL = images.devotional;
+    const banner = $("devotionalBanner");
+    const placeholder = $("bannerPlaceholder");
+
+    banner.hidden = true;
+    banner.removeAttribute("src");
+
+    if (typeof bannerURL === "string" && bannerURL.trim()) {
+        banner.onload = () => {
+            banner.hidden = false;
+            placeholder.style.display = "none";
+        };
+        banner.onerror = () => {
+            banner.hidden = true;
+            placeholder.style.display = "grid";
+            console.warn("Daily Grace banner could not be loaded:", bannerURL);
+        };
+        banner.src = bannerURL.trim();
+    }
+}
+
+/* =========================================================
+   LOAD DEVOTIONALS FROM SUPABASE
+   Expected table: daily_challenges
+   Expected fields: date, title, scripture, message,
+   reading_assignment, prepared_by, key_message, description
+========================================================= */
+async function loadDevotionals() {
+    $("readingList").innerHTML = `
+        <div class="loading-state">
+            <i class="fa-solid fa-spinner fa-spin"></i> Loading daily readings...
+        </div>`;
+
+    const { data, error } = await db
+        .from("daily_challenges")
+        .select("*")
+        .order("date", { ascending: true });
+
+    if (error) {
+        console.error("Daily devotional loading error:", error);
+        $("readingList").innerHTML = `
+            <div class="empty-state">
+                Unable to load daily readings.<br>
+                Please check the Supabase table and public SELECT policy.
+                <br><br><small>${escapeHTML(error.message)}</small>
+            </div>`;
+        $("devotionalTitle").textContent = "Unable to load devotional";
+        $("devotionalMessage").textContent = "Please try again later.";
+        return;
+    }
+
+    devotionals = (data || []).map(item => ({
+        ...item,
+        date: String(item.date || "").slice(0, 10)
+    })).filter(item => item.date);
+
+    populateFilters();
+
+    const matchingDate = devotionals.find(item => item.date === selectedDate);
+    if (!matchingDate && devotionals.length) {
+        selectedDate = devotionals[devotionals.length - 1].date;
+        const selected = parseLocalDate(selectedDate);
+        selectedMonth = selected.getMonth();
+        selectedYear = selected.getFullYear();
+        $("monthFilter").value = String(selectedMonth);
+        $("yearFilter").value = String(selectedYear);
+    }
+
+    renderAll();
+}
+
+/* =========================================================
+   FILTERS
+========================================================= */
+function populateFilters() {
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+
+    $("monthFilter").innerHTML = monthNames.map((month, index) =>
+        `<option value="${index}">${month}</option>`
+    ).join("");
+
+    const years = [...new Set([
+        new Date().getFullYear(),
+        ...devotionals.map(item => parseLocalDate(item.date).getFullYear())
+    ])].sort((a, b) => a - b);
+
+    $("yearFilter").innerHTML = years.map(year =>
+        `<option value="${year}">${year}</option>`
+    ).join("");
+
+    $("monthFilter").value = String(selectedMonth);
+    $("yearFilter").value = String(selectedYear);
+}
+
+function getMonthDevotionals() {
+    return devotionals.filter(item => {
+        const date = parseLocalDate(item.date);
+        return date.getMonth() === selectedMonth &&
+               date.getFullYear() === selectedYear;
+    });
+}
+
+function getFilteredDevotionals() {
+    const query = searchTerm.trim().toLowerCase();
+
+    return getMonthDevotionals().filter(item => {
+        if (!query) return true;
+        return [
+            item.title,
+            item.scripture,
+            item.message,
+            item.key_message,
+            item.description,
+            item.reading_assignment,
+            item.prepared_by
+        ].some(value => String(value || "").toLowerCase().includes(query));
+    });
+}
+
+$("monthFilter").addEventListener("change", () => {
+    selectedMonth = Number($("monthFilter").value);
+    syncSelectedDateToFilter();
+    renderAll();
+});
+
+$("yearFilter").addEventListener("change", () => {
+    selectedYear = Number($("yearFilter").value);
+    syncSelectedDateToFilter();
+    renderAll();
+});
+
+$("searchInput").addEventListener("input", event => {
+    searchTerm = event.target.value;
+    renderReadingList();
+});
+
+function syncSelectedDateToFilter() {
+    const current = parseLocalDate(selectedDate);
+    if (current.getMonth() !== selectedMonth || current.getFullYear() !== selectedYear) {
+        const first = getMonthDevotionals()[0];
+        selectedDate = first ? first.date : `${selectedYear}-${String(selectedMonth + 1).padStart(2,"0")}-01`;
+    }
+}
+
+/* =========================================================
+   RENDER ALL CONTENT
+========================================================= */
+function renderAll() {
+    renderDevotional();
+    renderCalendar();
+    renderReadingList();
+    renderResponseForm();
+}
+
+function renderDevotional() {
+    const item = devotionals.find(entry => entry.date === selectedDate);
+
+    $("devotionalDate").textContent = formatDate(selectedDate);
+
+    if (!item) {
+        $("devotionalTitle").textContent = "No devotional available";
+        $("preparedBy").textContent = "Prepared by: Church Administrator";
+        $("scriptureText").textContent = "No Scripture has been published for this date.";
+        $("readingAssignment").textContent = "";
+        $("devotionalMessage").textContent =
+            "Please select another date or check back when the church administrator publishes a devotional.";
+        $("devotionalStatus").innerHTML =
+            `<span class="status pending"><i class="fa-regular fa-clock"></i> No Devotional</span>`;
+        return;
+    }
+
+    $("devotionalTitle").textContent = item.title || "Daily Devotional";
+    $("preparedBy").textContent = "Prepared by: " + (item.prepared_by || "Church Administrator");
+    $("scriptureText").textContent = item.scripture || "Scripture not provided.";
+    $("readingAssignment").textContent = item.reading_assignment
+        ? "Daily Bible Reading: " + item.reading_assignment
+        : "";
+    $("devotionalMessage").textContent =
+        item.message || item.description || item.key_message || "";
+
+    if (isCompleted(selectedDate)) {
+        $("devotionalStatus").innerHTML =
+            `<span class="status completed"><i class="fa-solid fa-circle-check"></i> Completed</span>`;
+    } else {
+        $("devotionalStatus").innerHTML =
+            `<span class="status pending"><i class="fa-regular fa-clock"></i> Not Yet Completed</span>`;
+    }
+}
+
+/* =========================================================
+   CALENDAR
+========================================================= */
+function renderCalendar() {
+    const monthDate = new Date(selectedYear, selectedMonth, 1);
+    const monthName = monthDate.toLocaleDateString("en-US", { month: "long" });
+
+    $("calendarMonth").textContent = `${monthName} ${selectedYear}`;
+
+    const entries = getMonthDevotionals();
+    const completedCount = entries.filter(item => isCompleted(item.date)).length;
+    const total = entries.length;
+    const percent = total ? Math.round((completedCount / total) * 100) : 0;
+
+    $("monthCount").textContent = `${completedCount}/${total}`;
+    $("monthPercent").textContent = `${percent}% completed`;
+    $("monthProgressFill").style.width = `${percent}%`;
+
+    const firstWeekday = monthDate.getDay();
+    const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
+    const today = localDateString(new Date());
+
+    const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    let html = weekdays.map(day =>
+        `<div class="calendar-weekday">${day}</div>`
+    ).join("");
+
+    for (let i = 0; i < firstWeekday; i++) {
+        html += `<div class="calendar-day empty"></div>`;
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+        const date = `${selectedYear}-${String(selectedMonth + 1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+        const hasDevotional = devotionals.some(item => item.date === date);
+        const done = isCompleted(date);
+        const classes = [
+            "calendar-day",
+            date === selectedDate ? "selected" : "",
+            date === today ? "today" : "",
+            done ? "done" : ""
+        ].filter(Boolean).join(" ");
+
+        html += `
+            <button type="button" class="${classes}"
+                data-date="${date}"
+                title="${hasDevotional ? "Open devotional" : "No devotional published"}"
+                ${hasDevotional ? "" : 'style="opacity:.45"'}
+                ${hasDevotional ? "" : "disabled"}>
+                ${day}
+            </button>`;
+    }
+
+    $("calendarGrid").innerHTML = html;
+
+    $("calendarGrid").querySelectorAll("[data-date]").forEach(button => {
+        button.addEventListener("click", () => selectDate(button.dataset.date));
+    });
+}
+
+/* =========================================================
+   DAILY READINGS LIST
+========================================================= */
+function renderReadingList() {
+    const list = getFilteredDevotionals();
+
+    if (!list.length) {
+        $("readingList").innerHTML = `
+            <div class="empty-state">
+                No devotional readings found for this month or search.
+            </div>`;
+        return;
+    }
+
+    $("readingList").innerHTML = list.map(item => {
+        const done = isCompleted(item.date);
+        return `
+            <div class="reading-item ${item.date === selectedDate ? "active" : ""}"
+                 data-date="${escapeHTML(item.date)}">
+                <div>
+                    <strong>${escapeHTML(item.title || "Daily Devotional")}</strong>
+                    <small>${escapeHTML(item.scripture || "Scripture not provided")} · ${escapeHTML(formatDate(item.date))}</small>
+                </div>
+                <span class="reading-check ${done ? "done" : ""}"
+                      title="${done ? "Completed" : "Not yet completed"}">
+                    <i class="fa-solid ${done ? "fa-check" : "fa-clock"}"></i>
+                </span>
+            </div>`;
+    }).join("");
+
+    $("readingList").querySelectorAll(".reading-item").forEach(row => {
+        row.addEventListener("click", () => selectDate(row.dataset.date));
+    });
+}
+
+/* =========================================================
+   SELECT DATE / PREVIOUS / NEXT
+========================================================= */
+function selectDate(date) {
+    selectedDate = date;
+    const parsed = parseLocalDate(date);
+    selectedMonth = parsed.getMonth();
+    selectedYear = parsed.getFullYear();
+
+    if ([...$("monthFilter").options].some(o => Number(o.value) === selectedMonth)) {
+        $("monthFilter").value = String(selectedMonth);
+    }
+    if ([...$("yearFilter").options].some(o => Number(o.value) === selectedYear)) {
+        $("yearFilter").value = String(selectedYear);
+    } else {
+        const option = document.createElement("option");
+        option.value = String(selectedYear);
+        option.textContent = String(selectedYear);
+        $("yearFilter").appendChild(option);
+        $("yearFilter").value = String(selectedYear);
+    }
+
+    renderAll();
+    $("responsePanel").scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+function moveToAdjacentDevotional(direction) {
+    if (!devotionals.length) return;
+
+    const sorted = [...devotionals].sort((a,b) => a.date.localeCompare(b.date));
+    const currentIndex = sorted.findIndex(item => item.date === selectedDate);
+    let nextIndex = currentIndex + direction;
+
+    if (currentIndex === -1) {
+        nextIndex = direction > 0 ? 0 : sorted.length - 1;
+    }
+
+    if (nextIndex >= 0 && nextIndex < sorted.length) {
+        selectDate(sorted[nextIndex].date);
+    } else {
+        showToast(direction > 0 ? "This is the latest devotional." : "This is the first devotional.");
+    }
+}
+
+$("previousDay").addEventListener("click", () => moveToAdjacentDevotional(-1));
+$("nextDay").addEventListener("click", () => moveToAdjacentDevotional(1));
+
+/* =========================================================
+   RESPONSE FORM - STEP ONE AND STEP TWO
+========================================================= */
+function renderResponseForm() {
+    const saved = responseFor(selectedDate);
+
+    $("profileForm").classList.add("hidden");
+    $("reflectionForm").classList.add("hidden");
+    $("completedView").classList.add("hidden");
+    $("saveMessage").classList.add("hidden");
+
+    if (saved?.completed) {
+        $("responseStatus").className = "status completed";
+        $("responseStatus").innerHTML = '<i class="fa-solid fa-circle-check"></i> Completed';
+
+        $("completedView").classList.remove("hidden");
+        $("savedSummary").innerHTML = `
+            <strong style="color:var(--text)">Name:</strong> ${escapeHTML(saved.fullName || "")}<br>
+            <strong style="color:var(--text)">Device:</strong> ${escapeHTML(saved.deviceType || "")}
+            ${saved.deviceBrand ? " — " + escapeHTML(saved.deviceBrand) : ""}<br>
+            <strong style="color:var(--text)">Reflection:</strong> ${escapeHTML(saved.reflection || "—")}<br>
+            <strong style="color:var(--text)">Application:</strong> ${escapeHTML(saved.application || "—")}<br>
+            <strong style="color:var(--text)">Prayer:</strong> ${escapeHTML(saved.prayer || "—")}
+        `;
+        return;
+    }
+
+    $("responseStatus").className = "status pending";
+    $("responseStatus").innerHTML = '<i class="fa-regular fa-clock"></i> Not Yet';
+
+    if (saved?.profileSaved) {
+        fillProfile(saved);
+        fillReflection(saved);
+        $("reflectionForm").classList.remove("hidden");
+    } else {
+        fillProfile(saved || {});
+        $("profileForm").classList.remove("hidden");
+    }
+}
+
+function fillProfile(saved) {
+    $("fullName").value = saved.fullName || "";
+    $("deviceType").value = saved.deviceType || "";
+    $("deviceBrand").value = saved.deviceBrand || "";
+    $("readingDone").checked = saved.readingDone === true;
+}
+
+function fillReflection(saved) {
+    $("reflection").value = saved.reflection || "";
+    $("application").value = saved.application || "";
+    $("prayer").value = saved.prayer || "";
+    $("completeCheck").checked = false;
+}
+
+/* STEP ONE: SAVE PROFILE AND PROCEED */
+$("profileForm").addEventListener("submit", event => {
+    event.preventDefault();
+
+    const item = devotionals.find(entry => entry.date === selectedDate);
+    if (!item) {
+        showToast("There is no devotional published for this date.");
+        return;
+    }
+
+    const fullName = $("fullName").value.trim();
+    const deviceType = $("deviceType").value;
+    const deviceBrand = $("deviceBrand").value.trim();
+    const readingDone = $("readingDone").checked;
+
+    if (!fullName || !deviceType) {
+        showToast("Please enter your name and select your device.");
+        return;
+    }
+
+    if (!readingDone) {
+        showToast("Please confirm that you have completed the Bible reading.");
+        return;
+    }
+
+    const button = $("proceedBtn");
+    button.disabled = true;
+    button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+
+    responseData[selectedDate] = {
+        ...(responseFor(selectedDate) || {}),
+        fullName,
+        deviceType,
+        deviceBrand,
+        readingDone: true,
+        profileSaved: true,
+        completed: false
+    };
+
+    const saved = saveResponses();
+
+    button.disabled = false;
+    button.innerHTML = '<i class="fa-solid fa-arrow-right"></i> Save &amp; Proceed';
+
+    if (!saved) return;
+
+    fillReflection(responseData[selectedDate]);
+    $("profileForm").classList.add("hidden");
+    $("reflectionForm").classList.remove("hidden");
+    showToast("Details saved. Continue with your reflection and prayer.");
+});
+
+/* STEP TWO: SAVE AND COMPLETE */
+$("reflectionForm").addEventListener("submit", event => {
+    event.preventDefault();
+
+    const reflection = $("reflection").value.trim();
+    const application = $("application").value.trim();
+    const prayer = $("prayer").value.trim();
+
+    if (!reflection || !application || !prayer) {
+        showToast("Please complete your reflection, application, and prayer.");
+        return;
+    }
+
+    if (!$("completeCheck").checked) {
+        showToast("Please check the box to confirm your devotional is complete.");
+        return;
+    }
+
+    const button = $("completeBtn");
+    button.disabled = true;
+    button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+
+    responseData[selectedDate] = {
+        ...(responseFor(selectedDate) || {}),
+        reflection,
+        application,
+        prayer,
+        completed: true,
+        completedAt: new Date().toISOString()
+    };
+
+    const saved = saveResponses();
+
+    button.disabled = false;
+    button.innerHTML = '<i class="fa-solid fa-check"></i> Save &amp; Complete';
+
+    if (!saved) return;
+
+    renderAll();
+    showToast("Congratulations! Your Daily Grace is completed.");
+});
+
+/* BACK TO PROFILE */
+$("backToProfile").addEventListener("click", () => {
+    const saved = responseFor(selectedDate) || {};
+    fillProfile(saved);
+    $("reflectionForm").classList.add("hidden");
+    $("profileForm").classList.remove("hidden");
+});
+
+/* EDIT COMPLETED RESPONSE */
+$("editResponse").addEventListener("click", () => {
+    const saved = responseFor(selectedDate);
+    if (!saved) return;
+
+    responseData[selectedDate] = {
+        ...saved,
+        completed: false,
+        profileSaved: true
+    };
+    saveResponses();
+
+    fillProfile(saved);
+    fillReflection(saved);
+
+    $("completedView").classList.add("hidden");
+    $("reflectionForm").classList.remove("hidden");
+    $("responseStatus").className = "status pending";
+    $("responseStatus").innerHTML = '<i class="fa-regular fa-clock"></i> Editing';
+    showToast("You can now edit your devotional response.");
+});
+
+/* =========================================================
+   START PAGE
+========================================================= */
+async function initializePage() {
+    await Promise.all([
+        loadAppSettings(),
+        loadDevotionals()
+    ]);
+}
+
+initializePage();
+</script>
+
+</body>
+</html>

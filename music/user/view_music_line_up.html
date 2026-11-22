@@ -1,0 +1,1763 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07111f">
+<title>Music Line Up | Daily Grace</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+:root {
+    --bg:#07111f;
+    --panel:#101d30;
+    --panel2:#14243a;
+    --line:rgba(148,163,184,.16);
+    --txt:#f3f7fc;
+    --muted:#9aabc0;
+    --blue:#38bdf8;
+    --violet:#818cf8;
+}
+
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+    margin:0;
+    background:radial-gradient(circle at 10% 0%,#12304755,transparent 30%),var(--bg);
+    color:var(--txt);
+    font-family:'DM Sans',sans-serif;
+}
+
+.page {
+    width:min(1180px,calc(100% - 32px));
+    margin:auto;
+}
+
+/* HERO */
+
+.hero {
+    display:grid;
+    grid-template-columns:1.08fr .92fr;
+    gap:28px;
+    align-items:center;
+    padding:48px 0 32px;
+}
+
+.eyebrow {
+    color:var(--blue);
+    font-size:.82rem;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+}
+
+.eyebrow i { margin-right:8px; }
+
+.hero h1 {
+    font:800 clamp(2.6rem,5vw,4.4rem)/1.05 Manrope;
+    margin:16px 0;
+    letter-spacing:-.05em;
+}
+
+.hero p {
+    color:var(--muted);
+    line-height:1.8;
+    max-width:630px;
+}
+
+/* BANNER */
+
+.banner {
+    height:300px;
+    border:1px solid var(--line);
+    border-radius:24px;
+    overflow:hidden;
+    position:relative;
+    background:linear-gradient(135deg,#173b56,#111e31);
+    box-shadow:0 22px 65px #0005;
+}
+
+.banner img {
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.banner img[hidden] { display:none; }
+
+.banner:after {
+    content:"";
+    position:absolute;
+    inset:45% 0 0;
+    background:linear-gradient(transparent,#03091299);
+    pointer-events:none;
+}
+
+.banner span {
+    position:absolute;
+    bottom:20px;
+    left:22px;
+    z-index:1;
+    font:700 1rem Manrope;
+    pointer-events:none;
+}
+
+/* SECTION */
+
+.section-head {
+    display:flex;
+    justify-content:space-between;
+    align-items:end;
+    gap:15px;
+    margin:25px 0 18px;
+}
+
+.section-head h2 {
+    font:800 1.45rem Manrope;
+    margin:0 0 6px;
+}
+
+.section-head p {
+    color:var(--muted);
+    margin:0;
+    font-size:.92rem;
+}
+
+/* SEARCH */
+
+.search { position:relative; }
+
+.search i {
+    position:absolute;
+    left:13px;
+    top:13px;
+    color:var(--muted);
+}
+
+.search input {
+    width:260px;
+    padding:11px 12px 11px 37px;
+    border:1px solid var(--line);
+    border-radius:11px;
+    background:var(--panel);
+    color:var(--txt);
+    outline:none;
+}
+
+/* SETLIST */
+
+.setlist {
+    margin:0 0 18px;
+    background:linear-gradient(145deg,#14243af2,#0d192af5);
+    border:1px solid var(--line);
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 18px 50px #0003;
+}
+
+.set-head {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    padding:18px 21px;
+    border-bottom:1px solid var(--line);
+    background:#ffffff06;
+}
+
+.lead {
+    display:flex;
+    gap:12px;
+    align-items:center;
+}
+
+.lead-icon {
+    width:42px;
+    height:42px;
+    border-radius:13px;
+    display:grid;
+    place-items:center;
+    background:#38bdf81f;
+    color:var(--blue);
+}
+
+.lead h3 {
+    font:700 1rem Manrope;
+    margin:0 0 4px;
+}
+
+.lead small { color:var(--muted); }
+
+.date {
+    font-size:.8rem;
+    color:#c6d6e8;
+    background:#94a3b81a;
+    border:1px solid var(--line);
+    padding:8px 12px;
+    border-radius:30px;
+    white-space:nowrap;
+}
+
+/* TABLE */
+
+.table-wrap { overflow-x:auto; }
+
+table {
+    width:100%;
+    border-collapse:collapse;
+    min-width:650px;
+}
+
+th,td {
+    padding:14px 16px;
+    text-align:left;
+    border-bottom:1px solid var(--line);
+}
+
+th {
+    font-size:.7rem;
+    letter-spacing:.09em;
+    color:var(--muted);
+    text-transform:uppercase;
+    background:#ffffff04;
+    white-space:nowrap;
+}
+
+tbody tr:last-child td { border:0; }
+
+td { font-size:.91rem; }
+
+.num {
+    color:var(--muted);
+    width:55px;
+}
+
+.category { width:145px; }
+
+.category-badge {
+    display:inline-block;
+    padding:6px 10px;
+    border-radius:20px;
+    font-size:.72rem;
+    font-weight:700;
+    color:#bae6fd;
+    background:#38bdf81c;
+    border:1px solid #38bdf833;
+    white-space:nowrap;
+}
+
+.key {
+    text-align:center;
+    width:90px;
+}
+
+.key b {
+    display:inline-block;
+    padding:6px 11px;
+    border-radius:8px;
+    background:#818cf826;
+    color:#d1d3ff;
+}
+
+.action {
+    text-align:right;
+    width:95px;
+}
+
+.view {
+    padding:8px 13px;
+    border-radius:9px;
+    background:#38bdf81c;
+    border:1px solid #38bdf833;
+    color:var(--blue);
+    font-weight:700;
+    cursor:pointer;
+}
+
+.view:hover { background:#38bdf833; }
+
+.empty {
+    padding:38px 20px;
+    text-align:center;
+    color:var(--muted);
+}
+
+.empty i {
+    display:block;
+    font-size:1.8rem;
+    margin-bottom:10px;
+}
+
+/* PAGINATION */
+
+.paging {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    padding:16px 0 38px;
+    color:var(--muted);
+    font-size:.88rem;
+}
+
+.pages {
+    display:flex;
+    gap:7px;
+}
+
+.page-btn {
+    padding:9px 13px;
+    border-radius:9px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    color:var(--txt);
+    cursor:pointer;
+}
+
+.page-btn.active {
+    background:var(--blue);
+    color:#06111e;
+}
+
+.page-btn:disabled {
+    opacity:.35;
+    cursor:not-allowed;
+}
+
+/* FOOTER */
+
+footer {
+    border-top:1px solid var(--line);
+    padding:24px 0 32px;
+    color:var(--muted);
+    font-size:.85rem;
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+footer strong { color:var(--txt); }
+
+/* SCROLL TOP */
+
+.top {
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    width:45px;
+    height:45px;
+    border-radius:13px;
+    border:1px solid var(--line);
+    background:var(--panel2);
+    color:var(--blue);
+    display:none;
+    place-items:center;
+    cursor:pointer;
+    z-index:10;
+}
+
+.top.show { display:grid; }
+
+/* MODAL */
+
+.backdrop {
+    position:fixed;
+    inset:0;
+    background:#020810c9;
+    backdrop-filter:blur(8px);
+    z-index:100;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:18px;
+}
+
+.backdrop.open { display:flex; }
+
+.modal {
+    width:min(1080px,100%);
+    max-height:95vh;
+    overflow:auto;
+    background:#0d192a;
+    border:1px solid #94a3b83d;
+    border-radius:20px;
+    box-shadow:0 30px 100px #0009;
+}
+
+.modal-head {
+    position:sticky;
+    top:0;
+    background:#0d192af5;
+    backdrop-filter:blur(10px);
+    z-index:2;
+    padding:16px 20px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.modal-head h3 {
+    font:800 1rem Manrope;
+    margin:0;
+}
+
+.close {
+    width:36px;
+    height:36px;
+    border-radius:9px;
+    background:var(--panel2);
+    border:1px solid var(--line);
+    color:var(--txt);
+    cursor:pointer;
+}
+
+.modal-body {
+    display:grid;
+    grid-template-columns:255px 1fr;
+    gap:18px;
+    padding:18px;
+}
+
+.editor {
+    padding:16px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:14px;
+    height:max-content;
+}
+
+.editor h4 {
+    font:700 .9rem Manrope;
+    margin:0 0 16px;
+}
+
+.control { margin-bottom:16px; }
+
+.control label {
+    display:flex;
+    justify-content:space-between;
+    color:var(--muted);
+    font-size:.78rem;
+    margin-bottom:8px;
+}
+
+.control input {
+    width:100%;
+    accent-color:var(--blue);
+}
+
+.control select {
+    width:100%;
+    padding:10px;
+    border-radius:8px;
+    background:#0c192a;
+    color:var(--txt);
+    border:1px solid var(--line);
+}
+
+.hint {
+    font-size:.75rem;
+    color:var(--muted);
+    line-height:1.5;
+}
+
+.download {
+    width:100%;
+    padding:12px;
+    background:linear-gradient(100deg,var(--blue),var(--violet));
+    color:#06111e;
+    border:0;
+    border-radius:10px;
+    font-weight:800;
+    cursor:pointer;
+}
+
+/* POSTER */
+
+.preview {
+    overflow:auto;
+    background:#07111f;
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:14px;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+}
+
+.poster {
+    width:850px;
+    min-height:590px;
+    max-width:100%;
+    background:#f7f9fc;
+    color:#172b42;
+    padding:45px 40px 30px;
+    display:flex;
+    flex-direction:column;
+    font-family:Manrope,sans-serif;
+    box-shadow:0 12px 35px #0005;
+}
+
+.poster-brand {
+    text-align:center;
+    text-transform:uppercase;
+    letter-spacing:.16em;
+    font-size:12px;
+    color:#60738a;
+    font-weight:800;
+}
+
+.poster h2 {
+    text-align:center;
+    font-size:35px;
+    margin:12px 0 8px;
+    color:#132b45;
+}
+
+.poster-meta {
+    text-align:center;
+    color:#62748a;
+    font-size:14px;
+    margin-bottom:25px;
+}
+
+.poster-line {
+    width:65px;
+    height:3px;
+    background:#38bdf8;
+    margin:0 auto 24px;
+}
+
+.poster table { min-width:0; }
+
+.poster th {
+    background:#eaf0f7;
+    color:#53667c;
+    font-size:11px;
+    padding:12px 8px;
+}
+
+.poster td {
+    color:#172b42;
+    border-bottom:1px solid #dce4ed;
+    padding:13px 8px;
+    font-size:var(--poster-size,16px);
+}
+
+.poster .poster-key {
+    text-align:center;
+    color:#4259a0;
+    font-weight:800;
+}
+
+.poster .poster-category {
+    color:#1673a0;
+    font-weight:700;
+}
+
+.poster-foot {
+    margin-top:auto;
+    padding-top:25px;
+    text-align:center;
+    color:#62748a;
+    font-size:12px;
+    letter-spacing:.04em;
+}
+
+.poster-foot strong { color:#253e5a; }
+
+/* SHARED LIGHT / DARK THEME */
+
+body[data-theme="light"] {
+    --bg:#f1f5f9;
+    --panel:#ffffff;
+    --panel2:#e8eef5;
+    --line:rgba(15,23,42,.13);
+    --txt:#172033;
+    --muted:#64748b;
+    background:radial-gradient(circle at 10% 0%,#d9f1ff,transparent 32%),#f1f5f9;
+    color:var(--txt);
+}
+
+body[data-theme="light"] .setlist {
+    background:linear-gradient(145deg,#ffffff,#f8fafc);
+    box-shadow:0 12px 35px rgba(15,23,42,.07);
+}
+
+body[data-theme="light"] .set-head,
+body[data-theme="light"] th {
+    background:rgba(15,23,42,.035);
+}
+
+body[data-theme="light"] .date {
+    color:#475569;
+    background:#e8eef5;
+}
+
+body[data-theme="light"] .key b {
+    color:#4656a5;
+    background:rgba(99,102,241,.10);
+}
+
+body[data-theme="light"] .category-badge {
+    color:#0369a1;
+    background:#e0f2fe;
+    border-color:#bae6fd;
+}
+
+body[data-theme="light"] .search input,
+body[data-theme="light"] .page-btn,
+body[data-theme="light"] .close {
+    background:#fff;
+    color:var(--txt);
+}
+
+body[data-theme="light"] .view {
+    color:#0369a1;
+    background:rgba(14,165,233,.09);
+}
+
+body[data-theme="light"] .modal {
+    background:#f8fafc;
+    border-color:rgba(15,23,42,.15);
+}
+
+body[data-theme="light"] .modal-head {
+    background:rgba(248,250,252,.96);
+}
+
+body[data-theme="light"] .editor { background:#fff; }
+
+body[data-theme="light"] .control select {
+    background:#fff;
+    color:#172033;
+}
+
+body[data-theme="light"] .preview { background:#e8eef5; }
+
+body[data-theme="light"] .top { background:#fff; }
+
+body[data-theme="light"] footer strong { color:#172033; }
+
+/* RESPONSIVE */
+
+@media(max-width:800px) {
+    .hero {
+        grid-template-columns:1fr;
+        padding-top:32px;
+    }
+
+    .banner {
+        height:230px;
+        grid-row:1;
+    }
+
+    .hero-copy { grid-row:2; }
+
+    .section-head {
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .search,.search input { width:100%; }
+
+    .modal-body { grid-template-columns:1fr; }
+
+    .editor { order:2; }
+    .preview { order:1; }
+
+    .poster { padding:28px 22px; }
+
+    .poster h2 { font-size:28px; }
+}
+
+@media(max-width:520px) {
+    .page { width:calc(100% - 24px); }
+
+    .banner { height:185px; }
+
+    .hero h1 { font-size:2.55rem; }
+
+    .set-head { padding:14px; }
+
+    .date {
+        font-size:.72rem;
+        padding:7px 9px;
+    }
+
+    th,td { padding:12px 14px; }
+
+    .paging {
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .backdrop { padding:7px; }
+
+    .modal-body { padding:10px; }
+
+    .poster {
+        padding:24px 14px;
+        min-height:500px;
+    }
+
+    .poster h2 { font-size:23px; }
+
+    .poster td { padding:9px 5px; }
+}
+</style>
+</head>
+
+<body>
+
+<div id="navbar"></div>
+
+<main class="page">
+
+    <!-- HERO -->
+    <section class="hero">
+
+        <div class="hero-copy">
+
+            <div class="eyebrow">
+                <i class="fa-solid fa-music"></i>
+                <span id="churchBrand">Mobilization Church Balilihan</span>
+                · Worship Ministry
+            </div>
+
+            <h1>Music Line Up</h1>
+
+            <p>
+                Public worship setlists, musical categories, song titles, and musical keys prepared by church leadership. View or download any setlist as an HD picture.
+            </p>
+
+        </div>
+
+        <div class="banner">
+            <img id="musicBanner" alt="Music Line Up Banner" hidden>
+            <span>Worship in spirit and in truth</span>
+        </div>
+
+    </section>
+
+    <!-- SETLISTS -->
+    <section>
+
+        <div class="section-head">
+
+            <div>
+                <h2>Worship Setlists</h2>
+                <p>Browse upcoming and previous worship music assignments.</p>
+            </div>
+
+            <div class="search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input id="searchInput" type="search" placeholder="Search category, music lead, song...">
+            </div>
+
+        </div>
+
+        <div id="setlistContainer">
+
+            <div class="empty">
+                <i class="fa-solid fa-circle-notch fa-spin"></i>
+                Loading worship setlists...
+            </div>
+
+        </div>
+
+        <div class="paging">
+            <span id="pageInfo">Loading setlists...</span>
+            <div class="pages" id="pageControls"></div>
+        </div>
+
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+
+        <div>
+            © <span id="year"></span>
+            <strong id="footerChurch">Mobilization Church Balilihan</strong>.
+            All rights reserved.
+        </div>
+
+        <div>
+            Worship Ministry ·
+            <span id="churchId">Church ID: MCB</span>
+        </div>
+
+    </footer>
+
+</main>
+
+<button class="top" id="scrollTop" aria-label="Scroll to top">
+    <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+<!-- VIEW MODAL -->
+<div class="backdrop" id="setlistModal" role="dialog" aria-modal="true">
+
+    <div class="modal">
+
+        <div class="modal-head">
+
+            <h3>Setlist Preview & HD Download</h3>
+
+            <button class="close" id="closeModal" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <!-- EDITOR -->
+            <aside class="editor">
+
+                <h4>
+                    <i class="fa-solid fa-sliders"></i>
+                    Poster Settings
+                </h4>
+
+                <div class="control">
+
+                    <label for="fontSize">
+                        Font size
+                        <b><span id="fontSizeValue">16</span> px</b>
+                    </label>
+
+                    <input id="fontSize" type="range" min="1" max="100" value="16">
+
+                </div>
+
+                <div class="control">
+
+                    <label for="fontStyle">Font style</label>
+
+                    <select id="fontStyle">
+                        <option value="Manrope">1 · Manrope</option>
+                        <option value="Arial">2 · Arial</option>
+                        <option value="Georgia">3 · Georgia</option>
+                        <option value="Verdana">4 · Verdana</option>
+                        <option value="Tahoma">5 · Tahoma</option>
+                        <option value="Trebuchet MS">6 · Trebuchet MS</option>
+                        <option value="Times New Roman">7 · Times New Roman</option>
+                        <option value="Courier New">8 · Courier New</option>
+                    </select>
+
+                </div>
+
+                <p class="hint">
+                    Adjust the song-list font size and style. Download the preview as a high-resolution PNG image.
+                </p>
+
+                <button class="download" id="downloadHd">
+                    <i class="fa-solid fa-download"></i>
+                    Download HD Picture
+                </button>
+
+            </aside>
+
+            <!-- POSTER -->
+            <div class="preview">
+
+                <div class="poster" id="poster">
+
+                    <div class="poster-brand" id="posterChurch">
+                        Mobilization Church Balilihan
+                    </div>
+
+                    <h2>Worship Music Line Up</h2>
+
+                    <div class="poster-meta" id="posterMeta">
+                        Worship Leader · Date
+                    </div>
+
+                    <div class="poster-line"></div>
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th style="width:45px">NO.</th>
+                                <th style="width:130px">CATEGORY</th>
+                                <th>SONG LIST</th>
+                                <th style="width:75px;text-align:center">KEY</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="posterSongs"></tbody>
+
+                    </table>
+
+                    <div class="poster-foot">
+
+                        <strong id="posterFooterChurch">
+                            Mobilization Church Balilihan
+                        </strong>
+
+                        <br>
+
+                        <span id="posterChurchId">Church ID: MCB</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- LIBRARIES -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="./navbar.js"></script>
+
+<script>
+
+// ========================================
+// SUPABASE CONNECTION
+// ========================================
+
+const SUPABASE_URL =
+"https://gcmsypmigipyizwcoflw.supabase.co";
+
+const SUPABASE_ANON_KEY =
+"sb_publishable_LRvaH2X8ZuJz8q17_JkxOg_lbi3ob_s";
+
+const db = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+);
+
+const SETTINGS_ID = 1;
+const PAGE_SIZE = 5;
+
+let churchName = "Mobilization Church Balilihan";
+let churchCode = "MCB";
+let setlists = [];
+let page = 1;
+let active = null;
+
+const $ = id => document.getElementById(id);
+
+$("year").textContent = new Date().getFullYear();
+
+
+// ========================================
+// ESCAPE HTML
+// ========================================
+
+function esc(v) {
+
+    return String(v ?? "").replace(/[&<>"']/g, c => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    }[c]));
+
+}
+
+
+// ========================================
+// PARSE SONG DATA
+// Supports category, type, song_category
+// ========================================
+
+function songsOf(v) {
+
+    if (typeof v === "string") {
+
+        try {
+            v = JSON.parse(v);
+        } catch {
+            v = [];
+        }
+
+    }
+
+    if (!Array.isArray(v)) return [];
+
+    return v.map((s, i) => {
+
+        if (typeof s === "string") {
+
+            return {
+                title: s,
+                category: "—",
+                key: "—",
+                tempo: ""
+            };
+
+        }
+
+        return {
+
+            title:
+                s.title ||
+                s.song_title ||
+                s.song ||
+                s.name ||
+                `Song ${i + 1}`,
+
+            // CATEGORY FIELD
+            category:
+                s.category ||
+                s.song_category ||
+                s.type ||
+                s.song_type ||
+                s.group ||
+                "—",
+
+            key:
+                s.key ||
+                s.musical_key ||
+                s.song_key ||
+                "—",
+
+            tempo:
+                s.tempo ||
+                s.bpm ||
+                ""
+
+        };
+
+    });
+
+}
+
+
+// ========================================
+// FORMAT DATE
+// ========================================
+
+function dateText(v) {
+
+    if (!v) return "Date TBA";
+
+    let d = new Date(
+        v.length === 10 ? v + "T00:00:00" : v
+    );
+
+    return isNaN(d)
+        ? "Date TBA"
+        : d.toLocaleDateString("en-PH", {
+            year: "numeric",
+            month: "long",
+            day: "numeric"
+        });
+
+}
+
+
+// ========================================
+// LOAD CHURCH SETTINGS
+// ========================================
+
+async function loadSettings() {
+
+    const { data, error } = await db
+        .from("app_settings")
+        .select("id, settings")
+        .eq("id", SETTINGS_ID)
+        .maybeSingle();
+
+    if (error) {
+
+        console.error("Settings loading error:", error);
+
+        return;
+
+    }
+
+    const settings = data?.settings || {};
+    const images = settings.images || {};
+
+    churchName =
+        settings.church_name ||
+        settings.brand_name ||
+        churchName;
+
+    churchCode =
+        settings.church_id ||
+        settings.church_code ||
+        settings.app_id ||
+        churchCode;
+
+    [
+        "churchBrand",
+        "footerChurch",
+        "posterChurch",
+        "posterFooterChurch"
+    ].forEach(id => {
+        $(id).textContent = churchName;
+    });
+
+    $("churchId").textContent =
+        $("posterChurchId").textContent =
+        "Church ID: " + churchCode;
+
+
+    // MUSIC LINE UP BANNER
+    // app_settings -> ID 1 -> settings -> images -> music
+
+    const bannerUrl = images.music;
+
+    const bannerImage = $("musicBanner");
+
+    bannerImage.hidden = true;
+    bannerImage.removeAttribute("src");
+
+    if (
+        typeof bannerUrl === "string" &&
+        bannerUrl.trim()
+    ) {
+
+        bannerImage.onload = () => {
+            bannerImage.hidden = false;
+        };
+
+        bannerImage.onerror = () => {
+
+            bannerImage.hidden = true;
+
+            console.error(
+                "Music Line Up Banner could not be loaded:",
+                bannerUrl
+            );
+
+        };
+
+        bannerImage.src = bannerUrl.trim();
+
+    } else {
+
+        console.warn(
+            "Music Line Up Banner not found at settings.images.music."
+        );
+
+    }
+
+}
+
+
+// ========================================
+// LOAD MUSIC LINEUPS
+// ========================================
+
+async function loadSetlists() {
+
+    const { data, error } = await db
+        .from("music_lineups")
+        .select("id, service_date, worship_leader, songs")
+        .order("service_date", {
+            ascending: false
+        });
+
+    if (error) {
+
+        $("setlistContainer").innerHTML = `
+
+            <div class="setlist empty">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+                Could not load music lineups.
+
+                <br>
+
+                <small>${esc(error.message)}</small>
+
+            </div>
+
+        `;
+
+        $("pageInfo").textContent = "0 setlists";
+
+        return;
+
+    }
+
+    setlists = (data || []).map(r => ({
+        ...r,
+        songRows: songsOf(r.songs)
+    }));
+
+    render();
+
+}
+
+
+// ========================================
+// RENDER SETLISTS
+// CATEGORY COLUMN ADDED
+// ========================================
+
+function render() {
+
+    let q = $("searchInput").value.toLowerCase().trim();
+
+    let filtered = setlists.filter(r => (
+
+        `${r.worship_leader || ""}
+        ${r.service_date || ""}
+        ${r.songRows.map(s =>
+            s.title + " " +
+            s.category + " " +
+            s.key
+        ).join(" ")}`
+
+    ).toLowerCase().includes(q));
+
+    let pages = Math.max(
+        1,
+        Math.ceil(filtered.length / PAGE_SIZE)
+    );
+
+    page = Math.min(page, pages);
+
+    let start = (page - 1) * PAGE_SIZE;
+
+    let items = filtered.slice(
+        start,
+        start + PAGE_SIZE
+    );
+
+
+    $("setlistContainer").innerHTML = items.length
+
+    ? items.map(r => `
+
+        <article class="setlist">
+
+            <div class="set-head">
+
+                <div class="lead">
+
+                    <div class="lead-icon">
+                        <i class="fa-solid fa-microphone-lines"></i>
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            ${esc(r.worship_leader || "Worship Leader TBA")}
+                        </h3>
+
+                        <small>Music Lead</small>
+
+                    </div>
+
+                </div>
+
+                <span class="date">
+                    <i class="fa-regular fa-calendar"></i>
+                    ${esc(dateText(r.service_date))}
+                </span>
+
+            </div>
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th class="num">NO.</th>
+                            <th class="category">CATEGORY</th>
+                            <th>SONG LIST</th>
+                            <th class="key">KEY</th>
+                            <th class="action">ACTION</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        ${
+                            r.songRows.length
+
+                            ? r.songRows.map((s,i) => `
+
+                                <tr>
+
+                                    <td class="num">
+                                        ${String(i+1).padStart(2,"0")}
+                                    </td>
+
+                                    <td>
+                                        <span class="category-badge">
+                                            ${esc(s.category)}
+                                        </span>
+                                    </td>
+
+                                    <td>
+
+                                        <b>${esc(s.title)}</b>
+
+                                        ${
+                                            s.tempo
+                                            ? `
+                                                <div style="font-size:.75rem;color:var(--muted);margin-top:4px">
+                                                    Tempo: ${esc(s.tempo)}
+                                                </div>
+                                            `
+                                            : ""
+                                        }
+
+                                    </td>
+
+                                    <td class="key">
+                                        <b>${esc(s.key)}</b>
+                                    </td>
+
+                                    <td class="action">
+
+                                        ${
+                                            i === 0
+                                            ? `
+                                                <button class="view" data-view="${esc(r.id)}">
+                                                    <i class="fa-regular fa-eye"></i>
+                                                    View
+                                                </button>
+                                            `
+                                            : ""
+                                        }
+
+                                    </td>
+
+                                </tr>
+
+                            `).join("")
+
+                            : `
+                                <tr>
+                                    <td colspan="5" class="empty">
+                                        No songs added.
+                                    </td>
+                                </tr>
+                            `
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </article>
+
+    `).join("")
+
+    : `
+
+        <div class="setlist empty">
+            <i class="fa-solid fa-music"></i>
+            No worship setlists found.
+        </div>
+
+    `;
+
+
+    // VIEW BUTTONS
+
+    $("setlistContainer")
+        .querySelectorAll("[data-view]")
+        .forEach(b => {
+
+            b.addEventListener("click", () => {
+
+                let r = setlists.find(
+                    x => String(x.id) === b.dataset.view
+                );
+
+                if (r) openSetlist(r);
+
+            });
+
+        });
+
+
+    // PAGINATION
+
+    $("pageInfo").textContent = filtered.length
+
+        ? `Showing ${start + 1}–${Math.min(start + PAGE_SIZE, filtered.length)} of ${filtered.length} setlists`
+
+        : "Showing 0 setlists";
+
+    $("pageControls").innerHTML = "";
+
+
+    function addPage(
+        label,
+        n,
+        disabled = false,
+        activePage = false
+    ) {
+
+        let b = document.createElement("button");
+
+        b.className =
+            "page-btn" + (activePage ? " active" : "");
+
+        b.textContent = label;
+        b.disabled = disabled;
+
+        b.onclick = () => {
+
+            page = n;
+
+            render();
+
+            document.querySelector(".section-head")
+                .scrollIntoView({
+                    behavior: "smooth"
+                });
+
+        };
+
+        $("pageControls").appendChild(b);
+
+    }
+
+    addPage("‹", page - 1, page === 1);
+
+    for (let n = 1; n <= pages; n++) {
+
+        addPage(
+            String(n),
+            n,
+            false,
+            n === page
+        );
+
+    }
+
+    addPage("›", page + 1, page === pages);
+
+}
+
+
+// ========================================
+// OPEN POSTER
+// CATEGORY COLUMN ADDED
+// ========================================
+
+function openSetlist(r) {
+
+    active = r;
+
+    $("posterMeta").textContent =
+        (r.worship_leader || "Worship Leader TBA") +
+        " · " +
+        dateText(r.service_date);
+
+
+    $("posterSongs").innerHTML = r.songRows.map((s,i) => `
+
+        <tr>
+
+            <td>
+                ${String(i+1).padStart(2,"0")}
+            </td>
+
+            <td class="poster-category">
+                ${esc(s.category)}
+            </td>
+
+            <td>
+
+                ${esc(s.title)}
+
+                ${
+                    s.tempo
+                    ? `
+                        <div style="font-size:.78em;color:#718096;margin-top:4px">
+                            Tempo: ${esc(s.tempo)}
+                        </div>
+                    `
+                    : ""
+                }
+
+            </td>
+
+            <td class="poster-key">
+                ${esc(s.key)}
+            </td>
+
+        </tr>
+
+    `).join("") || `
+
+        <tr>
+            <td colspan="4">No songs listed</td>
+        </tr>
+
+    `;
+
+
+    $("setlistModal").classList.add("open");
+
+    document.body.style.overflow = "hidden";
+
+    posterStyle();
+
+}
+
+
+// ========================================
+// CLOSE MODAL
+// ========================================
+
+function closeModal() {
+
+    $("setlistModal").classList.remove("open");
+
+    document.body.style.overflow = "";
+
+}
+
+
+// ========================================
+// POSTER FONT SETTINGS
+// ========================================
+
+function posterStyle() {
+
+    let size = +$("fontSize").value;
+
+    $("fontSizeValue").textContent = size;
+
+    $("poster").style.setProperty(
+        "--poster-size",
+        size + "px"
+    );
+
+    $("poster").style.fontFamily =
+        $("fontStyle").value + ",sans-serif";
+
+}
+
+
+// ========================================
+// DOWNLOAD HD PICTURE
+// ========================================
+
+async function download() {
+
+    if (!active) return;
+
+    let b = $("downloadHd");
+
+    let old = b.innerHTML;
+
+    b.disabled = true;
+
+    b.innerHTML = `
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        Creating HD image...
+    `;
+
+    try {
+
+        let canvas = await html2canvas(
+            $("poster"),
+            {
+                scale:3,
+                backgroundColor:"#f7f9fc",
+                useCORS:true,
+                logging:false
+            }
+        );
+
+        let a = document.createElement("a");
+
+        a.download =
+            "worship-music-lineup-" +
+            (active.service_date || "setlist") +
+            ".png";
+
+        a.href = canvas.toDataURL("image/png");
+
+        a.click();
+
+    } catch(e) {
+
+        console.error(e);
+
+        alert("Unable to create image. Please try again.");
+
+    } finally {
+
+        b.disabled = false;
+
+        b.innerHTML = old;
+
+    }
+
+}
+
+
+// ========================================
+// EVENT LISTENERS
+// ========================================
+
+$("searchInput").addEventListener("input", () => {
+
+    page = 1;
+
+    render();
+
+});
+
+$("closeModal").onclick = closeModal;
+
+$("setlistModal").addEventListener("click", e => {
+
+    if (e.target === $("setlistModal")) {
+        closeModal();
+    }
+
+});
+
+document.addEventListener("keydown", e => {
+
+    if (e.key === "Escape") {
+        closeModal();
+    }
+
+});
+
+$("fontSize").oninput = posterStyle;
+
+$("fontStyle").onchange = posterStyle;
+
+$("downloadHd").onclick = download;
+
+
+// ========================================
+// SCROLL TO TOP
+// ========================================
+
+window.addEventListener("scroll", () => {
+
+    $("scrollTop").classList.toggle(
+        "show",
+        scrollY > 350
+    );
+
+});
+
+$("scrollTop").onclick = () => {
+
+    scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+};
+
+
+// ========================================
+// SHARED LIGHT / DARK THEME
+// SAME KEY AS index.html
+// ========================================
+
+const THEME_STORAGE_KEY = "dailyGraceHomeTheme";
+
+function applySharedTheme(theme) {
+
+    const selected =
+        theme === "light" ? "light" : "dark";
+
+    document.body.setAttribute(
+        "data-theme",
+        selected
+    );
+
+    const themeColor =
+        document.querySelector('meta[name="theme-color"]');
+
+    if (themeColor) {
+
+        themeColor.setAttribute(
+            "content",
+            selected === "light"
+                ? "#f1f5f9"
+                : "#07111f"
+        );
+
+    }
+
+}
+
+function initializeSharedTheme() {
+
+    let savedTheme = "dark";
+
+    try {
+
+        savedTheme =
+            localStorage.getItem(THEME_STORAGE_KEY) || "dark";
+
+    } catch (error) {
+
+        console.warn(
+            "Could not read shared theme preference:",
+            error
+        );
+
+    }
+
+    applySharedTheme(savedTheme);
+
+}
+
+window.addEventListener("storage", event => {
+
+    if (event.key === THEME_STORAGE_KEY) {
+
+        applySharedTheme(
+            event.newValue || "dark"
+        );
+
+    }
+
+});
+
+
+// ========================================
+// INITIALIZE
+// ========================================
+
+(async () => {
+
+    initializeSharedTheme();
+
+    await loadSettings();
+
+    await loadSetlists();
+
+})();
+
+</script>
+
+</body>
+</html>

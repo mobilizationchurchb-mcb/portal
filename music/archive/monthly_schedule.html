@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Schedule | Mobilization Church Balilihan</title>
+
+    <!-- ===== PWA: MANIFEST & ICONS ===== -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1e3a8a">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MCB Grace">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .mcb-main-content {
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            padding: 0 !important;
+            position: relative;
+        }
+
+        .schedule-page {
+            background-color: #f8fafc;
+            color: #0f172a;
+            padding: 24px;
+            min-height: 100%;
+        }
+
+        /* ===== HEADER (centered) ===== */
+        .schedule-header {
+            text-align: center;
+            margin-bottom: 22px;
+        }
+
+        .schedule-title {
+            font-size: 1.9rem;
+            font-weight: 800;
+            color: #1e3a8a;
+            letter-spacing: -0.4px;
+            margin-bottom: 6px;
+        }
+
+        .schedule-subtitle {
+            font-size: 1rem;
+            color: #334155;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .schedule-month {
+            font-size: 0.95rem;
+            color: #2563eb;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-top: 6px;
+        }
+
+        /* ===== CONTROLS ===== */
+        .schedule-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 22px;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 10px;
+            padding: 11px 22px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #16a34a, #15803d);
+            color: #fff;
+            box-shadow: 0 6px 16px rgba(22, 163, 74, 0.35);
+        }
+        .btn-download:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(22, 163, 74, 0.45); }
+
+        .btn-print {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            color: #fff;
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+        }
+        .btn-print:hover { transform: translateY(-2px); box-shadow: 0 10px 22px rgba(37, 99, 235, 0.45); }
+
+        .month-selector {
+            padding: 11px 16px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 9px;
+            font-size: 0.92rem;
+            background: #fff;
+            color: #0f172a;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* ===== TABLE WRAPPER ===== */
+        .schedule-table-wrap {
+            background: #fff;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+            overflow: hidden;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        table.schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        table.schedule-table thead {
+            background: linear-gradient(135deg, #1e3a8a, #1e40af);
+            color: #fff;
+        }
+
+        table.schedule-table th {
+            padding: 12px 10px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border-right: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        table.schedule-table th:last-child { border-right: none; }
+
+        table.schedule-table td {
+            padding: 12px 10px;
+            font-size: 0.85rem;
+            text-align: center;
+            color: #334155;
+            border-bottom: 1px solid #f1f5f9;
+            border-right: 1px solid #f1f5f9;
+            vertical-align: middle;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        table.schedule-table td:last-child { border-right: none; }
+        table.schedule-table tbody tr:last-child td { border-bottom: none; }
+        table.schedule-table tbody tr:hover { background: #f8fafc; }
+
+        .col-date    { width: 14%; }
+        .col-leader  { width: 24%; }
+        .col-songs   { width: 62%; }
+
+        .cell-date    { font-weight: 700; color: #1e3a8a; }
+        .cell-leader  { font-weight: 600; color: #0f172a; }
+        .cell-songs   { font-size: 0.78rem; line-height: 1.45; color: #475569; text-align: left; }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #94a3b8;
+        }
+        .empty-state .emoji { font-size: 2.5rem; display: block; margin-bottom: 8px; }
+
+        /* ===== PAGE BADGE ===== */
+        .page-badge {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 0.78rem;
+            color: #94a3b8;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* ===== SAVING / SUCCESS OVERLAY ===== */
+        .saving-overlay {
+            position: fixed; inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 10000;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s;
+        }
+        .saving-overlay.show { opacity: 1; visibility: visible; }
+
+        .saving-box {
+            background: #fff; border-radius: 16px;
+            padding: 34px 44px; text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            min-width: 240px;
+        }
+        .spinner {
+            width: 46px; height: 46px;
+            border: 4px solid #e2e8f0; border-top-color: #2563eb;
+            border-radius: 50%; margin: 0 auto 14px auto;
+            animation: spin 0.9s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .saving-text { font-size: 0.92rem; font-weight: 600; color: #334155; }
+
+        .success-check {
+            display: none; width: 68px; height: 68px;
+            margin: 0 auto 12px auto;
+        }
+        .success-check.show { display: block; }
+        .checkmark-circle {
+            stroke: #16a34a; stroke-width: 3; fill: none;
+            stroke-dasharray: 166; stroke-dashoffset: 166;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+        .checkmark-check {
+            stroke: #16a34a; stroke-width: 4; fill: none;
+            stroke-linecap: round; stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards;
+        }
+        @keyframes stroke { to { stroke-dashoffset: 0; } }
+
+        .success-text {
+            display: none; font-size: 0.95rem; font-weight: 700; color: #16a34a;
+        }
+        .success-text.show { display: block; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 767px) {
+            .schedule-page { padding: 16px; }
+            .schedule-title { font-size: 1.35rem; }
+            .schedule-subtitle { font-size: 0.88rem; }
+            .schedule-month { font-size: 0.82rem; }
+            .btn { padding: 9px 16px; font-size: 0.82rem; }
+            .schedule-controls { gap: 8px; }
+            table.schedule-table th { font-size: 0.68rem; padding: 8px 4px; }
+            table.schedule-table td { font-size: 0.72rem; padding: 8px 4px; }
+            .cell-songs { font-size: 0.68rem; }
+        }
+
+        /* ===== PRINT ===== */
+        @media print {
+            body {
+                background: #fff !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            /* Itago ang navbar (header, sidebar, footer, install banner) */
+            .mcb-header,
+            .mcb-sidebar,
+            .mcb-left-column,
+            .mcb-footer,
+            .pwa-install-banner,
+            .schedule-controls,
+            .page-badge {
+                display: none !important;
+            }
+
+            .mcb-container,
+            .mcb-main-content {
+                display: block !important;
+                height: auto !important;
+                overflow: visible !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .schedule-page {
+                padding: 0 !important;
+                background: #fff !important;
+                min-height: auto !important;
+            }
+
+            .schedule-header {
+                margin-bottom: 16px !important;
+            }
+
+            .schedule-title { font-size: 1.6rem !important; color: #1e3a8a !important; }
+            .schedule-subtitle { font-size: 0.95rem !important; color: #334155 !important; }
+            .schedule-month { font-size: 0.9rem !important; color: #2563eb !important; }
+
+            .schedule-table-wrap {
+                box-shadow: none !important;
+                border: 1px solid #cbd5e1 !important;
+                max-width: 100% !important;
+                border-radius: 0 !important;
+            }
+
+            table.schedule-table th {
+                background: #1e3a8a !important;
+                color: #fff !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            table.schedule-table td {
+                border-color: #cbd5e1 !important;
+            }
+
+            /* Landscape letter */
+            @page {
+                size: letter landscape;
+                margin: 0.4in;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== PAGE CONTENT ===== -->
+    <div class="schedule-page">
+
+        <!-- ===== HEADER ===== -->
+        <div class="schedule-header">
+            <h1 class="schedule-title">🎶 Monthly Schedule Music Line Up</h1>
+            <p class="schedule-subtitle">Mobilization Church Balilihan</p>
+            <p class="schedule-month" id="monthLabel">Month</p>
+        </div>
+
+        <!-- ===== CONTROLS ===== -->
+        <div class="schedule-controls">
+            <select class="month-selector" id="monthSelector" aria-label="Select month"></select>
+            <button type="button" class="btn btn-download" id="downloadBtn">⬇️ Download HD Image</button>
+            <button type="button" class="btn btn-print" id="printBtn">🖨️ Print</button>
+        </div>
+
+        <!-- ===== TABLE ===== -->
+        <div class="schedule-table-wrap">
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th class="col-date">📅 Date</th>
+                        <th class="col-leader">🎤 Music Leader</th>
+                        <th class="col-songs">🎵 Songs</th>
+                    </tr>
+                </thead>
+                <tbody id="scheduleTableBody"></tbody>
+            </table>
+            <div class="empty-state" id="emptyState" style="display:none;">
+                <span class="emoji">🎼</span>
+                No lineups yet. Add entries in the Table page to see them here.
+            </div>
+        </div>
+
+        <!-- ===== PAGE BADGE ===== -->
+        <div class="page-badge" id="pageBadge"></div>
+
+    </div><!-- /.schedule-page -->
+
+    <!-- ===== SAVING / SUCCESS OVERLAY ===== -->
+    <div class="saving-overlay" id="savingOverlay">
+        <div class="saving-box">
+            <div class="spinner" id="spinner"></div>
+            <svg class="success-check" id="successCheck" viewBox="0 0 100 100">
+                <circle class="checkmark-circle" cx="50" cy="50" r="44" />
+                <path class="checkmark-check" d="M30 52 L44 66 L72 38" />
+            </svg>
+            <div class="saving-text" id="savingText">Generating image...</div>
+            <div class="success-text" id="successText">✅ Downloaded!</div>
+        </div>
+    </div>
+
+    <!-- ===== NAVBAR ===== -->
+    <script src="navbar.js"></script>
+
+    <!-- ============================================================
+         APP LOGIC
+         ============================================================ -->
+    <script>
+        // ---------- PWA: register service worker ----------
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('✅ SW registered:', reg.scope))
+                    .catch(err => console.error('❌ SW failed:', err));
+            });
+        }
+
+        // ---------- DATA SOURCE (shared with table.html) ----------
+        const STORAGE_KEY = 'mcb_music_lineups_v1';
+        let lineups = [];
+
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            lineups = raw ? JSON.parse(raw) : [];
+            if (!Array.isArray(lineups)) lineups = [];
+        } catch (e) {
+            console.warn('Invalid localStorage data, resetting.', e);
+            lineups = [];
+        }
+
+        // ---------- DOM ----------
+        const $ = (id) => document.getElementById(id);
+        const monthSelector   = $('monthSelector');
+        const monthLabel      = $('monthLabel');
+        const scheduleBody    = $('scheduleTableBody');
+        const emptyState      = $('emptyState');
+        const pageBadge       = $('pageBadge');
+        const downloadBtn     = $('downloadBtn');
+        const printBtn        = $('printBtn');
+        const savingOverlay   = $('savingOverlay');
+        const spinner         = $('spinner');
+        const successCheck    = $('successCheck');
+        const savingText      = $('savingText');
+        const successText     = $('successText');
+
+        // ---------- HELPERS ----------
+        function pad(n) { return String(n).padStart(2, '0'); }
+
+        function formatDate(d) {
+            if (!d) return '—';
+            try {
+                const dt = new Date(d + 'T00:00:00');
+                return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            } catch { return d; }
+        }
+
+        function monthKey(dateStr) {
+            // returns "YYYY-MM"
+            return (dateStr || '').slice(0, 7);
+        }
+
+        function monthLabelFromKey(key) {
+            if (!key) return 'Month';
+            const [y, m] = key.split('-');
+            const dt = new Date(Number(y), Number(m) - 1, 1);
+            return dt.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+        }
+
+        function songsSummary(item) {
+            const parts = [];
+            if (item.opening) parts.push(`<strong>Opening:</strong> ${item.opening}`);
+            if (item.welcome) parts.push(`<strong>Welcome:</strong> ${item.welcome}`);
+            if (item.praise && item.praise.length) parts.push(`<strong>Praise:</strong> ${item.praise.join(', ')}`);
+            if (item.worship && item.worship.length) parts.push(`<strong>Worship:</strong> ${item.worship.join(', ')}`);
+            if (item.closing) parts.push(`<strong>Closing:</strong> ${item.closing}`);
+            return parts.length ? parts.join('<br>') : '—';
+        }
+
+        // ---------- POPULATE MONTH SELECTOR ----------
+        function populateMonths() {
+            // gather unique YYYY-MM from lineups
+            const keys = new Set();
+            lineups.forEach(l => { if (l.date) keys.add(monthKey(l.date)); });
+
+            // always add current month
+            const now = new Date();
+            keys.add(`${now.getFullYear()}-${pad(now.getMonth() + 1)}`);
+
+            const sorted = [...keys].sort().reverse();
+
+            monthSelector.innerHTML = '';
+            sorted.forEach(k => {
+                const opt = document.createElement('option');
+                opt.value = k;
+                opt.textContent = monthLabelFromKey(k);
+                monthSelector.appendChild(opt);
+            });
+
+            // default = current month
+            const current = `${now.getFullYear()}-${pad(now.getMonth() + 1)}`;
+            if (sorted.includes(current)) {
+                monthSelector.value = current;
+            } else if (sorted.length) {
+                monthSelector.value = sorted[0];
+            }
+        }
+
+        // ---------- RENDER TABLE ----------
+        function renderTable() {
+            const selected = monthSelector.value || monthKey(new Date().toISOString().slice(0, 10));
+            monthLabel.textContent = monthLabelFromKey(selected);
+
+            const filtered = lineups
+                .filter(l => monthKey(l.date) === selected)
+                .sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+
+            scheduleBody.innerHTML = '';
+
+            if (!filtered.length) {
+                emptyState.style.display = 'block';
+                pageBadge.textContent = '';
+                return;
+            }
+            emptyState.style.display = 'none';
+
+            filtered.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="cell-date">${formatDate(item.date)}</td>
+                    <td class="cell-leader">${item.musicLead || '—'}</td>
+                    <td class="cell-songs">${songsSummary(item)}</td>
+                `;
+                scheduleBody.appendChild(tr);
+            });
+
+            pageBadge.textContent = `Page 1 of 1 • ${filtered.length} lineup${filtered.length > 1 ? 's' : ''}`;
+        }
+
+        // ---------- DOWNLOAD HD IMAGE (landscape letter, 1/4 size) ----------
+        function generateImage() {
+            const selected = monthSelector.value || monthKey(new Date().toISOString().slice(0, 10));
+            const filtered = lineups
+                .filter(l => monthKey(l.date) === selected)
+                .sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+
+            // Landscape Letter @ 150 DPI = 1650 x 1275 px
+            // 1/4 size (so ~825 x 638) — but for HD use 1650x1275 (full landscape letter)
+            const W = 1650;
+            const H = 1275;
+            const PAD = 50;
+
+            const canvas = document.createElement('canvas');
+            canvas.width = W;
+            canvas.height = H;
+            const ctx = canvas.getContext('2d');
+
+            // background
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, W, H);
+
+            // ===== HEADER =====
+            const headerH = 170;
+            const grad = ctx.createLinearGradient(0, 0, W, headerH);
+            grad.addColorStop(0, '#1e3a8a');
+            grad.addColorStop(1, '#2563eb');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, W, headerH);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'center';
+            ctx.font = 'bold 46px Segoe UI, sans-serif';
+            ctx.fillText('MONTHLY SCHEDULE MUSIC LINE UP', W / 2, 70);
+
+            ctx.font = '600 26px Segoe UI, sans-serif';
+            ctx.fillStyle = '#bfdbfe';
+            ctx.fillText('Mobilization Church Balilihan', W / 2, 112);
+
+            ctx.font = 'bold 22px Segoe UI, sans-serif';
+            ctx.fillStyle = '#fbbf24';
+            ctx.fillText(monthLabelFromKey(selected).toUpperCase(), W / 2, 148);
+
+            // ===== TABLE =====
+            const tableX = PAD;
+            const tableY = headerH + 30;
+            const tableW = W - PAD * 2;
+            const colW = [tableW * 0.14, tableW * 0.24, tableW * 0.62];
+            const rowH = 70;
+            const headerRowH = 46;
+
+            // table header
+            ctx.fillStyle = '#1e3a8a';
+            ctx.fillRect(tableX, tableY, tableW, headerRowH);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 18px Segoe UI, sans-serif';
+            ctx.textAlign = 'left';
+            const headers = ['📅 Date', '🎤 Music Leader', '🎵 Songs'];
+            let cx = tableX + 12;
+            headers.forEach((h, i) => {
+                ctx.fillText(h, cx, tableY + 30);
+                cx += colW[i];
+            });
+
+            // table body
+            let ty = tableY + headerRowH;
+            const maxRows = Math.floor((H - ty - 120) / rowH);
+
+            const rows = filtered.slice(0, maxRows);
+
+            rows.forEach((item, idx) => {
+                // zebra
+                if (idx % 2 === 1) {
+                    ctx.fillStyle = '#f8fafc';
+                    ctx.fillRect(tableX, ty, tableW, rowH);
+                }
+
+                // borders
+                ctx.strokeStyle = '#e2e8f0';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(tableX, ty + rowH);
+                ctx.lineTo(tableX + tableW, ty + rowH);
+                ctx.stroke();
+
+                // vertical lines
+                let vx = tableX;
+                for (let i = 0; i < colW.length; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(vx, ty);
+                    ctx.lineTo(vx, ty + rowH);
+                    ctx.stroke();
+                    vx += colW[i];
+                }
+
+                // cells
+                ctx.textAlign = 'left';
+                ctx.font = '600 16px Segoe UI, sans-serif';
+                ctx.fillStyle = '#1e3a8a';
+                ctx.fillText(formatDate(item.date), tableX + 12, ty + 30);
+
+                ctx.font = '600 16px Segoe UI, sans-serif';
+                ctx.fillStyle = '#0f172a';
+                ctx.fillText((item.musicLead || '—').slice(0, 22), tableX + colW[0] + 12, ty + 30);
+
+                // songs — condensed
+                ctx.font = '500 13px Segoe UI, sans-serif';
+                ctx.fillStyle = '#475569';
+                const songs = [];
+                if (item.opening) songs.push(`Opening: ${item.opening}`);
+                if (item.welcome) songs.push(`Welcome: ${item.welcome}`);
+                if (item.praise && item.praise.length) songs.push(`Praise: ${item.praise.join(', ')}`);
+                if (item.worship && item.worship.length) songs.push(`Worship: ${item.worship.join(', ')}`);
+                if (item.closing) songs.push(`Closing: ${item.closing}`);
+
+                let sy = ty + 22;
+                songs.slice(0, 4).forEach(line => {
+                    ctx.fillText(line.length > 40 ? line.slice(0, 40) + '…' : line, tableX + colW[0] + colW[1] + 12, sy);
+                    sy += 15;
+                });
+
+                ty += rowH;
+            });
+
+            // ===== FOOTER =====
+            const footerY = H - 90;
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(0, footerY, W, 90);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'center';
+            ctx.font = '600 22px Segoe UI, sans-serif';
+            ctx.fillText('Mobilization Church Balilihan  •  Music Ministry', W / 2, footerY + 38);
+
+            ctx.font = '400 16px Segoe UI, sans-serif';
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillText('Generated by MCB Grace • version 1 build by IT MCB', W / 2, footerY + 64);
+
+            return canvas;
+        }
+
+        // ---------- DOWNLOAD FLOW ----------
+        function showLoading() {
+            spinner.style.display = 'block';
+            successCheck.classList.remove('show');
+            savingText.textContent = 'Generating image...';
+            savingText.style.display = 'block';
+            successText.classList.remove('show');
+            savingOverlay.classList.add('show');
+        }
+
+        function showSuccess() {
+            spinner.style.display = 'none';
+            savingText.style.display = 'none';
+            successCheck.classList.add('show');
+            successText.textContent = '✅ Downloaded!';
+            successText.classList.add('show');
+        }
+
+        function hideOverlay() {
+            savingOverlay.classList.remove('show');
+        }
+
+        if (downloadBtn) {
+            downloadBtn.addEventListener('click', () => {
+                const selected = monthSelector.value;
+                if (!selected) {
+                    alert('⚠️ Select a month first.');
+                    return;
+                }
+
+                showLoading();
+
+                setTimeout(() => {
+                    try {
+                        const canvas = generateImage();
+                        const link = document.createElement('a');
+                        const safe = monthLabelFromKey(selected).replace(/\s+/g, '_');
+                        link.download = `MCB_Monthly_Schedule_${safe}.png`;
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
+
+                        showSuccess();
+                        setTimeout(hideOverlay, 1400);
+                    } catch (err) {
+                        console.error(err);
+                        hideOverlay();
+                        alert('⚠️ Failed to generate image. Please try again.');
+                    }
+                }, 800);
+            });
+        }
+
+        // ---------- PRINT ----------
+        if (printBtn) {
+            printBtn.addEventListener('click', () => {
+                window.print();
+            });
+        }
+
+        // ---------- EVENTS ----------
+        if (monthSelector) {
+            monthSelector.addEventListener('change', renderTable);
+        }
+
+        // ---------- INIT ----------
+        populateMonths();
+        renderTable();
+    </script>
+</body>
+</html>

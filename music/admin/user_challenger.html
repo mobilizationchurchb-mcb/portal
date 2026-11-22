@@ -1,0 +1,777 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prepare Devotional for Challenger</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root {
+  --blue:#168bd2;
+  --blue-dark:#0874b7;
+  --text:#194b6c;
+  --muted:#7894a8;
+  --border:#e0edf6;
+  --bg:#eef7fd;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;padding:25px;
+  min-height:100vh;
+  font-family:Inter,sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(circle at top left,#d9f0ff,transparent 40%),
+    linear-gradient(135deg,#f3faff,#eaf5fc);
+}
+.page-container{max-width:1450px;margin:auto}
+.page-header{
+  display:flex;justify-content:space-between;
+  align-items:center;flex-wrap:wrap;
+  gap:20px;margin-bottom:26px;
+}
+.page-heading h1{
+  font-size:25px;font-weight:800;
+  margin:0 0 10px;color:#164b70;
+}
+.page-heading p{
+  color:var(--muted);font-size:13px;
+  line-height:1.8;max-width:760px;margin:0;
+}
+.add-btn{
+  border:0;padding:13px 19px;border-radius:12px;
+  color:white;background:linear-gradient(135deg,#36a9ed,#0879c1);
+  font-size:13px;font-weight:700;cursor:pointer;
+  box-shadow:0 6px 17px #168bd233;
+  transition:.2s;
+}
+.add-btn:hover{transform:translateY(-2px)}
+.content-card{
+  background:rgba(255,255,255,.88);
+  backdrop-filter:blur(15px);
+  border:1px solid white;border-radius:19px;
+  padding:23px;
+  box-shadow:0 10px 35px rgba(48,116,158,.08);
+}
+.table-heading{
+  display:flex;align-items:center;
+  justify-content:space-between;
+  gap:12px;flex-wrap:wrap;margin-bottom:22px;
+}
+.table-heading h3{font-size:16px;margin:0;font-weight:800}
+.total-label{
+  background:#e8f5ff;color:#147fbe;
+  border:1px solid #d0eafd;
+  padding:8px 13px;border-radius:30px;
+  font-size:12px;font-weight:700;
+}
+.table-responsive{width:100%;overflow-x:auto}
+table{width:100%;min-width:800px;border-collapse:collapse}
+thead{background:#f0f8fd}
+th{
+  padding:15px;font-size:11px;
+  text-transform:uppercase;letter-spacing:.5px;
+  color:#66859c;text-align:left;
+}
+td{
+  padding:15px;border-bottom:1px solid #edf2f6;
+  font-size:12px;color:#49677d;
+}
+tbody tr:hover{background:#f8fcff}
+.number-cell{color:#8ba7b9;font-weight:700;width:60px}
+.title-cell{color:#205274;font-weight:700}
+.scripture-cell{color:#168bd2;font-weight:600}
+.action-buttons{display:flex;gap:6px;align-items:center}
+.action-btn{
+  border:1px solid transparent;
+  padding:8px 10px;border-radius:8px;
+  cursor:pointer;font-size:11px;font-weight:700;
+  transition:.2s;
+}
+.view-btn{background:#edf7ff;color:#168bd2;border-color:#d7ebfb}
+.edit-btn{background:#fff7e8;color:#bd8427;border-color:#f8e8c4}
+.delete-btn{background:#fff0f1;color:#dc5965;border-color:#ffdcdf}
+.action-btn:hover{filter:brightness(.96);transform:translateY(-1px)}
+.empty-state{text-align:center;padding:55px 15px;color:#91aabb}
+.empty-state i{font-size:38px;color:#b9ddf4;margin-bottom:15px}
+.empty-state h3{color:#547b95;font-size:15px}
+.empty-state p{font-size:12px}
+
+/* MODALS */
+.modal-overlay{
+  position:fixed;inset:0;z-index:10000;
+  background:rgba(20,55,78,.38);
+  backdrop-filter:blur(5px);
+  display:none;align-items:center;
+  justify-content:center;padding:18px;
+}
+.modal-overlay.show{display:flex}
+.modal-box{
+  background:white;width:100%;max-width:570px;
+  border-radius:20px;padding:27px;
+  box-shadow:0 20px 70px #123c5830;
+  animation:modalIn .25s ease;
+  max-height:92vh;overflow-y:auto;
+}
+@keyframes modalIn{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.modal-header{
+  display:flex;justify-content:space-between;
+  align-items:center;margin-bottom:22px;
+}
+.modal-header h2{font-size:18px;color:#174c70;margin:0}
+.close-btn{
+  border:0;background:#f0f7fc;color:#63839b;
+  width:34px;height:34px;border-radius:9px;cursor:pointer;
+}
+.form-group{margin-bottom:17px}
+.form-group label{
+  display:block;font-size:12px;
+  font-weight:700;color:#466981;margin-bottom:8px;
+}
+.form-group input,.form-group textarea{
+  width:100%;padding:12px 14px;
+  border:1px solid #dce9f2;border-radius:10px;
+  font-family:inherit;font-size:13px;
+  outline:none;background:#fbfdff;color:#294d65;
+}
+.form-group input:focus,.form-group textarea:focus{
+  border-color:#55b1e9;
+  box-shadow:0 0 0 3px #168bd215;background:white;
+}
+.form-group textarea{resize:vertical;min-height:100px;line-height:1.7}
+.form-actions{
+  display:flex;justify-content:flex-end;
+  gap:10px;margin-top:23px;
+}
+.cancel-btn,.save-btn{
+  padding:12px 19px;border-radius:10px;
+  border:0;font-size:12px;font-weight:700;cursor:pointer;
+}
+.cancel-btn{background:#f0f5f8;color:#668094}
+.save-btn{
+  background:linear-gradient(135deg,#36a9ed,#0879c1);
+  color:white;min-width:160px;
+}
+.save-btn:disabled{opacity:.6;cursor:not-allowed}
+
+/* VIEW MODAL */
+.view-content{
+  background:#f5faff;border:1px solid #e2f0fa;
+  border-radius:13px;padding:16px;margin-bottom:14px;
+}
+.view-label{
+  display:block;color:#849daf;
+  text-transform:uppercase;letter-spacing:.6px;
+  font-size:10px;font-weight:800;margin-bottom:7px;
+}
+.view-value{
+  font-size:13px;color:#315b76;
+  line-height:1.8;white-space:pre-wrap;
+  overflow-wrap:anywhere;
+}
+.view-title{font-size:20px;font-weight:800;color:#175783}
+
+/* TOAST */
+.toast-container{
+  position:fixed;top:22px;right:22px;
+  z-index:20000;display:flex;
+  flex-direction:column;gap:10px;
+}
+.toast{
+  min-width:280px;max-width:360px;
+  padding:15px 17px;background:rgba(255,255,255,.97);
+  border:1px solid #dcecf7;border-radius:13px;
+  box-shadow:0 10px 30px #174c7020;
+  display:flex;align-items:center;gap:12px;
+  animation:toastIn .35s ease;font-size:12px;color:#365d76;
+}
+.toast.success i{color:#25a779;font-size:21px}
+.toast.error i{color:#e35e68;font-size:21px}
+.toast.loading i{color:#168bd2;font-size:19px}
+.toast strong{display:block;margin-bottom:3px;font-size:12px}
+.toast small{color:#829bac;font-size:11px}
+@keyframes toastIn{
+  from{opacity:0;transform:translateX(40px)}
+  to{opacity:1;transform:translateX(0)}
+}
+@media(max-width:650px){
+  body{padding:13px}
+  .page-heading h1{font-size:20px}
+  .page-header{align-items:flex-start}
+  .add-btn{width:100%}
+  .content-card{padding:15px}
+  .modal-box{padding:20px}
+  .toast-container{top:12px;right:12px;left:12px}
+  .toast{max-width:100%;width:100%}
+}
+</style>
+</head>
+
+<body>
+
+<div class="page-container">
+
+  <div class="page-header">
+    <div class="page-heading">
+      <h1>
+        <i class="fa-solid fa-book-open" style="color:#168bd2"></i>
+        Prepare Devotional for Challenger
+      </h1>
+      <p>
+        Quickly generate daily Bible reading assignments for any month
+        so participants can complete the challenge and fill out their
+        own reflection, application, and prayer.
+      </p>
+    </div>
+
+    <button class="add-btn" onclick="openAddModal()">
+      <i class="fa-solid fa-plus"></i>
+      Add New Challenge Devotional
+    </button>
+  </div>
+
+  <div class="content-card">
+
+    <div class="table-heading">
+      <h3>
+        <i class="fa-solid fa-list-check"
+           style="color:#168bd2;margin-right:8px"></i>
+        Daily Challenge Devotionals
+      </h3>
+
+      <span class="total-label">
+        Total No. <span id="totalCount">0</span>
+      </span>
+    </div>
+
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>Devotional Title</th>
+            <th>Scripture</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="devotionalTable">
+          <tr>
+            <td colspan="5">
+              <div class="empty-state">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <p>Loading devotionals...</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ADD / EDIT MODAL -->
+<div class="modal-overlay" id="formModal">
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h2 id="formModalTitle">
+        <i class="fa-solid fa-book-medical" style="color:#168bd2"></i>
+        Add Daily Devotional
+      </h2>
+      <button class="close-btn" onclick="closeFormModal()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <form id="devotionalForm">
+
+      <div class="form-group">
+        <label for="devDate">Devotional Date *</label>
+        <input type="date" id="devDate" required>
+      </div>
+
+      <div class="form-group">
+        <label for="devTitle">Devotional Title *</label>
+        <input type="text" id="devTitle"
+          placeholder="Enter devotional title"
+          maxlength="200" required>
+      </div>
+
+      <div class="form-group">
+        <label for="devScripture">Scripture *</label>
+        <input type="text" id="devScripture"
+          placeholder="Example: Psalm 23:1-6"
+          maxlength="200" required>
+      </div>
+
+      <div class="form-group">
+        <label for="devMessage">Key Message *</label>
+        <textarea id="devMessage"
+          placeholder="Write the key message of today's devotional..."
+          required></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="cancel-btn"
+          onclick="closeFormModal()">Cancel</button>
+
+        <button type="submit" class="save-btn" id="saveBtn">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          Save Daily Devotional
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- VIEW MODAL -->
+<div class="modal-overlay" id="viewModal">
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h2>
+        <i class="fa-solid fa-book-open" style="color:#168bd2"></i>
+        Devotional Details
+      </h2>
+      <button class="close-btn" onclick="closeViewModal()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="view-content">
+      <span class="view-label">Devotional Title</span>
+      <div class="view-value view-title" id="viewTitle"></div>
+    </div>
+
+    <div class="view-content">
+      <span class="view-label">Devotional Date</span>
+      <div class="view-value" id="viewDate"></div>
+    </div>
+
+    <div class="view-content">
+      <span class="view-label">Scripture Reference</span>
+      <div class="view-value" id="viewScripture"></div>
+    </div>
+
+    <div class="view-content">
+      <span class="view-label">Key Message</span>
+      <div class="view-value" id="viewMessage"></div>
+    </div>
+
+    <div class="form-actions">
+      <button class="cancel-btn" onclick="closeViewModal()">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ==============================================
+// SUPABASE CONFIGURATION
+// ==============================================
+
+const SUPABASE_URL =
+  "https://gcmsypmigipyizwcoflw.supabase.co";
+
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbXN5cG1pZ2lweWl6d2NvZmx3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUxNzI3MzYsImV4cCI6MjExMDc0ODczNn0.Ra53x1UDl8igDi0vTgR2FlzzscSQdsnZbV2pWtulQOY";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+const TABLE_NAME = "daily_challenges";
+let editingId = null;
+
+// ==============================================
+// NOTIFICATION
+// ==============================================
+
+function showToast(type,title,message) {
+  const container = document.getElementById("toastContainer");
+
+  const icons = {
+    success:"fa-circle-check",
+    error:"fa-circle-exclamation",
+    loading:"fa-spinner fa-spin"
+  };
+
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+
+  const icon = document.createElement("i");
+  icon.className = `fa-solid ${icons[type] || icons.error}`;
+
+  const content = document.createElement("div");
+  const heading = document.createElement("strong");
+  const description = document.createElement("small");
+
+  heading.textContent = title;
+  description.textContent = message;
+
+  content.append(heading,description);
+  toast.append(icon,content);
+  container.appendChild(toast);
+
+  if(type !== "loading") {
+    setTimeout(()=>{
+      toast.remove();
+    },3500);
+  }
+
+  return toast;
+}
+
+// ==============================================
+// FORM MODAL
+// ==============================================
+
+function openAddModal() {
+  editingId = null;
+
+  document.getElementById("devotionalForm").reset();
+
+  document.getElementById("formModalTitle").innerHTML =
+    '<i class="fa-solid fa-book-medical" style="color:#168bd2"></i> Add Daily Devotional';
+
+  document.getElementById("saveBtn").innerHTML =
+    '<i class="fa-solid fa-cloud-arrow-up"></i> Save Daily Devotional';
+
+  document.getElementById("devDate").value =
+    new Date().toLocaleDateString("en-CA", {
+      timeZone:"Asia/Manila"
+    });
+
+  document.getElementById("formModal").classList.add("show");
+}
+
+function closeFormModal() {
+  document.getElementById("formModal").classList.remove("show");
+  document.getElementById("devotionalForm").reset();
+  editingId = null;
+}
+
+function openEditModal(item) {
+  editingId = item.id;
+
+  document.getElementById("formModalTitle").innerHTML =
+    '<i class="fa-solid fa-pen-to-square" style="color:#168bd2"></i> Edit Daily Devotional';
+
+  document.getElementById("devDate").value = item.date || "";
+  document.getElementById("devTitle").value = item.title || "";
+  document.getElementById("devScripture").value = item.scripture || "";
+  document.getElementById("devMessage").value = item.key_message || "";
+
+  document.getElementById("saveBtn").innerHTML =
+    '<i class="fa-solid fa-floppy-disk"></i> Update Devotional';
+
+  document.getElementById("formModal").classList.add("show");
+}
+
+// ==============================================
+// VIEW DEVOTIONAL
+// ==============================================
+
+function openViewModal(item) {
+  document.getElementById("viewTitle").textContent =
+    item.title || "Untitled";
+
+  document.getElementById("viewDate").textContent =
+    item.date || "No date";
+
+  document.getElementById("viewScripture").textContent =
+    item.scripture || "No scripture";
+
+  document.getElementById("viewMessage").textContent =
+    item.key_message || "No key message";
+
+  document.getElementById("viewModal").classList.add("show");
+}
+
+function closeViewModal() {
+  document.getElementById("viewModal").classList.remove("show");
+}
+
+// Close modals on background click
+document.querySelectorAll(".modal-overlay").forEach(modal => {
+  modal.addEventListener("click",e=>{
+    if(e.target === modal) {
+      modal.classList.remove("show");
+    }
+  });
+});
+
+// ==============================================
+// LOAD DEVOTIONALS
+// ==============================================
+
+async function loadDevotionals() {
+  const tbody = document.getElementById("devotionalTable");
+
+  tbody.innerHTML = `
+    <tr><td colspan="5">
+      <div class="empty-state">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        <p>Loading devotionals...</p>
+      </div>
+    </td></tr>`;
+
+  try {
+    const {data,error} = await supabaseClient
+      .from(TABLE_NAME)
+      .select("id,date,title,scripture,key_message,created_at")
+      .order("date",{ascending:false})
+      .order("created_at",{ascending:false});
+
+    if(error) throw error;
+
+    document.getElementById("totalCount").textContent =
+      data.length;
+
+    tbody.innerHTML = "";
+
+    if(!data.length) {
+      tbody.innerHTML = `
+        <tr><td colspan="5">
+          <div class="empty-state">
+            <i class="fa-solid fa-book-open"></i>
+            <h3>No Devotionals Yet</h3>
+            <p>Click Add New Challenge Devotional to create your first assignment.</p>
+          </div>
+        </td></tr>`;
+      return;
+    }
+
+    data.forEach((item,index)=>{
+      const tr = document.createElement("tr");
+
+      const number = document.createElement("td");
+      number.className = "number-cell";
+      number.textContent = index+1;
+
+      const title = document.createElement("td");
+      title.className = "title-cell";
+      title.textContent = item.title || "";
+
+      const scripture = document.createElement("td");
+      scripture.className = "scripture-cell";
+      scripture.textContent = item.scripture || "";
+
+      const date = document.createElement("td");
+      date.textContent = item.date || "";
+
+      const action = document.createElement("td");
+      const buttons = document.createElement("div");
+      buttons.className = "action-buttons";
+
+      const view = document.createElement("button");
+      view.className = "action-btn view-btn";
+      view.innerHTML = '<i class="fa-solid fa-eye"></i> View';
+      view.addEventListener("click",()=>openViewModal(item));
+
+      const edit = document.createElement("button");
+      edit.className = "action-btn edit-btn";
+      edit.innerHTML = '<i class="fa-solid fa-pen"></i> Edit';
+      edit.addEventListener("click",()=>openEditModal(item));
+
+      const del = document.createElement("button");
+      del.className = "action-btn delete-btn";
+      del.innerHTML = '<i class="fa-solid fa-trash"></i> Delete';
+      del.addEventListener("click",()=>deleteDevotional(item.id));
+
+      buttons.append(view,edit,del);
+      action.appendChild(buttons);
+
+      tr.append(number,title,scripture,date,action);
+      tbody.appendChild(tr);
+    });
+
+  } catch(error) {
+    console.error("Load error:",error);
+
+    tbody.innerHTML = `
+      <tr><td colspan="5">
+        <div class="empty-state">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <h3>Unable to Load Devotionals</h3>
+          <p>${escapeHTML(error.message)}</p>
+        </div>
+      </td></tr>`;
+
+    showToast("error","Loading Failed",error.message);
+  }
+}
+
+// ==============================================
+// ADD AND UPDATE DEVOTIONAL
+// ==============================================
+
+document.getElementById("devotionalForm")
+.addEventListener("submit",async function(e) {
+  e.preventDefault();
+
+  const saveBtn = document.getElementById("saveBtn");
+
+  const devotional = {
+    date:document.getElementById("devDate").value,
+    title:document.getElementById("devTitle").value.trim(),
+    scripture:document.getElementById("devScripture").value.trim(),
+    key_message:document.getElementById("devMessage").value.trim()
+  };
+
+  if(!devotional.date || !devotional.title ||
+     !devotional.scripture || !devotional.key_message) {
+    showToast("error","Required Fields","Please complete all fields.");
+    return;
+  }
+
+  saveBtn.disabled = true;
+  saveBtn.innerHTML = '<span class="spinner"></span> Processing...';
+
+  const loading = showToast(
+    "loading",
+    editingId ? "Updating Devotional" : "Saving Devotional",
+    "Please wait while we process your request."
+  );
+
+  try {
+    let result;
+
+    if(editingId) {
+      result = await supabaseClient
+        .from(TABLE_NAME)
+        .update(devotional)
+        .eq("id",editingId)
+        .select("id");
+
+    } else {
+      result = await supabaseClient
+        .from(TABLE_NAME)
+        .insert([devotional])
+        .select("id");
+    }
+
+    if(result.error) throw result.error;
+
+    if(!result.data || result.data.length === 0) {
+      throw new Error(
+        "No record was changed. Check your Supabase permissions."
+      );
+    }
+
+    loading.remove();
+    closeFormModal();
+
+    showToast(
+      "success",
+      editingId ? "Successfully Updated!" : "Successfully Saved!",
+      editingId
+        ? "Your devotional has been updated."
+        : "Your new devotional has been saved."
+    );
+
+    await loadDevotionals();
+
+  } catch(error) {
+    console.error("Save/update error:",error);
+    loading.remove();
+    showToast("error","Operation Failed",error.message);
+
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.innerHTML = editingId
+      ? '<i class="fa-solid fa-floppy-disk"></i> Update Devotional'
+      : '<i class="fa-solid fa-cloud-arrow-up"></i> Save Daily Devotional';
+  }
+});
+
+// ==============================================
+// DELETE DEVOTIONAL
+// ==============================================
+
+async function deleteDevotional(id) {
+  const confirmed = confirm(
+    "Are you sure you want to permanently delete this devotional?"
+  );
+
+  if(!confirmed) return;
+
+  const loading = showToast(
+    "loading",
+    "Deleting Devotional",
+    "Please wait..."
+  );
+
+  try {
+    const {data,error} = await supabaseClient
+      .from(TABLE_NAME)
+      .delete()
+      .eq("id",id)
+      .select("id");
+
+    if(error) throw error;
+
+    if(!data || data.length === 0) {
+      throw new Error(
+        "No record was deleted. Check your Supabase permissions."
+      );
+    }
+
+    loading.remove();
+
+    showToast(
+      "success",
+      "Successfully Deleted!",
+      "The devotional has been permanently removed."
+    );
+
+    await loadDevotionals();
+
+  } catch(error) {
+    console.error("Delete error:",error);
+    loading.remove();
+    showToast("error","Delete Failed",error.message);
+  }
+}
+
+// ==============================================
+// SAFE HTML
+// ==============================================
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g,char=>({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
+  })[char]);
+}
+
+// ==============================================
+// INITIALIZE
+// ==============================================
+
+loadDevotionals();
+
+</script>
+
+<!-- SHARED NAVIGATION -->
+<script src="navbar.js"></script>
+
+</body>
+</html>

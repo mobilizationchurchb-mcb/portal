@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Worship Music Line Up Generator</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root {
+  --blue:#168bd2;
+  --blue-dark:#0874b7;
+  --text:#194b6c;
+  --muted:#7894a8;
+  --border:#e0edf6;
+  --bg:#eef7fd;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  padding:25px;
+  min-height:100vh;
+  font-family:Inter,sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(circle at top left,#d9f0ff,transparent 40%),
+    linear-gradient(135deg,#f3faff,#eaf5fc);
+}
+
+.page-container{max-width:1450px;margin:auto}
+
+.page-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:20px;
+  margin-bottom:25px;
+}
+
+.page-heading h1{
+  font-size:25px;
+  font-weight:800;
+  margin:0 0 10px;
+  color:#164b70;
+}
+
+.page-heading p{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.8;
+  max-width:780px;
+  margin:0;
+}
+
+.add-btn{
+  border:0;
+  padding:13px 19px;
+  border-radius:12px;
+  color:white;
+  background:linear-gradient(135deg,#36a9ed,#0879c1);
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+  box-shadow:0 6px 17px #168bd233;
+  transition:.2s;
+}
+
+.add-btn:hover{transform:translateY(-2px)}
+
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
+  margin-bottom:22px;
+}
+
+.stat-card{
+  background:rgba(255,255,255,.85);
+  border:1px solid white;
+  border-radius:16px;
+  padding:19px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  box-shadow:0 8px 25px rgba(48,116,158,.06);
+}
+
+.stat-icon{
+  width:47px;
+  height:47px;
+  border-radius:14px;
+  background:#e5f4ff;
+  color:#168bd2;
+  display:grid;
+  place-items:center;
+  font-size:20px;
+}
+
+.stat-card small{
+  display:block;
+  color:#829bac;
+  font-size:11px;
+  margin-bottom:5px;
+}
+
+.stat-card strong{
+  font-size:22px;
+  color:#205274;
+}
+
+.content-card{
+  background:rgba(255,255,255,.88);
+  backdrop-filter:blur(15px);
+  border:1px solid white;
+  border-radius:19px;
+  padding:23px;
+  box-shadow:0 10px 35px rgba(48,116,158,.08);
+}
+
+.table-heading{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:22px;
+}
+
+.table-heading h3{
+  font-size:16px;
+  margin:0;
+  font-weight:800;
+}
+
+.total-label{
+  background:#e8f5ff;
+  color:#147fbe;
+  border:1px solid #d0eafd;
+  padding:8px 13px;
+  border-radius:30px;
+  font-size:12px;
+  font-weight:700;
+}
+
+.table-responsive{
+  width:100%;
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  min-width:700px;
+  border-collapse:collapse;
+}
+
+thead{background:#f0f8fd}
+
+th{
+  padding:15px;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+  color:#66859c;
+  text-align:left;
+}
+
+td{
+  padding:15px;
+  border-bottom:1px solid #edf2f6;
+  font-size:12px;
+  color:#49677d;
+}
+
+tbody tr:hover{background:#f8fcff}
+
+.service-date{
+  font-weight:700;
+  color:#205274;
+}
+
+.leader-name{
+  font-weight:600;
+  color:#426d88;
+}
+
+.song-count{
+  background:#eaf6ff;
+  color:#168bd2;
+  border-radius:20px;
+  padding:6px 10px;
+  font-size:11px;
+  font-weight:700;
+}
+
+.action-buttons{
+  display:flex;
+  gap:7px;
+}
+
+.action-btn{
+  border:1px solid transparent;
+  padding:8px 11px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:11px;
+  font-weight:700;
+}
+
+.view-btn{
+  background:#edf7ff;
+  color:#168bd2;
+  border-color:#d7ebfb;
+}
+
+.delete-btn{
+  background:#fff0f1;
+  color:#dc5965;
+  border-color:#ffdcdf;
+}
+
+.action-btn:hover{filter:brightness(.96)}
+
+.empty-state{
+  text-align:center;
+  padding:55px 15px;
+  color:#91aabb;
+}
+
+.empty-state i{
+  font-size:38px;
+  color:#b9ddf4;
+  margin-bottom:15px;
+}
+
+.empty-state h3{
+  color:#547b95;
+  font-size:15px;
+}
+
+.empty-state p{font-size:12px}
+
+/* MODALS */
+
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  z-index:10000;
+  background:rgba(20,55,78,.38);
+  backdrop-filter:blur(5px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+}
+
+.modal-overlay.show{display:flex}
+
+.modal-box{
+  background:white;
+  width:100%;
+  max-width:900px;
+  border-radius:20px;
+  padding:26px;
+  box-shadow:0 20px 70px #123c5830;
+  animation:modalIn .25s ease;
+  max-height:94vh;
+  overflow-y:auto;
+}
+
+.modal-box.view-box{max-width:700px}
+
+@keyframes modalIn{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+.modal-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:22px;
+}
+
+.modal-header h2{
+  font-size:18px;
+  color:#174c70;
+  margin:0;
+}
+
+.close-btn{
+  border:0;
+  background:#f0f7fc;
+  color:#63839b;
+  width:34px;
+  height:34px;
+  border-radius:9px;
+  cursor:pointer;
+}
+
+.form-group{margin-bottom:16px}
+
+.form-group label{
+  display:block;
+  font-size:12px;
+  font-weight:700;
+  color:#466981;
+  margin-bottom:8px;
+}
+
+.form-group input,
+.form-group select{
+  width:100%;
+  padding:12px 13px;
+  border:1px solid #dce9f2;
+  border-radius:10px;
+  font-family:inherit;
+  font-size:13px;
+  outline:none;
+  background:#fbfdff;
+  color:#294d65;
+}
+
+.form-group input:focus,
+.form-group select:focus{
+  border-color:#55b1e9;
+  box-shadow:0 0 0 3px #168bd215;
+  background:white;
+}
+
+.service-fields{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+  margin-bottom:20px;
+}
+
+.song-builder{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  align-items:start;
+}
+
+.builder-panel,
+.song-list-panel{
+  background:#f6fbff;
+  border:1px solid #e2f0fa;
+  border-radius:15px;
+  padding:17px;
+}
+
+.panel-title{
+  font-size:13px;
+  font-weight:800;
+  color:#235778;
+  margin:0 0 16px;
+}
+
+.panel-title i{
+  color:#168bd2;
+  margin-right:7px;
+}
+
+.add-song-btn{
+  width:100%;
+  border:1px dashed #80bde4;
+  background:#eaf6ff;
+  color:#168bd2;
+  padding:11px;
+  border-radius:10px;
+  font-weight:700;
+  font-size:12px;
+  cursor:pointer;
+}
+
+.add-song-btn:hover{background:#dff1ff}
+
+.selected-song{
+  padding:12px;
+  background:white;
+  border:1px solid #e3edf5;
+  border-radius:11px;
+  margin-bottom:9px;
+}
+
+.selected-song-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:7px;
+}
+
+.selected-song strong{
+  font-size:12px;
+  color:#235778;
+}
+
+.selected-song small{
+  font-size:11px;
+  color:#7d98ab;
+}
+
+.song-category{
+  display:inline-block;
+  padding:5px 8px;
+  border-radius:20px;
+  background:#eaf6ff;
+  color:#168bd2;
+  font-size:10px;
+  font-weight:700;
+}
+
+.remove-song{
+  border:0;
+  background:#fff0f1;
+  color:#dc5965;
+  border-radius:7px;
+  width:27px;
+  height:27px;
+  cursor:pointer;
+}
+
+.no-songs{
+  text-align:center;
+  color:#91aabb;
+  font-size:12px;
+  padding:25px 5px;
+}
+
+.song-total{
+  font-size:11px;
+  color:#829bac;
+  margin-bottom:12px;
+}
+
+.form-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:22px;
+}
+
+.cancel-btn,
+.generate-btn{
+  padding:12px 18px;
+  border-radius:10px;
+  border:0;
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.cancel-btn{
+  background:#f0f5f8;
+  color:#668094;
+}
+
+.generate-btn{
+  background:linear-gradient(135deg,#36a9ed,#0879c1);
+  color:white;
+  min-width:190px;
+}
+
+.generate-btn:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+}
+
+/* VIEW */
+
+.view-info{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-bottom:18px;
+}
+
+.view-info-card{
+  padding:15px;
+  background:#f3f9fe;
+  border:1px solid #e1eff8;
+  border-radius:12px;
+}
+
+.view-info-card small{
+  display:block;
+  font-size:10px;
+  color:#829bac;
+  text-transform:uppercase;
+  font-weight:800;
+  margin-bottom:7px;
+}
+
+.view-info-card strong{
+  font-size:13px;
+  color:#235778;
+}
+
+.view-song{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  padding:13px;
+  margin-bottom:9px;
+  background:#f7fbff;
+  border:1px solid #e3edf5;
+  border-radius:11px;
+}
+
+.view-song strong{
+  font-size:12px;
+  color:#235778;
+}
+
+.view-song small{
+  display:block;
+  color:#8199aa;
+  font-size:11px;
+  margin-top:5px;
+}
+
+/* TOAST */
+
+.toast-container{
+  position:fixed;
+  top:22px;
+  right:22px;
+  z-index:20000;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.toast{
+  min-width:280px;
+  max-width:360px;
+  padding:15px 17px;
+  background:rgba(255,255,255,.97);
+  border:1px solid #dcecf7;
+  border-radius:13px;
+  box-shadow:0 10px 30px #174c7020;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  animation:toastIn .35s ease;
+  font-size:12px;
+  color:#365d76;
+}
+
+.toast.success i{
+  color:#25a779;
+  font-size:21px;
+}
+
+.toast.error i{
+  color:#e35e68;
+  font-size:21px;
+}
+
+.toast.loading i{
+  color:#168bd2;
+  font-size:19px;
+}
+
+.toast strong{
+  display:block;
+  margin-bottom:3px;
+  font-size:12px;
+}
+
+.toast small{
+  color:#829bac;
+  font-size:11px;
+}
+
+@keyframes toastIn{
+  from{opacity:0;transform:translateX(40px)}
+  to{opacity:1;transform:translateX(0)}
+}
+
+.spinner{
+  display:inline-block;
+  width:13px;
+  height:13px;
+  border:2px solid #ffffff70;
+  border-top-color:white;
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+  margin-right:7px;
+  vertical-align:middle;
+}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:750px){
+  body{padding:13px}
+  .page-heading h1{font-size:20px}
+  .page-header{align-items:flex-start}
+  .add-btn{width:100%}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .song-builder{grid-template-columns:1fr}
+  .content-card{padding:15px}
+  .modal-box{padding:19px}
+}
+
+@media(max-width:480px){
+  .service-fields,
+  .view-info{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:1fr}
+  .toast-container{
+    top:12px;
+    right:12px;
+    left:12px;
+  }
+  .toast{
+    max-width:100%;
+    width:100%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="page-container">
+
+  <div class="page-header">
+    <div class="page-heading">
+      <h1>
+        <i class="fa-solid fa-music" style="color:#168bd2"></i>
+        Generate Worship Music Line Up
+      </h1>
+
+      <p>
+        Organize and prepare your church worship music line-up with ease.
+        Add your worship leader, arrange songs by category, and generate
+        a complete music program for every service. Keep all your worship
+        schedules organized and accessible in one place.
+      </p>
+    </div>
+
+    <button class="add-btn" onclick="openAddModal()">
+      <i class="fa-solid fa-plus"></i>
+      Add New Music Line Up
+    </button>
+  </div>
+
+  <!-- STATISTICS -->
+  <div class="stats-grid">
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <i class="fa-solid fa-music"></i>
+      </div>
+      <div>
+        <small>Total Music Line Ups</small>
+        <strong id="totalCount">0</strong>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <i class="fa-solid fa-microphone"></i>
+      </div>
+      <div>
+        <small>Total Songs</small>
+        <strong id="totalSongs">0</strong>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">
+        <i class="fa-solid fa-calendar-check"></i>
+      </div>
+      <div>
+        <small>Upcoming Services</small>
+        <strong id="upcomingCount">0</strong>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MUSIC LINE UP TABLE -->
+  <div class="content-card">
+
+    <div class="table-heading">
+      <h3>
+        <i class="fa-solid fa-list"
+           style="color:#168bd2;margin-right:8px"></i>
+        Exciting Music Line Ups List
+      </h3>
+
+      <span class="total-label">
+        Total (<span id="listCount">0</span>)
+      </span>
+    </div>
+
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>Service Date</th>
+            <th>Worship Leader</th>
+            <th>Total Songs</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody id="musicTable">
+          <tr>
+            <td colspan="5">
+              <div class="empty-state">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <p>Loading music line ups...</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- ADD MUSIC LINE UP MODAL -->
+<div class="modal-overlay" id="musicModal">
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h2>
+        <i class="fa-solid fa-music" style="color:#168bd2"></i>
+        Create Worship Music Line Up
+      </h2>
+
+      <button class="close-btn" onclick="closeAddModal()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <form id="musicForm">
+
+      <div class="service-fields">
+
+        <div class="form-group">
+          <label for="serviceDate">
+            <i class="fa-regular fa-calendar"></i>
+            Service Date *
+          </label>
+          <input type="date" id="serviceDate" required>
+        </div>
+
+        <div class="form-group">
+          <label for="worshipLeader">
+            <i class="fa-solid fa-microphone"></i>
+            Worship Leader *
+          </label>
+          <input type="text"
+            id="worshipLeader"
+            placeholder="Enter worship leader name"
+            maxlength="150"
+            required>
+        </div>
+
+      </div>
+
+      <div class="song-builder">
+
+        <!-- LEFT: ADD SONG -->
+        <div class="builder-panel">
+
+          <h3 class="panel-title">
+            <i class="fa-solid fa-circle-plus"></i>
+            Add Song
+          </h3>
+
+          <div class="form-group">
+            <label for="songTitle">Song Title *</label>
+            <input type="text"
+              id="songTitle"
+              placeholder="Enter song title"
+              maxlength="200">
+          </div>
+
+          <div class="form-group">
+            <label for="songKey">Musical Key *</label>
+            <select id="songKey">
+              <option value="">Select musical key</option>
+              <option>C</option>
+              <option>C# / Db</option>
+              <option>D</option>
+              <option>D# / Eb</option>
+              <option>E</option>
+              <option>F</option>
+              <option>F# / Gb</option>
+              <option>G</option>
+              <option>G# / Ab</option>
+              <option>A</option>
+              <option>A# / Bb</option>
+              <option>B</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="songCategory">Song Category *</label>
+            <select id="songCategory">
+              <option value="">Select category</option>
+              <option value="Praise">Praise</option>
+              <option value="Worship">Worship</option>
+              <option value="Opening Song">Opening Song</option>
+              <option value="Closing Song">Closing Song</option>
+              <option value="Welcome Song">Welcome Song</option>
+            </select>
+          </div>
+
+          <button type="button"
+            class="add-song-btn"
+            onclick="addSong()">
+            <i class="fa-solid fa-plus"></i>
+            Add Song to Line Up
+          </button>
+
+        </div>
+
+        <!-- RIGHT: SONG LIST -->
+        <div class="song-list-panel">
+
+          <h3 class="panel-title">
+            <i class="fa-solid fa-list-ol"></i>
+            Selected Songs
+          </h3>
+
+          <div class="song-total">
+            Total Songs: <strong id="songCount">0</strong>
+          </div>
+
+          <div id="selectedSongs">
+            <div class="no-songs">
+              <i class="fa-solid fa-music"
+                 style="font-size:27px;margin-bottom:10px"></i>
+              <p>No songs added yet.</p>
+              <p>Add songs using the panel on the left.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button"
+          class="cancel-btn"
+          onclick="closeAddModal()">
+          Cancel
+        </button>
+
+        <button type="submit"
+          class="generate-btn"
+          id="generateBtn">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          Generate Music Line Up
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<!-- VIEW MUSIC LINE UP -->
+<div class="modal-overlay" id="viewModal">
+  <div class="modal-box view-box">
+
+    <div class="modal-header">
+      <h2>
+        <i class="fa-solid fa-headphones" style="color:#168bd2"></i>
+        Worship Music Line Up
+      </h2>
+
+      <button class="close-btn" onclick="closeViewModal()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="view-info">
+
+      <div class="view-info-card">
+        <small>Service Date</small>
+        <strong id="viewDate"></strong>
+      </div>
+
+      <div class="view-info-card">
+        <small>Worship Leader</small>
+        <strong id="viewLeader"></strong>
+      </div>
+
+    </div>
+
+    <h3 class="panel-title">
+      <i class="fa-solid fa-list-ol"></i>
+      Song Program
+    </h3>
+
+    <div id="viewSongs"></div>
+
+    <div class="form-actions">
+      <button class="cancel-btn" onclick="closeViewModal()">
+        Close
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+
+// ==============================================
+// SUPABASE CONFIGURATION
+// ==============================================
+
+const SUPABASE_URL =
+  "https://gcmsypmigipyizwcoflw.supabase.co";
+
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbXN5cG1pZ2lweWl6d2NvZmx3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUxNzI3MzYsImV4cCI6MjExMDc0ODczNn0.Ra53x1UDl8igDi0vTgR2FlzzscSQdsnZbV2pWtulQOY";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+const TABLE_NAME = "music_lineups";
+
+let songs = [];
+
+
+// ==============================================
+// TOAST NOTIFICATION
+// ==============================================
+
+function showToast(type,title,message) {
+
+  const container = document.getElementById("toastContainer");
+
+  const icons = {
+    success:"fa-circle-check",
+    error:"fa-circle-exclamation",
+    loading:"fa-spinner fa-spin"
+  };
+
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+
+  const icon = document.createElement("i");
+  icon.className = `fa-solid ${icons[type] || icons.error}`;
+
+  const content = document.createElement("div");
+  const heading = document.createElement("strong");
+  const description = document.createElement("small");
+
+  heading.textContent = title;
+  description.textContent = message;
+
+  content.append(heading,description);
+  toast.append(icon,content);
+  container.appendChild(toast);
+
+  if(type !== "loading") {
+    setTimeout(()=>toast.remove(),3500);
+  }
+
+  return toast;
+}
+
+
+// ==============================================
+// MODAL
+// ==============================================
+
+function openAddModal() {
+
+  songs = [];
+
+  document.getElementById("musicForm").reset();
+
+  document.getElementById("serviceDate").value =
+    new Date().toLocaleDateString("en-CA",{
+      timeZone:"Asia/Manila"
+    });
+
+  renderSongs();
+
+  document.getElementById("musicModal").classList.add("show");
+}
+
+function closeAddModal() {
+
+  document.getElementById("musicModal").classList.remove("show");
+
+  document.getElementById("musicForm").reset();
+
+  songs = [];
+
+  renderSongs();
+}
+
+function closeViewModal() {
+
+  document.getElementById("viewModal").classList.remove("show");
+
+}
+
+document.querySelectorAll(".modal-overlay").forEach(modal=>{
+
+  modal.addEventListener("click",e=>{
+
+    if(e.target === modal) {
+      modal.classList.remove("show");
+    }
+
+  });
+
+});
+
+
+// ==============================================
+// ADD SONG
+// ==============================================
+
+function addSong() {
+
+  const title = document.getElementById("songTitle").value.trim();
+
+  const key = document.getElementById("songKey").value;
+
+  const category = document.getElementById("songCategory").value;
+
+  if(!title || !key || !category) {
+
+    showToast(
+      "error",
+      "Incomplete Song Details",
+      "Please enter the song title, musical key, and category."
+    );
+
+    return;
+  }
+
+  songs.push({
+    title,
+    key,
+    category,
+    position:songs.length+1
+  });
+
+  document.getElementById("songTitle").value = "";
+
+  document.getElementById("songKey").value = "";
+
+  document.getElementById("songCategory").value = "";
+
+  renderSongs();
+
+  showToast(
+    "success",
+    "Song Added",
+    `${title} has been added to your music line up.`
+  );
+
+}
+
+
+// ==============================================
+// RENDER SELECTED SONGS
+// ==============================================
+
+function renderSongs() {
+
+  const container = document.getElementById("selectedSongs");
+
+  document.getElementById("songCount").textContent = songs.length;
+
+  if(!songs.length) {
+
+    container.innerHTML = `
+      <div class="no-songs">
+        <i class="fa-solid fa-music"
+           style="font-size:27px;margin-bottom:10px"></i>
+        <p>No songs added yet.</p>
+        <p>Add songs using the panel on the left.</p>
+      </div>`;
+
+    return;
+  }
+
+  container.innerHTML = "";
+
+  songs.forEach((song,index)=>{
+
+    const item = document.createElement("div");
+    item.className = "selected-song";
+
+    const top = document.createElement("div");
+    top.className = "selected-song-top";
+
+    const info = document.createElement("div");
+
+    const title = document.createElement("strong");
+    title.textContent = `${index+1}. ${song.title}`;
+
+    const details = document.createElement("small");
+    details.textContent = `Key: ${song.key}`;
+
+    info.append(title,document.createElement("br"),details);
+
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.className = "remove-song";
+    remove.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+    remove.title = "Remove song";
+
+    remove.addEventListener("click",()=>{
+      removeSong(index);
+    });
+
+    top.append(info,remove);
+
+    const category = document.createElement("span");
+    category.className = "song-category";
+    category.textContent = song.category;
+
+    item.append(top,category);
+
+    container.appendChild(item);
+
+  });
+
+}
+
+
+function removeSong(index) {
+
+  songs.splice(index,1);
+
+  songs = songs.map((song,i)=>({
+    ...song,
+    position:i+1
+  }));
+
+  renderSongs();
+
+}
+
+
+// ==============================================
+// GENERATE / SAVE MUSIC LINE UP
+// ==============================================
+
+document.getElementById("musicForm")
+.addEventListener("submit",async function(e){
+
+  e.preventDefault();
+
+  const serviceDate =
+    document.getElementById("serviceDate").value;
+
+  const worshipLeader =
+    document.getElementById("worshipLeader").value.trim();
+
+  if(!serviceDate || !worshipLeader) {
+
+    showToast(
+      "error",
+      "Required Information",
+      "Please enter the service date and worship leader."
+    );
+
+    return;
+  }
+
+  if(songs.length === 0) {
+
+    showToast(
+      "error",
+      "No Songs Added",
+      "Please add at least one song before generating."
+    );
+
+    return;
+  }
+
+  const generateBtn = document.getElementById("generateBtn");
+
+  generateBtn.disabled = true;
+
+  generateBtn.innerHTML =
+    '<span class="spinner"></span> Generating Music Line Up...';
+
+  const loading = showToast(
+    "loading",
+    "Generating Music Line Up",
+    "Saving your worship service and songs to Supabase..."
+  );
+
+  try {
+
+    const musicData = {
+
+      service_date:serviceDate,
+
+      worship_leader:worshipLeader,
+
+      songs:songs.map((song,index)=>({
+
+        title:song.title,
+        key:song.key,
+        category:song.category,
+        position:index+1
+
+      }))
+
+    };
+
+    const {data,error} = await supabaseClient
+      .from(TABLE_NAME)
+      .insert([musicData])
+      .select("id");
+
+    if(error) throw error;
+
+    if(!data || data.length === 0) {
+      throw new Error("No music line up record was returned.");
+    }
+
+    loading.remove();
+
+    closeAddModal();
+
+    showToast(
+      "success",
+      "Music Line Up Generated!",
+      "Your worship music line up was successfully saved."
+    );
+
+    await loadMusicLineups();
+
+  } catch(error) {
+
+    console.error("Generate error:",error);
+
+    loading.remove();
+
+    showToast(
+      "error",
+      "Generation Failed",
+      error.message
+    );
+
+  } finally {
+
+    generateBtn.disabled = false;
+
+    generateBtn.innerHTML =
+      '<i class="fa-solid fa-wand-magic-sparkles"></i> Generate Music Line Up';
+
+  }
+
+});
+
+
+// ==============================================
+// LOAD MUSIC LINE UPS
+// ==============================================
+
+async function loadMusicLineups() {
+
+  const tbody = document.getElementById("musicTable");
+
+  tbody.innerHTML = `
+    <tr><td colspan="5">
+      <div class="empty-state">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        <p>Loading music line ups...</p>
+      </div>
+    </td></tr>`;
+
+  try {
+
+    const {data,error} = await supabaseClient
+      .from(TABLE_NAME)
+      .select("id,service_date,worship_leader,songs,created_at")
+      .order("service_date",{ascending:false})
+      .order("created_at",{ascending:false});
+
+    if(error) throw error;
+
+    const totalSongs = data.reduce(
+      (sum,item)=>sum+(Array.isArray(item.songs)?item.songs.length:0),
+      0
+    );
+
+    const today = new Date().toLocaleDateString("en-CA",{
+      timeZone:"Asia/Manila"
+    });
+
+    const upcoming = data.filter(
+      item=>item.service_date>=today
+    ).length;
+
+    document.getElementById("totalCount").textContent = data.length;
+
+    document.getElementById("listCount").textContent = data.length;
+
+    document.getElementById("totalSongs").textContent = totalSongs;
+
+    document.getElementById("upcomingCount").textContent = upcoming;
+
+    tbody.innerHTML = "";
+
+    if(!data.length) {
+
+      tbody.innerHTML = `
+        <tr><td colspan="5">
+          <div class="empty-state">
+            <i class="fa-solid fa-music"></i>
+            <h3>No Music Line Ups Yet</h3>
+            <p>Click Add New Music Line Up to prepare your first worship service.</p>
+          </div>
+        </td></tr>`;
+
+      return;
+    }
+
+    data.forEach((item,index)=>{
+
+      const tr = document.createElement("tr");
+
+      const number = document.createElement("td");
+      number.textContent = index+1;
+
+      const date = document.createElement("td");
+      date.className = "service-date";
+      date.textContent = item.service_date || "";
+
+      const leader = document.createElement("td");
+      leader.className = "leader-name";
+      leader.textContent = item.worship_leader || "";
+
+      const count = document.createElement("td");
+
+      const countBadge = document.createElement("span");
+      countBadge.className = "song-count";
+
+      countBadge.textContent =
+        `${Array.isArray(item.songs)?item.songs.length:0} Songs`;
+
+      count.appendChild(countBadge);
+
+      const action = document.createElement("td");
+
+      const buttons = document.createElement("div");
+      buttons.className = "action-buttons";
+
+      const view = document.createElement("button");
+      view.className = "action-btn view-btn";
+      view.innerHTML = '<i class="fa-solid fa-eye"></i> View';
+
+      view.addEventListener("click",()=>{
+        viewMusicLineup(item);
+      });
+
+      const del = document.createElement("button");
+      del.className = "action-btn delete-btn";
+      del.innerHTML = '<i class="fa-solid fa-trash"></i> Delete';
+
+      del.addEventListener("click",()=>{
+        deleteMusicLineup(item.id);
+      });
+
+      buttons.append(view,del);
+
+      action.appendChild(buttons);
+
+      tr.append(number,date,leader,count,action);
+
+      tbody.appendChild(tr);
+
+    });
+
+  } catch(error) {
+
+    console.error("Load error:",error);
+
+    tbody.innerHTML = `
+      <tr><td colspan="5">
+        <div class="empty-state">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <h3>Unable to Load Music Line Ups</h3>
+          <p>${escapeHTML(error.message)}</p>
+        </div>
+      </td></tr>`;
+
+    showToast("error","Loading Failed",error.message);
+
+  }
+
+}
+
+
+// ==============================================
+// VIEW MUSIC LINE UP
+// ==============================================
+
+function viewMusicLineup(item) {
+
+  document.getElementById("viewDate").textContent =
+    item.service_date || "";
+
+  document.getElementById("viewLeader").textContent =
+    item.worship_leader || "";
+
+  const container = document.getElementById("viewSongs");
+
+  container.innerHTML = "";
+
+  const list = Array.isArray(item.songs)?item.songs:[];
+
+  list.forEach((song,index)=>{
+
+    const row = document.createElement("div");
+    row.className = "view-song";
+
+    const info = document.createElement("div");
+
+    const title = document.createElement("strong");
+    title.textContent = `${index+1}. ${song.title || "Untitled"}`;
+
+    const details = document.createElement("small");
+    details.textContent = `Musical Key: ${song.key || "-"} `;
+
+    info.append(title,details);
+
+    const category = document.createElement("span");
+    category.className = "song-category";
+    category.textContent = song.category || "";
+
+    row.append(info,category);
+
+    container.appendChild(row);
+
+  });
+
+  document.getElementById("viewModal").classList.add("show");
+
+}
+
+
+// ==============================================
+// DELETE MUSIC LINE UP
+// ==============================================
+
+async function deleteMusicLineup(id) {
+
+  const confirmed = confirm(
+    "Are you sure you want to permanently delete this music line up?"
+  );
+
+  if(!confirmed) return;
+
+  const loading = showToast(
+    "loading",
+    "Deleting Music Line Up",
+    "Please wait..."
+  );
+
+  try {
+
+    const {data,error} = await supabaseClient
+      .from(TABLE_NAME)
+      .delete()
+      .eq("id",id)
+      .select("id");
+
+    if(error) throw error;
+
+    if(!data || data.length === 0) {
+
+      throw new Error(
+        "No record was deleted. Check your Supabase permissions."
+      );
+
+    }
+
+    loading.remove();
+
+    showToast(
+      "success",
+      "Successfully Deleted!",
+      "Music line up has been removed."
+    );
+
+    await loadMusicLineups();
+
+  } catch(error) {
+
+    console.error("Delete error:",error);
+
+    loading.remove();
+
+    showToast("error","Delete Failed",error.message);
+
+  }
+
+}
+
+
+// ==============================================
+// SAFE HTML
+// ==============================================
+
+function escapeHTML(value) {
+
+  return String(value).replace(/[&<>"']/g,char=>({
+
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
+
+  })[char]);
+
+}
+
+
+// ==============================================
+// INITIALIZE
+// ==============================================
+
+loadMusicLineups();
+
+</script>
+
+<!-- SHARED ADMIN NAVBAR -->
+<script src="navbar.js"></script>
+
+</body>
+</html>

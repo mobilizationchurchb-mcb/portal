@@ -1,0 +1,359 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Administrator Login | Mobilization Church Balilihan</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  font-family:Inter,sans-serif;
+  color:#174c70;
+  background:linear-gradient(135deg,#eaf7ff,#d8edff);
+}
+.wrapper{width:100%;max-width:430px}
+.brand{text-align:center;margin-bottom:24px}
+.logo{
+  width:75px;height:75px;border-radius:22px;
+  margin:0 auto 15px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,#c8edff,#77c8f5);
+  color:#0876b9;font-size:32px;
+  box-shadow:0 10px 25px #2687be25
+}
+.brand h1{font-size:20px;font-weight:800}
+.brand p{font-size:11px;letter-spacing:1px;text-transform:uppercase;margin-top:7px;color:#7096af}
+.card{
+  background:#fff;padding:34px;border-radius:23px;
+  box-shadow:0 18px 55px #236f9e20;
+  border:1px solid #fff
+}
+.card h2{font-size:24px;margin-bottom:8px}
+.subtitle{font-size:13px;color:#7898ad;line-height:1.6;margin-bottom:25px}
+.group{margin-bottom:19px}
+label{display:block;font-size:12px;font-weight:700;margin-bottom:9px}
+.input-wrap{position:relative}
+.input-wrap>i{
+  position:absolute;left:15px;top:50%;
+  transform:translateY(-50%);color:#86aac1
+}
+input[type=text],input[type=password]{
+  width:100%;height:51px;border:1px solid #dcecf7;
+  border-radius:12px;padding:0 45px;
+  outline:none;font:13px Inter;background:#f8fcff;color:#174c70
+}
+input:focus{border-color:#65b9e8;box-shadow:0 0 0 4px #419dd21a;background:white}
+.toggle{
+  position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  border:0;background:none;color:#86aac1;cursor:pointer;padding:5px
+}
+.options{display:flex;justify-content:space-between;align-items:center;margin:5px 0 22px;font-size:12px}
+.remember{display:flex;align-items:center;gap:8px;color:#66879e;cursor:pointer}
+.remember input{accent-color:#0879bd}
+.forgot{color:#0879bd;text-decoration:none;font-weight:700}
+button.login{
+  width:100%;height:52px;border:0;border-radius:13px;
+  background:linear-gradient(135deg,#1599df,#0870b1);
+  color:white;font:700 14px Inter;cursor:pointer;
+  box-shadow:0 8px 20px #0879bd38
+}
+button.login:disabled{opacity:.6;cursor:not-allowed}
+.message{display:none;padding:12px;margin-bottom:18px;border-radius:10px;font-size:12px;line-height:1.5;overflow-wrap:anywhere}
+.message.error{display:block;background:#fff0ef;color:#b42318;border:1px solid #ffd1cd}
+.message.success{display:block;background:#edfff5;color:#137547;border:1px solid #b9efd0}
+.security{
+  margin-top:22px;padding:13px;border-radius:12px;
+  background:#eff8ff;border:1px solid #dceefa;
+  display:flex;gap:10px;align-items:center;
+  color:#7096af;font-size:11px;line-height:1.5
+}
+.security i{font-size:18px;color:#1686c4}
+footer{text-align:center;margin-top:24px;font-size:11px;color:#82a2b8;line-height:1.8}
+footer strong{color:#477895}
+@media(max-width:480px){.card{padding:25px 21px}.brand h1{font-size:18px}}
+</style>
+</head>
+
+<body>
+<div class="wrapper">
+
+  <header class="brand">
+    <div class="logo"><i class="fa-solid fa-church"></i></div>
+    <h1>Mobilization Church Balilihan</h1>
+    <p>Admin Management Portal</p>
+  </header>
+
+  <main class="card">
+    <h2>Administrator Login</h2>
+    <p class="subtitle">
+      Welcome back! Enter your administrator credentials to access the management portal.
+    </p>
+
+    <div id="message" class="message" role="alert"></div>
+
+    <form id="loginForm">
+      <div class="group">
+        <label for="username">Username</label>
+        <div class="input-wrap">
+          <i class="fa-solid fa-user"></i>
+          <input id="username" type="text" placeholder="Enter your username"
+                 autocomplete="username" required>
+        </div>
+      </div>
+
+      <div class="group">
+        <label for="password">Password</label>
+        <div class="input-wrap">
+          <i class="fa-solid fa-lock"></i>
+          <input id="password" type="password" placeholder="Enter your password"
+                 autocomplete="current-password" required>
+          <button type="button" class="toggle" id="togglePassword" aria-label="Show password">
+            <i class="fa-solid fa-eye"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="options">
+        <label class="remember">
+          <input type="checkbox" id="rememberMe">
+          Remember username
+        </label>
+        <a href="#" class="forgot" id="forgotPassword">Forgot Password?</a>
+      </div>
+
+      <button type="submit" class="login" id="loginBtn">
+        <i class="fa-solid fa-right-to-bracket"></i> Login
+      </button>
+    </form>
+
+    <div class="security">
+      <i class="fa-solid fa-shield-halved"></i>
+      <span>Your credentials are verified by the secure administrator authentication service.</span>
+    </div>
+  </main>
+
+  <footer>
+    <strong>Mobilization Church Balilihan</strong><br>
+    Administrator Access Portal<br>
+    © <span id="year"></span> All Rights Reserved.
+  </footer>
+</div>
+
+<script>
+/* ==========================================
+   SUPABASE CONFIGURATION
+========================================== */
+
+const SUPABASE_URL =
+  "https://gcmsypmigipyizwcoflw.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+  "sb_publishable_LRvaH2X8ZuJz8q17_JkxOg_lbi3ob_s";
+
+const ADMIN_API_URL =
+  SUPABASE_URL + "/functions/v1/admin-api";
+
+/*
+  CHANGE THIS if your actual admin dashboard
+  has a different file path.
+*/
+const ADMIN_DASHBOARD_URL = "admin/certificate.html";
+
+/* ==========================================
+   ELEMENTS
+========================================== */
+
+const form = document.getElementById("loginForm");
+const usernameInput = document.getElementById("username");
+const passwordInput = document.getElementById("password");
+const rememberInput = document.getElementById("rememberMe");
+const loginBtn = document.getElementById("loginBtn");
+const message = document.getElementById("message");
+
+/* ==========================================
+   MESSAGE
+========================================== */
+
+function showMessage(text, type = "error") {
+  message.textContent = text;
+  message.className = "message " + type;
+}
+
+function clearMessage() {
+  message.textContent = "";
+  message.className = "message";
+}
+
+/* ==========================================
+   REMEMBER USERNAME ONLY
+========================================== */
+
+try {
+  const saved = localStorage.getItem("adminRememberedUsername");
+  if (saved) {
+    usernameInput.value = saved;
+    rememberInput.checked = true;
+  }
+} catch (error) {
+  console.warn("Local storage unavailable:", error);
+}
+
+/* ==========================================
+   PASSWORD VISIBILITY
+========================================== */
+
+document.getElementById("togglePassword").addEventListener("click", function() {
+  const icon = this.querySelector("i");
+  const showing = passwordInput.type === "password";
+
+  passwordInput.type = showing ? "text" : "password";
+  icon.className = showing ? "fa-solid fa-eye-slash" : "fa-solid fa-eye";
+  this.setAttribute("aria-label", showing ? "Hide password" : "Show password");
+});
+
+/* ==========================================
+   EDGE FUNCTION REQUEST
+========================================== */
+
+async function callAdminAPI(action, payload = {}) {
+  let response;
+
+  try {
+    response = await fetch(ADMIN_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SUPABASE_PUBLISHABLE_KEY,
+        "Authorization": "Bearer " + SUPABASE_PUBLISHABLE_KEY
+      },
+      body: JSON.stringify({
+        action,
+        ...payload
+      })
+    });
+  } catch (error) {
+    console.error("Admin API network error:", error);
+    throw new Error(
+      "Cannot connect to the authentication server. Check your Edge Function deployment and CORS settings."
+    );
+  }
+
+  const text = await response.text();
+  let result;
+
+  try {
+    result = text ? JSON.parse(text) : {};
+  } catch {
+    console.error("Invalid Edge Function response:", response.status, text);
+    throw new Error("The authentication server returned an invalid response.");
+  }
+
+  if (!response.ok) {
+    console.error("Admin API error:", response.status, result);
+    throw new Error(
+      result.error || result.message ||
+      "Authentication failed. HTTP " + response.status
+    );
+  }
+
+  return result;
+}
+
+/* ==========================================
+   LOGIN
+========================================== */
+
+form.addEventListener("submit", async function(event) {
+  event.preventDefault();
+  clearMessage();
+
+  const username = usernameInput.value.trim();
+  const password = passwordInput.value;
+
+  if (!username || !password) {
+    showMessage("Please enter your username and password.");
+    return;
+  }
+
+  loginBtn.disabled = true;
+  loginBtn.innerHTML =
+    '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
+
+  try {
+    const result = await callAdminAPI("login", {
+      username,
+      password
+    });
+
+    if (
+      result.success !== true ||
+      typeof result.token !== "string" ||
+      !result.token ||
+      !result.admin
+    ) {
+      console.error("Unexpected login response:", result);
+      throw new Error(
+        result.error || "The server did not return a valid administrator session."
+      );
+    }
+
+    /* Store session token and safe admin profile */
+    sessionStorage.setItem("adminSessionToken", result.token);
+    sessionStorage.setItem("adminProfile", JSON.stringify(result.admin));
+
+    /* Remember username only, never password */
+    if (rememberInput.checked) {
+      localStorage.setItem("adminRememberedUsername", username);
+    } else {
+      localStorage.removeItem("adminRememberedUsername");
+    }
+
+    passwordInput.value = "";
+
+    showMessage("Login successful. Redirecting...", "success");
+
+    loginBtn.innerHTML =
+      '<i class="fa-solid fa-check"></i> Login Successful';
+
+    window.location.replace(ADMIN_DASHBOARD_URL);
+
+  } catch (error) {
+    console.error("Login failed:", error);
+    showMessage(error.message || "Unable to login.");
+
+    loginBtn.disabled = false;
+    loginBtn.innerHTML =
+      '<i class="fa-solid fa-right-to-bracket"></i> Login';
+  }
+});
+
+/* ==========================================
+   FORGOT PASSWORD
+========================================== */
+
+document.getElementById("forgotPassword").addEventListener("click", function(event) {
+  event.preventDefault();
+  alert(
+    "Please contact your authorized system administrator to request a password reset."
+  );
+});
+
+/* ==========================================
+   FOOTER YEAR
+========================================== */
+
+document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

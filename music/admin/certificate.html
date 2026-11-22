@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#eff8ff">
+<title>Certificate Approval & Edit | Admin Management Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--page:#eff8ff;--surface:#fff;--surface2:#f5faff;--ink:#174c75;--muted:#7194b1;--line:#d8eaf8;--blue:#078bd0;--blue2:#dff2ff;--green:#16834c;--greenbg:#e8f8ef;--orange:#b96a10;--orangebg:#fff4e4;--red:#d34c56;--redbg:#fff0f1;--shadow:0 12px 35px rgba(28,93,137,.08);--radius:20px}
+*{box-sizing:border-box}body{margin:0;background:var(--page);color:var(--ink);font-family:Inter,Arial,sans-serif}.page{width:min(1320px,calc(100% - 44px));margin:28px auto 60px}
+.admin-shell{background:rgba(255,255,255,.82);border:1px solid #e1effa;border-radius:24px;padding:24px 25px 20px;box-shadow:var(--shadow);margin-bottom:28px}
+.topline{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:14px}.brand-icon{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,#bce8ff,#79c9f4);display:grid;place-items:center;color:#0877b6;font-size:23px}.brand h1{font-size:20px;margin:0;font-weight:800;letter-spacing:-.5px}.brand p{font-size:12px;color:var(--muted);margin:5px 0 0}
+.clock{text-align:right;font-size:13px;font-weight:800}.clock small{display:block;color:var(--muted);font-size:11px;margin-top:4px}.signout{border:0;background:none;color:#f05c61;font-weight:700;font-size:12px;margin-top:7px;cursor:pointer}
+.admin-nav{display:flex;gap:9px;flex-wrap:wrap;padding-top:17px}.admin-nav a{display:inline-flex;align-items:center;gap:9px;padding:12px 16px;border-radius:13px;background:#f0f8fe;color:#5b87a7;font-size:12px;font-weight:800;text-decoration:none;border:1px solid transparent;transition:.2s}.admin-nav a:hover,.admin-nav a.active{color:#0784c8;border-color:#9edcff;background:#fff;box-shadow:0 5px 16px rgba(8,139,208,.09)}
+.page-heading{margin:0 0 24px}.page-heading h2{font-size:27px;letter-spacing:-.8px;margin:0 0 10px;color:#164d76}.page-heading p{font-size:14px;line-height:1.8;color:#6e96b5;margin:0;max-width:850px}
+.panel{background:var(--surface);border:1px solid #e5f1fa;border-radius:21px;padding:25px 26px;margin-bottom:22px;box-shadow:var(--shadow)}
+.panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;margin-bottom:20px}.head-left{display:flex;gap:13px;align-items:flex-start}.head-icon{width:43px;height:43px;flex:0 0 43px;border-radius:13px;background:#e4f4ff;color:#0985c7;display:grid;place-items:center;font-size:18px}.panel h3{margin:1px 0 7px;font-size:19px;letter-spacing:-.4px;color:#164d76}.panel-head p{margin:0;color:#7b9bb5;font-size:12px;line-height:1.65}
+.count-pill{white-space:nowrap;border-radius:30px;background:#e6f5ff;color:#0786ca;padding:9px 14px;font-size:11px;font-weight:800;border:1px solid #c9eaff}.count-pill b{font-size:15px;margin-right:4px}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px;flex-wrap:wrap}.search{position:relative;min-width:min(330px,100%);flex:1;max-width:390px}.search i{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#83a5bf;font-size:13px}.search input{width:100%;padding:11px 13px 11px 37px;border:1px solid var(--line);border-radius:11px;background:#fbfdff;color:var(--ink);outline:none;font:inherit;font-size:12px}.search input:focus,.field:focus{border-color:#75cafa;box-shadow:0 0 0 3px rgba(7,139,208,.09)}
+.table-wrap{overflow-x:auto;border:1px solid #e5eff7;border-radius:14px}table{width:100%;border-collapse:collapse;min-width:720px}thead{background:#f2f9fe}th{text-align:left;padding:14px 15px;color:#628aa9;font-size:10px;letter-spacing:.6px;text-transform:uppercase;font-weight:800;border-bottom:1px solid #e1eef8}td{padding:14px 15px;border-bottom:1px solid #edf4f9;font-size:12px;color:#355f7f;vertical-align:middle}tbody tr:last-child td{border-bottom:0}tbody tr:hover{background:#fbfdff}.person{font-weight:800;color:#174f78}.subline{display:block;font-size:10px;color:#8aa7bd;margin-top:4px}.device{font-weight:700;color:#386b8e}.badge{display:inline-flex;align-items:center;gap:5px;padding:6px 9px;border-radius:30px;font-size:10px;font-weight:800}.badge.pending{color:var(--orange);background:var(--orangebg)}.badge.approved{color:var(--green);background:var(--greenbg)}.badge.rejected{color:var(--red);background:var(--redbg)}
+.actions{display:flex;gap:6px;flex-wrap:wrap}.icon-btn{width:31px;height:31px;border:1px solid #dcecf7;background:#fff;border-radius:9px;color:#5783a4;cursor:pointer;display:grid;place-items:center}.icon-btn:hover{background:#edf8ff;color:#087fc0}.icon-btn.approve{color:#16834c;border-color:#ccebd8}.icon-btn.delete{color:#d34c56;border-color:#f5d5d8}.icon-btn:disabled{opacity:.45;cursor:not-allowed}
+.empty{padding:35px 15px;text-align:center;color:#8aa7bd;font-size:12px}.empty i{font-size:26px;color:#b6d9ef;display:block;margin-bottom:10px}.loading{padding:25px;text-align:center;color:#7399b6;font-size:12px}.loading i{margin-right:7px}
+.record-id{font-family:ui-monospace,Consolas,monospace;font-weight:800;color:#087fc0}.period{font-weight:700;color:#386b8e}.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 13px;border-radius:10px;border:1px solid #d7eaf7;background:#fff;color:#477696;font-size:11px;font-weight:800;cursor:pointer}.btn:hover{background:#f1f9ff}.btn.primary{background:#078bd0;color:white;border-color:#078bd0}.btn.primary:hover{background:#067bb9}.btn.danger{color:#d34c56;border-color:#f3d2d6}.btn:disabled{opacity:.55;cursor:not-allowed}
+.notice{display:none;padding:12px 14px;border-radius:11px;font-size:12px;margin:0 0 16px;line-height:1.5}.notice.show{display:block}.notice.error{background:#fff0f1;color:#b63c47;border:1px solid #f4d1d5}.notice.success{background:#eaf8ef;color:#177447;border:1px solid #ccebd8}.notice.info{background:#edf7ff;color:#226c9e;border:1px solid #d3eaff}
+.modal-backdrop{position:fixed;inset:0;background:rgba(14,39,59,.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:1000}.modal-backdrop.show{display:flex}.modal{width:min(560px,100%);background:white;border-radius:19px;box-shadow:0 25px 80px rgba(16,54,82,.25);padding:24px}.modal-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:17px}.modal-head h3{margin:0;font-size:18px}.close{border:0;background:#eff7fc;color:#6086a2;width:32px;height:32px;border-radius:9px;cursor:pointer}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.form-group{display:flex;flex-direction:column;gap:6px}.form-group.full{grid-column:1/-1}.form-group label{font-size:10px;font-weight:800;color:#648aa8;text-transform:uppercase;letter-spacing:.4px}.field{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fbfdff;color:#244f70;outline:none;font:inherit;font-size:12px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}
+.footer{text-align:center;color:#91abc0;font-size:10px;padding:8px 0 25px}
+@media(max-width:700px){.page{width:calc(100% - 24px);margin:12px auto 35px}.admin-shell{padding:17px;border-radius:18px}.topline{align-items:flex-start}.brand h1{font-size:16px}.clock{font-size:11px}.admin-nav{gap:7px}.admin-nav a{padding:10px 11px;font-size:10px}.page-heading h2{font-size:23px}.panel{padding:18px 15px}.panel-head{gap:10px}.panel h3{font-size:16px}.count-pill{font-size:10px;padding:8px 10px}.form-grid{grid-template-columns:1fr}.form-group.full{grid-column:auto}.toolbar{align-items:stretch}.search{max-width:none;min-width:100%}}
+</style>
+</head>
+<body>
+<div class="page">
+<header class="admin-shell">
+ <div class="topline">
+  <div class="brand">
+   <div class="brand-icon"><i class="fa-solid fa-church"></i></div>
+   <div><h1>Admin Management Portal</h1><p id="churchSubtitle">Mobilization Church Balilihan</p></div>
+  </div>
+  <div class="clock"><span id="clockTime">--:--:--</span><small id="clockDate">Loading date...</small><button class="signout" id="signOutBtn"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</button></div>
+ </div>
+ <nav class="admin-nav">
+  <a class="active" href="./certificate.html"><i class="fa-solid fa-certificate"></i> Certificate Approval &amp; Edit</a>
+  <a href="./devotional.html"><i class="fa-solid fa-book-open"></i> Daily Devotional</a>
+  <a href="./music.html"><i class="fa-solid fa-music"></i> Music Line-up Generator</a>
+  <a href="./settings.html"><i class="fa-solid fa-gear"></i> Settings, Signatories &amp; Reset</a>
+ </nav>
+</header>
+
+<div class="page-heading">
+ <h2><i class="fa-solid fa-certificate"></i> Certificate Management</h2>
+ <p>Review certificate applications, verify participant details, approve eligible devotional challenges, and manage issued certificates for Mobilization Church Balilihan.</p>
+</div>
+
+<div id="notice" class="notice"></div>
+
+<section class="panel">
+ <div class="panel-head">
+  <div class="head-left"><div class="head-icon"><i class="fa-solid fa-user-check"></i></div><div><h3>User Certificate Approval Queue</h3><p>Review visitor name, gadget type, and brand before approving certificate generation.</p></div></div>
+  <div class="count-pill"><b id="pendingCount">0</b> request(s)</div>
+ </div>
+ <div class="toolbar">
+  <div class="search"><i class="fa-solid fa-magnifying-glass"></i><input id="queueSearch" type="search" placeholder="Search applicant name or device..."></div>
+  <button class="btn" id="refreshBtn"><i class="fa-solid fa-rotate"></i> Refresh</button>
+ </div>
+ <div class="table-wrap"><table>
+  <thead><tr><th style="width:55px">No.</th><th>Name</th><th>Date of Completion</th><th>Gadget Type &amp; Brand</th><th>Action</th></tr></thead>
+  <tbody id="queueBody"><tr><td colspan="5" class="loading"><i class="fa-solid fa-spinner fa-spin"></i> Loading certificate requests...</td></tr></tbody>
+ </table></div>
+</section>
+
+<section class="panel">
+ <div class="panel-head">
+  <div class="head-left"><div class="head-icon"><i class="fa-solid fa-award"></i></div><div><h3>Issued Certificate Records</h3><p>Approved certificates and their official certificate numbers.</p></div></div>
+  <div class="count-pill"><b id="issuedCount">0</b> issued</div>
+ </div>
+ <div class="toolbar">
+  <div class="search"><i class="fa-solid fa-magnifying-glass"></i><input id="issuedSearch" type="search" placeholder="Search certificate number or recipient..."></div>
+ </div>
+ <div class="table-wrap"><table>
+  <thead><tr><th>Certificate No.</th><th>Recipient</th><th>Device &amp; Brand</th><th>Period</th><th>Remove</th></tr></thead>
+  <tbody id="issuedBody"><tr><td colspan="5" class="loading"><i class="fa-solid fa-spinner fa-spin"></i> Loading issued certificates...</td></tr></tbody>
+ </table></div>
+</section>
+<footer class="footer">© <span id="footerYear"></span> Mobilization Church Balilihan · Admin Management Portal</footer>
+</div>
+
+<div class="modal-backdrop" id="editModal" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+ <div class="modal">
+  <div class="modal-head"><h3 id="editTitle"><i class="fa-solid fa-pen-to-square"></i> Edit Certificate Request</h3><button class="close" id="closeModal" aria-label="Close"><i class="fa-solid fa-xmark"></i></button></div>
+  <form id="editForm">
+   <input type="hidden" id="editId">
+   <div class="form-grid">
+    <div class="form-group full"><label for="editName">Full Name</label><input class="field" id="editName" required maxlength="180"></div>
+    <div class="form-group"><label for="editDevice">Device Type</label><input class="field" id="editDevice" maxlength="100"></div>
+    <div class="form-group"><label for="editBrand">Gadget Brand / Model</label><input class="field" id="editBrand" maxlength="160"></div>
+    <div class="form-group"><label for="editMonth">Challenge Month</label><select class="field" id="editMonth"></select></div>
+    <div class="form-group"><label for="editYear">Challenge Year</label><input class="field" id="editYear" type="number" min="2000" max="2200"></div>
+    <div class="form-group"><label for="editCompleted">Completed Days</label><input class="field" id="editCompleted" type="number" min="0"></div>
+    <div class="form-group"><label for="editTotal">Total Days</label><input class="field" id="editTotal" type="number" min="1"></div>
+   </div>
+   <div class="modal-actions"><button type="button" class="btn" id="cancelEdit">Cancel</button><button type="submit" class="btn primary" id="saveEdit"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button></div>
+  </form>
+ </div>
+</div>
+
+<script src="../navbar.js"></script>
+<script>
+/* Supabase: browser-safe publishable key only. Database RLS must restrict
+   SELECT/UPDATE/DELETE to authenticated administrators. */
+const SUPABASE_URL = "https://gcmsypmigipyizwcoflw.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_LRvaH2X8ZuJz8q17_JkxOg_lbi3ob_s";
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+const $ = id => document.getElementById(id);
+const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+let requests = [];
+let editingRequest = null;
+
+function showNotice(message,type="info"){const n=$("notice");n.textContent=message;n.className="notice show "+type;window.scrollTo({top:0,behavior:"smooth"});}
+function hideNotice(){$("notice").className="notice";}
+function escapeHTML(value){return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function readRequest(row){const d=row.request_data&&typeof row.request_data==="object"?row.request_data:{};return {...d,id:row.id,status:row.status,certificate_id:row.certificate_id||d.certificate_id||"",created_at:row.created_at};}
+function dateLabel(r){const raw=r.completed_at||r.completion_date||r.created_at||r.submitted_at; if(!raw)return "—";const dt=new Date(raw);return Number.isNaN(dt.getTime())?String(raw):dt.toLocaleDateString("en-PH",{year:"numeric",month:"short",day:"numeric"});}
+function periodLabel(r){const m=Number(r.challenge_month);const y=r.challenge_year;return `${monthNames[m-1]||"—"} ${y||""}`.trim();}
+function deviceLabel(r){return [r.device_type||r.device||"",r.device_brand||r.gadget_brand||r.device_model||""].filter(Boolean).join(" · ")||"Not provided";}
+function sortRows(a,b){return new Date(b.created_at||0)-new Date(a.created_at||0);}
+async function loadRequests(){
+ $("queueBody").innerHTML='<tr><td colspan="5" class="loading"><i class="fa-solid fa-spinner fa-spin"></i> Loading certificate requests...</td></tr>';
+ $("issuedBody").innerHTML='<tr><td colspan="5" class="loading"><i class="fa-solid fa-spinner fa-spin"></i> Loading issued certificates...</td></tr>';
+ const {data,error}=await db.from("certificate_requests").select("id,request_data,status,created_at,certificate_id").order("created_at",{ascending:false});
+ if(error){requests=[];renderTables();showNotice("Could not load certificate requests. Check that your administrator account has SELECT permission through Supabase RLS. "+error.message,"error");return;}
+ requests=(data||[]).map(readRequest);renderTables();hideNotice();
+}
+function renderTables(){
+ const pending=requests.filter(r=>r.status==="pending");
+ const issued=requests.filter(r=>r.status==="approved"&&r.certificate_id);
+ $("pendingCount").textContent=pending.length;$("issuedCount").textContent=issued.length;
+ const q=$("queueSearch").value.trim().toLowerCase();
+ const filtered=pending.filter(r=>[r.full_name,r.device_type,r.device_brand,r.device_model].join(" ").toLowerCase().includes(q));
+ $("queueBody").innerHTML=filtered.length?filtered.map((r,i)=>`<tr>
+ <td>${i+1}</td><td><span class="person">${escapeHTML(r.full_name||"Name not provided")}</span><span class="subline">Submitted ${escapeHTML(dateLabel(r))}</span></td>
+ <td>${escapeHTML(dateLabel(r))}<span class="subline">${escapeHTML(periodLabel(r))}</span></td>
+ <td><span class="device">${escapeHTML(deviceLabel(r))}</span></td>
+ <td><div class="actions"><button class="icon-btn approve" title="Approve request" data-action="approve" data-id="${escapeHTML(r.id)}"><i class="fa-solid fa-check"></i></button><button class="icon-btn" title="Edit request" data-action="edit" data-id="${escapeHTML(r.id)}"><i class="fa-solid fa-pen"></i></button><button class="icon-btn delete" title="Delete request" data-action="delete" data-id="${escapeHTML(r.id)}"><i class="fa-solid fa-trash"></i></button></div></td></tr>`).join(""):'<tr><td colspan="5"><div class="empty"><i class="fa-solid fa-inbox"></i>No pending certificate requests.</div></td></tr>';
+ const iq=$("issuedSearch").value.trim().toLowerCase();
+ const issuedFiltered=issued.filter(r=>[r.certificate_id,r.full_name,r.device_type,r.device_brand].join(" ").toLowerCase().includes(iq));
+ $("issuedBody").innerHTML=issuedFiltered.length?issuedFiltered.map(r=>`<tr>
+ <td><span class="record-id">${escapeHTML(r.certificate_id)}</span></td><td><span class="person">${escapeHTML(r.full_name||"—")}</span></td><td>${escapeHTML(deviceLabel(r))}</td><td><span class="period">${escapeHTML(periodLabel(r))}</span></td>
+ <td><button class="icon-btn delete" title="Remove issued record" data-action="remove-issued" data-id="${escapeHTML(r.id)}"><i class="fa-solid fa-trash"></i></button></td></tr>`).join(""):'<tr><td colspan="5"><div class="empty"><i class="fa-solid fa-award"></i>No issued certificates yet.</div></td></tr>';
+}
+async function approveRequest(id){
+ const r=requests.find(x=>x.id===id);if(!r)return;
+ if(Number(r.completed_days??0)<Number(r.total_days??0)){if(!confirm("This request shows fewer completed days than total days. Approve it anyway after your manual verification?"))return;}
+ if(!confirm(`Approve certificate for ${r.full_name||"this applicant"}? The database trigger will assign the official certificate number.`))return;
+ const btn=document.querySelector(`[data-action="approve"][data-id="${CSS.escape(id)}"]`);if(btn)btn.disabled=true;
+ const {error}=await db.from("certificate_requests").update({status:"approved"}).eq("id",id).eq("status","pending");
+ if(error){if(btn)btn.disabled=false;showNotice("Approval failed. Check administrator UPDATE permission and the certificate ID trigger. "+error.message,"error");return;}
+ showNotice("Certificate approved. Refreshing issued certificate records...","success");await loadRequests();
+}
+function openEdit(id){const r=requests.find(x=>x.id===id);if(!r)return;editingRequest=r;$("editId").value=id;$("editName").value=r.full_name||"";$("editDevice").value=r.device_type||r.device||"";$("editBrand").value=r.device_brand||r.gadget_brand||r.device_model||"";$("editMonth").value=String(r.challenge_month||"");$("editYear").value=r.challenge_year||"";$("editCompleted").value=r.completed_days??"";$("editTotal").value=r.total_days??"";$("editModal").classList.add("show");}
+function closeEdit(){$("editModal").classList.remove("show");editingRequest=null;}
+async function saveEdit(event){event.preventDefault();if(!editingRequest)return;const payload={...editingRequest,full_name:$("editName").value.trim(),device_type:$("editDevice").value.trim(),device_brand:$("editBrand").value.trim(),challenge_month:Number($("editMonth").value),challenge_year:Number($("editYear").value),completed_days:Number($("editCompleted").value),total_days:Number($("editTotal").value)};
+ if(!payload.full_name||!payload.challenge_month||!payload.challenge_year||payload.completed_days<0||payload.total_days<1){showNotice("Please complete the required fields with valid values.","error");return;}
+ const btn=$("saveEdit");btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+ const {error}=await db.from("certificate_requests").update({request_data:payload}).eq("id",editingRequest.id).eq("status","pending");
+ btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-floppy-disk"></i> Save Changes';
+ if(error){showNotice("Could not save edits. Check administrator UPDATE permission. "+error.message,"error");return;}
+ closeEdit();showNotice("Certificate request details updated.","success");await loadRequests();
+}
+async function deleteRequest(id,issued=false){const r=requests.find(x=>x.id===id);if(!r)return;const label=issued?"permanently remove this issued certificate record":"delete this certificate request";if(!confirm(`Are you sure you want to ${label}${r.full_name?" for "+r.full_name:""}? This cannot be undone.`))return;
+ const {error}=await db.from("certificate_requests").delete().eq("id",id);
+ if(error){showNotice("Delete failed. Check administrator DELETE permission. "+error.message,"error");return;}
+ showNotice(issued?"Issued certificate record removed.":"Certificate request deleted.","success");await loadRequests();
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-action]");if(!b)return;const {action,id}=b.dataset;if(action==="approve")approveRequest(id);if(action==="edit")openEdit(id);if(action==="delete")deleteRequest(id,false);if(action==="remove-issued")deleteRequest(id,true);});
+$("queueSearch").addEventListener("input",renderTables);$("issuedSearch").addEventListener("input",renderTables);$("refreshBtn").addEventListener("click",loadRequests);
+$("closeModal").addEventListener("click",closeEdit);$("cancelEdit").addEventListener("click",closeEdit);$("editForm").addEventListener("submit",saveEdit);$("editModal").addEventListener("click",e=>{if(e.target===$("editModal"))closeEdit();});
+$("editMonth").innerHTML='<option value="">Select month</option>'+monthNames.map((m,i)=>`<option value="${i+1}">${m}</option>`).join("");
+function updateClock(){const now=new Date();$("clockTime").textContent=now.toLocaleTimeString("en-US");$("clockDate").textContent=now.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"});$("footerYear").textContent=now.getFullYear();}
+updateClock();setInterval(updateClock,1000);
+$("signOutBtn").addEventListener("click",async()=>{try{await db.auth.signOut()}catch(e){console.warn(e)};location.href="./login.html";});
+async function loadChurchName(){const {data,error}=await db.from("app_settings").select("settings").eq("id",1).maybeSingle();if(error){console.warn("Could not load church settings:",error.message);return;}const s=data?.settings||{};const name=s.church_name||s.brand_name||s.app_name||"Mobilization Church Balilihan";$("churchSubtitle").textContent=name;}
+(async()=>{await loadChurchName();await loadRequests();})();
+</script>
+</body>
+</html>

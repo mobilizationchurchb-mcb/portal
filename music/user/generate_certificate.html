@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07111f">
+<title>Certificate Challenge & Generator | Mobilization Church Balilihan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&family=Great+Vibes&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{--bg:#07111f;--bg2:#0b1728;--panel:#111f33;--panel2:#152941;--input:#0b192b;--text:#edf4ff;--muted:#a5b4c8;--line:rgba(148,163,184,.18);--gold:#d9a441;--gold2:#f1c66f;--green:#22c55e;--red:#fb923c;--shadow:0 18px 50px rgba(0,0,0,.2);--radius:20px}
+body[data-theme="light"]{--bg:#f3f5f8;--bg2:#e9eef5;--panel:#fff;--panel2:#f5f7fa;--input:#fff;--text:#172337;--muted:#596a80;--line:rgba(51,65,85,.17);--gold:#95600a;--gold2:#b47a16;--green:#147a39;--red:#b45309;--shadow:0 14px 38px rgba(15,23,42,.08)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 12% 0,rgba(217,164,65,.08),transparent 28%),var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;transition:background .2s,color .2s}button,input,select{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}.wrap{width:min(1450px,94%);margin:auto;padding:26px 0 60px}
+.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;margin:22px 0 28px}.hero-copy,.hero-art,.panel,.stat{border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);box-shadow:var(--shadow)}.hero-copy{padding:clamp(24px,4vw,45px);display:flex;flex-direction:column;justify-content:center}.eyebrow{color:var(--gold2);font-size:11px;font-weight:800;letter-spacing:1.8px;text-transform:uppercase}.hero h1{font:800 clamp(34px,5vw,56px)/1.08 "Playfair Display",serif;margin:12px 0}.hero p{color:var(--muted);line-height:1.8;margin:0;max-width:800px}.hero-art{min-height:270px;display:grid;place-items:center;text-align:center;padding:25px;background:linear-gradient(140deg,var(--panel2),var(--panel))}.hero-art i{font-size:66px;color:var(--gold2);margin-bottom:15px}.hero-art strong{display:block;font:700 22px "Playfair Display",serif}.hero-art span{display:block;color:var(--muted);font-size:12px;margin-top:8px}
+.panel{padding:clamp(18px,2.5vw,28px);margin-bottom:22px}.section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px}.section-head h2{font-size:20px;margin:0}.section-head p{font-size:12px;color:var(--muted);line-height:1.6;margin:7px 0 0}.month-tools{display:flex;gap:9px;flex-wrap:wrap}.field,.select{background:var(--input);color:var(--text);border:1px solid var(--line);border-radius:11px;padding:12px 13px;outline:none;min-width:0}.field:focus,.select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(217,164,65,.12)}.progress-layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(290px,.8fr);gap:22px}.progress-main{min-width:0}.progress-top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:14px}.progress-top strong{font-size:16px}.remaining{border:1px solid var(--line);background:var(--panel2);border-radius:13px;padding:10px 14px;text-align:center;min-width:120px}.remaining b{display:block;font-size:25px;color:var(--gold2)}.remaining small{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}.stat{padding:15px;background:var(--panel2);box-shadow:none}.stat span{display:block;color:var(--muted);font-size:11px}.stat b{display:block;font-size:25px;margin-top:5px}.progress-track{height:11px;border-radius:30px;background:var(--panel2);overflow:hidden;border:1px solid var(--line)}.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#b78325,#f1c66f);border-radius:inherit;transition:width .25s}.progress-caption{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin:8px 0 18px}.day-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}.day-card{position:relative;min-height:76px;border:1px solid var(--line);background:var(--panel2);border-radius:12px;color:var(--text);padding:10px 5px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;transition:.18s}.day-card:hover{border-color:var(--gold);transform:translateY(-1px)}.day-card b{font-size:17px}.day-card small{font-size:9px;color:var(--muted)}.day-card.done{border-color:rgba(34,197,94,.45);background:rgba(34,197,94,.09)}.day-card.done small{color:var(--green)}.day-card.no-entry{opacity:.48;cursor:not-allowed}.day-card.selected{outline:2px solid var(--gold);outline-offset:1px}.day-card .mark{position:absolute;right:7px;top:5px;font-size:10px;color:var(--green)}
+.approval-card{height:100%;background:var(--panel2);border:1px solid var(--line);border-radius:17px;padding:22px}.approval-icon{width:58px;height:58px;border-radius:17px;background:rgba(217,164,65,.13);display:grid;place-items:center;color:var(--gold2);font-size:25px;margin-bottom:15px}.approval-card h3{margin:0 0 7px;font:700 21px "Playfair Display",serif}.approval-card>p{font-size:12px;color:var(--muted);line-height:1.65;margin:0 0 17px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.form-group{display:flex;flex-direction:column;gap:6px}.form-group.full{grid-column:1/-1}.form-group label{font-size:10px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.6px}.form-group input,.form-group select{width:100%}.form-note{font-size:10px;color:var(--muted);line-height:1.5;margin:12px 0}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 15px;border:0;border-radius:11px;font-size:12px;font-weight:800;transition:.2s}.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}.btn-gold{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#172337}.btn-soft{background:var(--panel);color:var(--text);border:1px solid var(--line)}.btn:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.04)}.btn-block{width:100%;margin-top:9px}.request-state{display:flex;align-items:center;gap:9px;border:1px solid var(--line);background:var(--panel);padding:11px 12px;border-radius:11px;font-size:11px;margin-top:13px}.request-state.pending{color:#d99a36}.request-state.approved{color:var(--green)}.request-state.rejected{color:#ef7777}.certificate-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.certificate-actions .btn{font-size:10px;padding:11px 8px}.hidden{display:none!important}.hint{font-size:11px;color:var(--muted);line-height:1.6}.divider{height:1px;background:var(--line);margin:17px 0}.toast{position:fixed;right:18px;bottom:18px;z-index:9999;background:var(--panel2);color:var(--text);border:1px solid var(--line);padding:13px 17px;border-radius:12px;box-shadow:var(--shadow);font-size:12px;display:none;max-width:min(420px,90vw)}.toast.show{display:block}
+.certificate-section{scroll-margin-top:25px}.certificate-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}.certificate-toolbar h2{font-size:19px;margin:0}.certificate-toolbar span{font-size:11px;color:var(--muted)}.certificate-shell{overflow:auto;padding:5px}.certificate{width:1123px;height:794px;position:relative;margin:0 auto;background:#fbfaf5;color:#14284d;padding:45px 66px 38px;text-align:center;box-shadow:0 15px 45px rgba(0,0,0,.2);font-family:"DM Sans",sans-serif;overflow:hidden}.certificate:before{content:"";position:absolute;inset:16px;border:8px solid #10264c;pointer-events:none}.certificate:after{content:"";position:absolute;inset:31px;border:2px solid #c7962b;pointer-events:none}.cert-inner{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;align-items:center}.cert-logo{width:72px;height:72px;object-fit:contain;margin:3px 0 8px}.cert-brand{font-size:20px;font-weight:800;color:#14284d}.cert-subbrand{font-size:11px;color:#9b701e;letter-spacing:.4px;margin-top:5px}.cert-title{font:700 45px "Playfair Display",serif;letter-spacing:1px;margin:22px 0 8px;color:#14284d}.gold-rule{height:2px;width:44%;background:#c7962b;position:relative;margin:0 auto 24px}.gold-rule:after{content:"◆";position:absolute;left:50%;top:50%;transform:translate(-50%,-55%);background:#fbfaf5;color:#c7962b;padding:0 8px;font-size:13px}.presented{font-size:15px;color:#506078}.recipient{font:italic 52px "Great Vibes",cursive;color:#14284d;border-bottom:1px solid #c7962b;min-width:440px;max-width:85%;padding:0 20px 7px;margin:12px auto 18px;overflow-wrap:anywhere}.cert-description{font-size:17px;line-height:1.55;max-width:850px;color:#26364c}.cert-meta{display:grid;grid-template-columns:repeat(3,1fr);width:90%;margin:40px 0 0;border:1px solid #d7cdb9;background:#f4f1e9;padding:12px 0}.cert-meta>div{padding:4px 15px;border-right:1px solid #d7cdb9}.cert-meta>div:last-child{border:0}.cert-meta small{display:block;font-size:10px;color:#9b701e;font-weight:700}.cert-meta strong{display:block;font:600 17px "Playfair Display",serif;margin-top:9px;color:#14284d}.cert-footer{margin-top:auto;width:100%;display:grid;grid-template-columns:1fr 150px 1fr;gap:30px;align-items:end;padding:0 25px 12px}.signature{text-align:center}.signature img{display:none!important}.signature-name{font:600 17px "DM Sans",sans-serif;border-bottom:1px solid #14284d;padding:5px 5px 7px;color:#14284d;min-height:34px}.signature-role{font-size:11px;font-weight:800;margin-top:8px;color:#14284d}.signature-church{font-size:10px;color:#718096;margin-top:3px}.seal{width:82px;height:82px;margin:auto;border-radius:50%;background:#14284d;border:5px double #c7962b;color:#f0c55d;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;font-weight:800;line-height:1.25;outline:5px solid #c7962b;outline-offset:-1px}.seal small{font-size:7px;color:#fff}.cert-id{font:bold 12px monospace;margin-top:12px;color:#14284d}
+@media(max-width:900px){.hero,.progress-layout{grid-template-columns:1fr}.hero-art{min-height:190px}.approval-card{max-width:none}}@media(max-width:600px){.wrap{padding-top:12px}.stats{gap:7px}.stat{padding:11px}.stat b{font-size:21px}.day-grid{gap:5px}.day-card{min-height:65px}.day-card small{font-size:8px}.form-grid{grid-template-columns:1fr}.form-group.full{grid-column:auto}.section-head,.progress-top{align-items:flex-start}.certificate-actions{grid-template-columns:1fr}.certificate{transform-origin:top left}}
+@media print{
+ @page{size:A4 landscape;margin:0}
+ html,body{width:297mm!important;height:210mm!important;margin:0!important;padding:0!important;background:#fff!important;overflow:hidden!important}
+ body *{visibility:hidden!important}
+ #certificateSection,#certificateSection *{visibility:visible!important}
+ #certificateSection{display:block!important;position:absolute!important;left:0!important;top:0!important;width:297mm!important;height:210mm!important;margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;background:#fff!important}
+ #certificateSection .certificate-toolbar{display:none!important}
+ #certificateSection .certificate-shell{display:block!important;width:297mm!important;height:210mm!important;overflow:visible!important;padding:0!important;margin:0!important}
+ #certificate{display:block!important;position:relative!important;width:297mm!important;height:210mm!important;margin:0!important;padding:12mm 17mm 10mm!important;box-shadow:none!important;transform:none!important;break-inside:avoid!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+ .toast,.no-print{display:none!important}
+}
+
+/* High-contrast LIGHT MODE: keep every page surface white and all text readable. */
+body[data-theme="light"]{
+  --bg:#ffffff;
+  --bg2:#ffffff;
+  --panel:#ffffff;
+  --panel2:#ffffff;
+  --input:#ffffff;
+  --text:#172337;
+  --muted:#46566b;
+  --line:rgba(23,35,55,.18);
+  --gold:#8a5a08;
+  --gold2:#9a680f;
+  --green:#147a39;
+  --red:#a74712;
+  --shadow:0 10px 28px rgba(15,23,42,.07);
+  background:#ffffff!important;
+  color:#172337!important;
+}
+body[data-theme="light"] .wrap,
+body[data-theme="light"] main,
+body[data-theme="light"] .hero-copy,
+body[data-theme="light"] .hero-art,
+body[data-theme="light"] .panel,
+body[data-theme="light"] .stat,
+body[data-theme="light"] .approval-card,
+body[data-theme="light"] .remaining,
+body[data-theme="light"] .day-card,
+body[data-theme="light"] .field,
+body[data-theme="light"] .select,
+body[data-theme="light"] .btn-soft,
+body[data-theme="light"] .request-state,
+body[data-theme="light"] .toast{
+  background:#ffffff!important;
+  color:#172337!important;
+}
+body[data-theme="light"] .hero-art{
+  background:#ffffff!important;
+}
+body[data-theme="light"] .hero-art strong,
+body[data-theme="light"] .hero h1,
+body[data-theme="light"] .section-head h2,
+body[data-theme="light"] .progress-top strong,
+body[data-theme="light"] .approval-card h3,
+body[data-theme="light"] .stat b,
+body[data-theme="light"] .day-card b,
+body[data-theme="light"] .btn-soft{
+  color:#172337!important;
+}
+body[data-theme="light"] .hero p,
+body[data-theme="light"] .section-head p,
+body[data-theme="light"] .remaining small,
+body[data-theme="light"] .stat span,
+body[data-theme="light"] .day-card small,
+body[data-theme="light"] .approval-card>p,
+body[data-theme="light"] .form-group label,
+body[data-theme="light"] .form-note,
+body[data-theme="light"] .hint,
+body[data-theme="light"] .progress-caption,
+body[data-theme="light"] .certificate-toolbar span{
+  color:#46566b!important;
+}
+body[data-theme="light"] .field,
+body[data-theme="light"] .select{
+  border-color:#cbd5e1!important;
+}
+body[data-theme="light"] .day-card{
+  border-color:#d5dce5!important;
+}
+body[data-theme="light"] .day-card.done{
+  background:#f0fdf4!important;
+  color:#14532d!important;
+}
+body[data-theme="light"] .day-card.done small,
+body[data-theme="light"] .day-card.done .mark{
+  color:#147a39!important;
+}
+body[data-theme="light"] .btn-gold{
+  color:#ffffff!important;
+}
+body[data-theme="light"] .request-state.pending{color:#8a5a08!important}
+body[data-theme="light"] .request-state.approved{color:#147a39!important}
+body[data-theme="light"] .request-state.rejected{color:#a12626!important}
+/* Final LIGHT theme override: pure white surfaces and strong readable contrast. */
+body[data-theme="light"],
+body[data-theme="light"] .wrap,
+body[data-theme="light"] main,
+body[data-theme="light"] .hero-copy,
+body[data-theme="light"] .hero-art,
+body[data-theme="light"] .panel,
+body[data-theme="light"] .stat,
+body[data-theme="light"] .approval-card,
+body[data-theme="light"] .remaining,
+body[data-theme="light"] .day-card,
+body[data-theme="light"] .field,
+body[data-theme="light"] .select,
+body[data-theme="light"] .btn-soft,
+body[data-theme="light"] .request-state,
+body[data-theme="light"] .toast,
+body[data-theme="light"] .certificate-shell {
+  background: #fff !important;
+  color: #172337 !important;
+}
+body[data-theme="light"] { background-image:none !important; }
+body[data-theme="light"] h1,
+body[data-theme="light"] h2,
+body[data-theme="light"] h3,
+body[data-theme="light"] h4,
+body[data-theme="light"] strong,
+body[data-theme="light"] b,
+body[data-theme="light"] p,
+body[data-theme="light"] span,
+body[data-theme="light"] label,
+body[data-theme="light"] small,
+body[data-theme="light"] li,
+body[data-theme="light"] td,
+body[data-theme="light"] th,
+body[data-theme="light"] .hero-art strong,
+body[data-theme="light"] .hero h1,
+body[data-theme="light"] .section-head h2,
+body[data-theme="light"] .progress-top strong,
+body[data-theme="light"] .approval-card h3,
+body[data-theme="light"] .stat b,
+body[data-theme="light"] .day-card b,
+body[data-theme="light"] .btn-soft {
+  color: #172337;
+}
+body[data-theme="light"] .hero p,
+body[data-theme="light"] .section-head p,
+body[data-theme="light"] .remaining small,
+body[data-theme="light"] .stat span,
+body[data-theme="light"] .day-card small,
+body[data-theme="light"] .approval-card > p,
+body[data-theme="light"] .form-group label,
+body[data-theme="light"] .form-note,
+body[data-theme="light"] .hint,
+body[data-theme="light"] .progress-caption,
+body[data-theme="light"] .certificate-toolbar span,
+body[data-theme="light"] .hero-art span {
+  color: #46566b !important;
+}
+body[data-theme="light"] input,
+body[data-theme="light"] select,
+body[data-theme="light"] textarea,
+body[data-theme="light"] option {
+  background: #fff !important;
+  color: #172337 !important;
+  border-color: #cbd5e1 !important;
+}
+body[data-theme="light"] input::placeholder,
+body[data-theme="light"] textarea::placeholder { color:#64748b !important; opacity:1; }
+body[data-theme="light"] .day-card { border-color:#d5dce5 !important; }
+body[data-theme="light"] .day-card.done { background:#f0fdf4 !important; color:#14532d !important; }
+body[data-theme="light"] .day-card.done small,
+body[data-theme="light"] .day-card.done .mark { color:#147a39 !important; }
+body[data-theme="light"] .btn-gold { color:#fff !important; }
+body[data-theme="light"] .request-state.pending { color:#8a5a08 !important; }
+body[data-theme="light"] .request-state.approved { color:#147a39 !important; }
+body[data-theme="light"] .request-state.rejected { color:#a12626 !important; }
+body[data-theme="light"] nav,
+body[data-theme="light"] header,
+body[data-theme="light"] .navbar,
+body[data-theme="light"] .nav-container,
+body[data-theme="light"] .navbar-menu,
+body[data-theme="light"] .certificate { background:#fff !important; }
+body[data-theme="light"] .cert-meta { background:#fff !important; }
+body[data-theme="light"] .gold-rule:after { background:#fff !important; }
+
+</style>
+</head>
+<body data-theme="dark">
+<script src="./navbar.js"></script>
+
+<main class="wrap">
+<section class="hero">
+ <div class="hero-copy">
+  <div class="eyebrow" id="churchBrand">Mobilization Church Balilihan · Daily Grace Recognition</div>
+  <h1>Certificate Challenge &amp; Generator</h1>
+  <p>Complete every daily devotional for the selected month, submit your name and gadget details for church administrator approval, and once approved, generate your official A4 Certificate of Completion signed by the Senior Pastor and Youth President or Vice President.</p>
+ </div>
+ <div class="hero-art"><div><i class="fa-solid fa-award"></i><strong>Daily Grace Recognition</strong><span>Read · Reflect · Apply · Pray · Complete</span></div></div>
+</section>
+
+<section class="panel">
+ <div class="section-head">
+  <div><h2>Monthly Challenge Progress</h2><p>Select any day below to read and complete your reflection, application, and prayer.</p></div>
+  <div class="month-tools">
+   <select class="select" id="monthSelect" aria-label="Month"></select>
+   <select class="select" id="yearSelect" aria-label="Year"></select>
+  </div>
+ </div>
+ <div class="progress-layout">
+  <div class="progress-main">
+   <div class="progress-top"><strong id="monthLabel">Monthly Challenge</strong><div class="remaining"><b id="remainingDays">0</b><small>Days Remaining</small></div></div>
+   <div class="stats">
+    <div class="stat"><span>Completed Days</span><b id="completedDays">0</b></div>
+    <div class="stat"><span>Total Devotional Days</span><b id="totalDays">0</b></div>
+    <div class="stat"><span>Completion</span><b id="completionPercent">0%</b></div>
+   </div>
+   <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+   <div class="progress-caption"><span>Monthly completion progress</span><strong id="progressLabel">0%</strong></div>
+   <div class="day-grid" id="dayGrid"><div class="hint">Loading monthly devotionals...</div></div>
+   <p class="hint" style="margin-top:12px">Select a published day to open the Daily Grace Devotional page. Completed marks are read from your Daily Grace browser progress.</p>
+  </div>
+  <aside class="approval-card">
+   <div class="approval-icon"><i class="fa-solid fa-certificate"></i></div>
+   <h3>Certificate Approval &amp; Issue</h3>
+   <p>Complete all published devotional days in the selected month before submitting your certificate request. Your details are editable before submission.</p>
+   <div class="form-grid">
+    <div class="form-group full"><label for="fullName">Full Name</label><input class="field" id="fullName" placeholder="Enter your complete name" autocomplete="name"></div>
+    <div class="form-group"><label for="deviceType">Device Used</label><select class="select" id="deviceType"><option value="Android">Android</option><option value="iPhone">iPhone</option><option value="iPad / Tablet">iPad / Tablet</option><option value="Windows PC">Windows PC</option><option value="Mac">Mac</option><option value="Other">Other</option></select></div>
+    <div class="form-group"><label for="deviceBrand">Gadget Brand / Model</label><input class="field" id="deviceBrand" placeholder="e.g. Samsung A55"></div>
+    <div class="form-group"><label for="certMonth">Month</label><input class="field" id="certMonth" readonly></div>
+    <div class="form-group"><label for="certYear">Year</label><input class="field" id="certYear" readonly></div>
+   </div>
+   <p class="form-note"><i class="fa-solid fa-circle-info"></i> Your device type is detected automatically when possible. You can edit the device and brand/model details.</p>
+   <button class="btn btn-gold btn-block" id="submitRequest"><i class="fa-solid fa-paper-plane"></i> Submit for Admin Approval</button>
+   <div class="request-state hidden" id="requestState"></div>
+   <div class="divider"></div>
+   <div id="activeCertificate" class="hidden">
+    <p style="font-size:10px;color:var(--muted);font-weight:800;text-transform:uppercase;margin:0 0 5px">Active Certificate</p>
+    <strong id="activeCertId" style="font:700 14px monospace;color:var(--gold2)">MCB-2026XX-XXXX</strong>
+    <button class="btn btn-gold btn-block" id="generateCertificate"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate Certificate</button>
+    <div class="certificate-actions">
+     <button class="btn btn-soft" id="previewCertificate"><i class="fa-regular fa-eye"></i> Preview Certificate</button>
+     <button class="btn btn-soft" id="downloadPDF"><i class="fa-solid fa-file-pdf"></i> Download PDF</button>
+     <button class="btn btn-soft" id="downloadPNG"><i class="fa-solid fa-file-image"></i> Download PNG</button>
+     <button class="btn btn-soft" id="printCertificate"><i class="fa-solid fa-print"></i> Print Certificate</button>
+    </div>
+   </div>
+   <p class="hint" id="eligibilityHint" style="margin:13px 0 0">Complete all published devotional days to unlock submission.</p>
+  </aside>
+ </div>
+</section>
+
+<section class="panel certificate-section hidden" id="certificateSection">
+ <div class="certificate-toolbar no-print">
+  <div><h2>Official Certificate - <span id="toolbarName">Full Name</span></h2><span>Official certificate · A4 landscape format</span></div>
+  <strong id="toolbarCertId" style="font:700 12px monospace;color:var(--gold2)">MCB-2026XX-XXXX</strong>
+ </div>
+ <div class="certificate-shell">
+  <div class="certificate" id="certificate">
+   <div class="cert-inner">
+    <img class="cert-logo" id="certLogoTop" alt="Church Logo" hidden>
+    <div class="cert-brand" id="certBrand">MOBILIZATION CHURCH BALILIHAN</div>
+    <div class="cert-subbrand" id="certSubbrand">BALILIHAN, BOHOL · DAILY GRACE DEVOTIONAL MINISTRY</div>
+    <h2 class="cert-title">CERTIFICATE OF COMPLETION</h2>
+    <div class="gold-rule"></div>
+    <div class="presented">PROUDLY PRESENTED TO</div>
+    <div class="recipient" id="certRecipient">Full Name</div>
+    <div class="cert-description">This certificate is proudly presented in recognition of successfully completing the Daily Grace Devotional Challenge.</div>
+    <div class="cert-meta">
+     <div><small>MONTH &amp; YEAR COMPLETED</small><strong id="certMonthYear">Month 2026</strong></div>
+     <div><small>TOTAL DEVOTIONAL DAYS</small><strong id="certTotalDays">0 of 0 Days</strong></div>
+     <div><small>DATE OF ISSUANCE</small><strong id="certIssueDate">November 22, 2026</strong></div>
+    </div>
+    <div class="cert-footer">
+     <div class="signature">
+      <div class="signature-name" id="pastorName">Senior Pastor</div>
+      <div class="signature-role" id="pastorRole">SENIOR PASTOR</div>
+      <div class="signature-church" id="pastorChurch">Mobilization Church Balilihan</div>
+     </div>
+     <div><div class="seal"><span>DAILY<br>GRACE</span><small>OFFICIAL SEAL</small></div><div class="cert-id" id="certNumber">MCB-2026XX-XXXX</div><img class="cert-logo" id="certLogoBottom" alt="Church Logo" hidden style="width:34px;height:34px;margin:5px auto 0"></div>
+     <div class="signature">
+      <div class="signature-name" id="youthName">Youth President</div>
+      <div class="signature-role" id="youthRole">YOUTH PRESIDENT</div>
+      <div class="signature-church" id="youthChurch">Mobilization Church Balilihan</div>
+     </div>
+    </div>
+   </div>
+  </div>
+ </div>
+</section>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   SUPABASE CONFIGURATION
+   Use your project's publishable/anon key only. Never place
+   the Supabase service-role key in browser-side code.
+========================================================= */
+const SUPABASE_URL = "https://gcmsypmigipyizwcoflw.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_LRvaH2X8ZuJz8q17_JkxOg_lbi3ob_s";
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const THEME_STORAGE_KEY = "dailyGraceHomeTheme";
+const RESPONSE_STORAGE_KEY = "dailyGraceResponses_v1";
+const REQUEST_STORAGE_KEY = "dailyGraceCertificateRequest_v1";
+
+let settings = {};
+let churchName = "Mobilization Church Balilihan";
+let devotionals = [];
+let selectedMonth = new Date().getMonth();
+let selectedYear = new Date().getFullYear();
+let responses = readJSON(RESPONSE_STORAGE_KEY,{});
+let requestRecord = readJSON(REQUEST_STORAGE_KEY,null);
+let approvedCertificate = null;
+const $ = id => document.getElementById(id);
+const monthNames = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+function readJSON(key,fallback){try{return JSON.parse(localStorage.getItem(key)||"null")??fallback}catch{return fallback}}
+function saveJSON(key,value){try{localStorage.setItem(key,JSON.stringify(value));return true}catch{return false}}
+function toast(message){$("toast").textContent=message;$("toast").classList.add("show");clearTimeout(toast.timer);toast.timer=setTimeout(()=>$("toast").classList.remove("show"),3200)}
+function localDate(date=new Date()){return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,"0")}-${String(date.getDate()).padStart(2,"0")}`}
+function safeText(v){return String(v??"").trim()}
+function applyTheme(theme,save=false){const t=theme==="light"?"light":"dark";document.body.dataset.theme=t;const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=t==="light"?"#ffffff":"#07111f";if(save)try{localStorage.setItem(THEME_STORAGE_KEY,t)}catch{}}
+function initTheme(){let t="dark";try{t=localStorage.getItem(THEME_STORAGE_KEY)||"dark"}catch{}applyTheme(t)}
+initTheme();
+window.addEventListener("storage",e=>{if(e.key===THEME_STORAGE_KEY)applyTheme(e.newValue||"dark");if(e.key===RESPONSE_STORAGE_KEY){responses=readJSON(RESPONSE_STORAGE_KEY,{});renderProgress()}});
+const themeObserver=new MutationObserver(()=>{const t=document.body.dataset.theme==="light"?"light":"dark";try{if(localStorage.getItem(THEME_STORAGE_KEY)!==t)localStorage.setItem(THEME_STORAGE_KEY,t)}catch{}});
+themeObserver.observe(document.body,{attributes:true,attributeFilter:["data-theme"]});
+window.addEventListener("dailyGraceThemeChanged",e=>applyTheme(e.detail?.theme||"dark",true));
+window.addEventListener("pageshow",()=>{try{applyTheme(localStorage.getItem(THEME_STORAGE_KEY)||"dark")}catch{}});
+window.addEventListener("focus",()=>{try{applyTheme(localStorage.getItem(THEME_STORAGE_KEY)||"dark")}catch{}});
+
+function detectDevice(){const ua=navigator.userAgent||"";if(/iPhone|iPod/i.test(ua))return "iPhone";if(/iPad/i.test(ua))return "iPad / Tablet";if(/Android/i.test(ua))return /Mobile/i.test(ua)?"Android":"iPad / Tablet";if(/Macintosh|Mac OS/i.test(ua))return "Mac";if(/Windows/i.test(ua))return "Windows PC";return "Other"}
+function detectBrand(){const ua=navigator.userAgent||"";const m=ua.match(/(Samsung|SM-[A-Z0-9-]+|Pixel|Xiaomi|Redmi|OPPO|Vivo|OnePlus|Huawei|Infinix|Tecno|Realme|iPhone|iPad)/i);return m?m[0]:""}
+function monthDevotionals(){return devotionals.filter(d=>{const dt=new Date(d.date+"T00:00:00");return dt.getMonth()===selectedMonth&&dt.getFullYear()===selectedYear})}
+function completed(date){return responses?.[date]?.completed===true}
+function stats(){const list=monthDevotionals();const done=list.filter(d=>completed(d.date)).length;return {list,done,total:list.length,remaining:Math.max(0,list.length-done),percent:list.length?Math.round(done/list.length*100):0}}
+function setMonthOptions(){const m=$("monthSelect"),y=$("yearSelect");m.innerHTML=monthNames.map((n,i)=>`<option value="${i}">${n}</option>`).join("");const years=[...new Set([new Date().getFullYear(),...devotionals.map(d=>Number(d.date.slice(0,4)))])].sort((a,b)=>a-b);y.innerHTML=years.map(v=>`<option value="${v}">${v}</option>`).join("");m.value=selectedMonth;y.value=selectedYear;updateMonthInputs()}
+function updateMonthInputs(){$("certMonth").value=monthNames[selectedMonth];$("certYear").value=selectedYear;$("monthLabel").textContent=`${monthNames[selectedMonth]} ${selectedYear}`}
+function renderProgress(){updateMonthInputs();const s=stats();$("completedDays").textContent=s.done;$("totalDays").textContent=s.total;$("remainingDays").textContent=s.remaining;$("completionPercent").textContent=s.percent+"%";$("progressFill").style.width=s.percent+"%";$("progressLabel").textContent=s.percent+"%";const daysInMonth=new Date(selectedYear,selectedMonth+1,0).getDate();const map=new Map(s.list.map(d=>[Number(d.date.slice(8,10)),d]));$("dayGrid").innerHTML=Array.from({length:daysInMonth},(_,i)=>{const day=i+1,d=map.get(day),date=`${selectedYear}-${String(selectedMonth+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`,done=d&&completed(date);return `<button class="day-card ${done?"done":""} ${d?"":"no-entry"}" ${d?`data-date="${date}"`:"disabled"} title="${d?"Open daily devotional":"No devotional published"}"><b>${day}</b><small>${done?"Completed":d?"Open devotional":"Not published"}</small>${done?'<i class="fa-solid fa-check mark"></i>':""}</button>`}).join("");$("dayGrid").querySelectorAll("[data-date]").forEach(b=>b.addEventListener("click",()=>{location.href=`./devotional_challenge.html?date=${encodeURIComponent(b.dataset.date)}`}));const eligible=s.total>0&&s.done===s.total;$("submitRequest").disabled=!eligible||requestRecord?.status==="pending";$("eligibilityHint").textContent=s.total===0?"No devotionals have been published for this month yet.":eligible?"All published devotional days are complete. You may submit your approval request.":`Complete the remaining ${s.remaining} devotional day(s) before requesting approval.`;if(requestRecord&&Number(requestRecord.month)===selectedMonth+1&&Number(requestRecord.year)===selectedYear)showRequestState(requestRecord);else{$("requestState").classList.add("hidden");$("activeCertificate").classList.add("hidden")}}
+$("monthSelect").addEventListener("change",()=>{selectedMonth=Number($("monthSelect").value);renderProgress();loadSavedRequest()});
+$("yearSelect").addEventListener("change",()=>{selectedYear=Number($("yearSelect").value);renderProgress();loadSavedRequest()});
+
+function pick(obj,paths,fallback=""){for(const path of paths){let v=obj;for(const key of path.split("."))v=v?.[key];if(typeof v==="string"&&v.trim())return v.trim()}return fallback}
+function applySettings(s){
+ settings=s||{};
+ churchName=pick(settings,["church_name","brand_name","app_name","general.church_name"],"Mobilization Church Balilihan");
+ $("churchBrand").textContent=churchName+" · Daily Grace Recognition";
+ $("certBrand").textContent=churchName.toUpperCase();
+ $("certSubbrand").textContent=pick(settings,["certificate.subtitle","location_line","address"],"BALILIHAN, BOHOL · DAILY GRACE DEVOTIONAL MINISTRY").toUpperCase();
+
+ // Church logos are loaded from app_settings row ID 1.
+ const logo=pick(settings,["logo_url","images.logo","images.church_logo","branding.logo_url","certificate.logo_url"]);
+ [$("certLogoTop"),$("certLogoBottom")].forEach(img=>{
+   if(logo){img.src=logo;img.hidden=false}
+   else{img.removeAttribute("src");img.hidden=true}
+ });
+
+ // Load signatory names and their positions from app_settings ID 1.
+ // Accept nested objects or separate name/position fields.
+ const sign=settings.signatories||settings.certificate?.signatories||settings.signatures||{};
+ const pastor=sign.senior_pastor||sign.pastor||settings.senior_pastor||settings.pastor||{};
+ const youth=sign.youth_president||sign.youth_vice_president||sign.youth||settings.youth_president||settings.youth_vice_president||{};
+
+ const pastorName=typeof pastor==="string"?pastor:
+   pick(pastor,["name","full_name","signatory_name"],
+     pick(settings,["senior_pastor_name","pastor_name","certificate.senior_pastor_name","certificate.pastor_name"],"Senior Pastor"));
+ const pastorPosition=typeof pastor==="string"?
+   pick(settings,["senior_pastor_position","pastor_position","certificate.senior_pastor_position","certificate.pastor_position"],"SENIOR PASTOR"):
+   pick(pastor,["position","title","role","designation","signatory_position"],
+     pick(settings,["senior_pastor_position","pastor_position","certificate.senior_pastor_position","certificate.pastor_position"],"SENIOR PASTOR"));
+
+ const youthName=typeof youth==="string"?youth:
+   pick(youth,["name","full_name","signatory_name"],
+     pick(settings,["youth_president_name","youth_vice_president_name","youth_name","certificate.youth_president_name"],"Youth President"));
+ const youthPosition=typeof youth==="string"?
+   pick(settings,["youth_president_position","youth_vice_president_position","youth_position","certificate.youth_president_position"],"YOUTH PRESIDENT"):
+   pick(youth,["position","title","role","designation","signatory_position"],
+     pick(settings,["youth_president_position","youth_vice_president_position","youth_position","certificate.youth_president_position"],"YOUTH PRESIDENT"));
+
+ $("pastorName").textContent=pastorName;
+ $("pastorRole").textContent=String(pastorPosition).toUpperCase();
+ $("youthName").textContent=youthName;
+ $("youthRole").textContent=String(youthPosition).toUpperCase();
+}
+async function loadSettings(){const {data,error}=await db.from("app_settings").select("id,settings").eq("id",1).maybeSingle();if(error){console.warn("Could not load app_settings:",error.message);return}applySettings(data?.settings||{})}
+async function loadDevotionals(){const {data,error}=await db.from("daily_challenges").select("*").order("date",{ascending:true});if(error){console.error(error);$("dayGrid").innerHTML=`<p class="hint">Could not load daily challenges. Check the daily_challenges table and its public SELECT policy. ${error.message}</p>`;return}devotionals=(data||[]).map(x=>({...x,date:String(x.date||"").slice(0,10)})).filter(x=>x.date);setMonthOptions();renderProgress();await loadSavedRequest()}
+
+function showRequestState(r){
+ const box=$("requestState");
+ const status=String(r?.status||"pending").toLowerCase();
+ box.classList.remove("hidden","pending","approved","rejected");
+ box.classList.add(status);
+ const labels={pending:"Request submitted — Waiting for Admin Approval",approved:"Your certificate has been approved!",rejected:"Your request needs an update. Please contact the church administrator."};
+ box.innerHTML=`<i class="fa-solid ${status==="approved"?"fa-circle-check":status==="rejected"?"fa-circle-exclamation":"fa-clock"}"></i><span>${labels[status]||"Request status: "+status}</span>`;
+ const submit=$("submitRequest");
+ if(status==="pending"){submit.innerHTML='<i class="fa-solid fa-clock"></i> Waiting for Approval';submit.disabled=true;}
+ else{submit.innerHTML='<i class="fa-solid fa-paper-plane"></i> Submit for Admin Approval';submit.disabled=true;}
+ if(status==="approved" && r.certificate_id){
+   approvedCertificate={...r,certificate_id:r.certificate_id};
+   $("activeCertificate").classList.remove("hidden");
+   $("activeCertId").textContent=r.certificate_id;
+   $("eligibilityHint").textContent="Approved! Your official certificate is ready to generate.";
+ }else{
+   approvedCertificate=null;
+   $("activeCertificate").classList.add("hidden");
+   if(status==="approved") $("eligibilityHint").textContent="Approval received. Your certificate number is still being assigned. Please refresh shortly.";
+ }
+}
+
+function normalizeStatusRow(row){
+ return {...requestRecord,status:row.status||"pending",certificate_id:row.certificate_id||null,
+   full_name:row.full_name||requestRecord?.full_name||"",device_type:row.device_type||requestRecord?.device_type||"",
+   device_brand:row.device_brand||requestRecord?.device_brand||"",challenge_month:Number(row.challenge_month||requestRecord?.challenge_month||requestRecord?.month),
+   challenge_year:Number(row.challenge_year||requestRecord?.challenge_year||requestRecord?.year),
+   total_days:Number(row.total_days??requestRecord?.total_days??0),completed_days:Number(row.completed_days??requestRecord?.completed_days??0),
+   month:Number(row.challenge_month||requestRecord?.challenge_month||requestRecord?.month),year:Number(row.challenge_year||requestRecord?.challenge_year||requestRecord?.year)};
+}
+
+function clearDeletedCertificateRequest(){
+  // Supabase confirms that the request no longer exists: clear the stale
+  // browser copy, including any old approval state and generated certificate ID.
+  try{localStorage.removeItem(REQUEST_STORAGE_KEY)}catch(e){console.warn(e)}
+  requestRecord=null;
+  approvedCertificate=null;
+  $("requestState").classList.add("hidden");
+  $("requestState").classList.remove("pending","approved","rejected");
+  $("activeCertificate").classList.add("hidden");
+  $("activeCertId").textContent="";
+  $("certificateSection").classList.add("hidden");
+  $("submitRequest").innerHTML='<i class="fa-solid fa-paper-plane"></i> Submit for Admin Approval';
+  const s=stats();
+  const eligible=s.total>0&&s.done===s.total;
+  $("submitRequest").disabled=!eligible;
+  $("eligibilityHint").textContent=s.total===0
+    ?"No devotionals have been published for this month yet."
+    :eligible
+      ?"Your previous certificate record was deleted. You may submit a new request."
+      :`Complete the remaining ${s.remaining} devotional day(s) before requesting approval.`;
+}
+
+async function loadSavedRequest(){
+  if(!requestRecord?.request_token)return;
+  try{
+    const {data,error}=await db.rpc("get_certificate_request_status",{p_token:requestRecord.request_token});
+    if(error){
+      // A temporary database/network/RLS error is not proof that the row was deleted.
+      console.warn("Request status check:",error.message);
+      if(Number(requestRecord.month)===selectedMonth+1&&Number(requestRecord.year)===selectedYear)showRequestState(requestRecord);
+      return;
+    }
+    const row=Array.isArray(data)?data[0]:data;
+    if(row){
+      requestRecord=normalizeStatusRow(row);
+      saveJSON(REQUEST_STORAGE_KEY,requestRecord);
+      if(Number(requestRecord.month)===selectedMonth+1&&Number(requestRecord.year)===selectedYear)showRequestState(requestRecord);
+    }else{
+      // RPC returned no matching database row: remove the cached request and ID.
+      clearDeletedCertificateRequest();
+    }
+  }catch(e){
+    console.warn("Request status check failed:",e);
+    if(Number(requestRecord.month)===selectedMonth+1&&Number(requestRecord.year)===selectedYear)showRequestState(requestRecord);
+  }
+}
+
+$("submitRequest").addEventListener("click",async()=>{
+ const s=stats();
+ if(!s.total||s.done!==s.total){toast("Please complete every published devotional day first.");return;}
+ const name=safeText($("fullName").value);
+ if(!name){toast("Please enter your full name.");$("fullName").focus();return;}
+ const token=[...crypto.getRandomValues(new Uint8Array(32))].map(b=>b.toString(16).padStart(2,"0")).join("");
+ const payload={full_name:name,device_type:$("deviceType").value,device_brand:safeText($("deviceBrand").value),challenge_month:selectedMonth+1,challenge_year:selectedYear,total_days:s.total,completed_days:s.done,request_token:token};
+ const btn=$("submitRequest");btn.disabled=true;btn.textContent="Submitting...";
+ try{
+   // Existing certificate_requests schema stores applicant fields inside request_data JSONB.
+   // No SELECT is requested after INSERT, keeping applicant records private.
+   const {error}=await db.from("certificate_requests").insert({request_data:payload,status:"pending"});
+   if(error)throw error;
+   requestRecord={...payload,status:"pending",month:payload.challenge_month,year:payload.challenge_year,certificate_id:null};
+   saveJSON(REQUEST_STORAGE_KEY,requestRecord);showRequestState(requestRecord);toast("Your certificate request has been submitted.");
+ }catch(error){
+   console.error("Certificate request submission failed:",error);
+   btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-paper-plane"></i> Submit for Admin Approval';
+   toast("Submission failed: "+(error?.message||"Please check the database INSERT policy."));
+ }
+});
+function fillCertificate(){const r=approvedCertificate;if(!r?.certificate_id)return;const s=stats();$("toolbarName").textContent=r.full_name||$("fullName").value;$("toolbarCertId").textContent=r.certificate_id;$("certRecipient").textContent=r.full_name||$("fullName").value;$("certMonthYear").textContent=`${monthNames[(r.challenge_month||selectedMonth+1)-1]} ${r.challenge_year||selectedYear}`;$("certTotalDays").textContent=`${r.completed_days??s.done} of ${r.total_days??s.total} Days`;$("certIssueDate").textContent=new Date().toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"});$("certNumber").textContent=r.certificate_id}
+function revealCertificate(scroll=true){
+ if(!approvedCertificate?.certificate_id){toast("Your request must be approved by the church administrator first.");return false;}
+ fillCertificate();$("certificateSection").classList.remove("hidden");
+ if(scroll) $("certificateSection").scrollIntoView({behavior:"smooth",block:"start"});
+ return true;
+}
+function openCertificate(){revealCertificate(true)}
+$("generateCertificate").addEventListener("click",openCertificate);
+$("previewCertificate").addEventListener("click",openCertificate);
+async function certificateCanvas(){
+ if(!revealCertificate(false))return null;
+ if(typeof window.html2canvas!=="function"){toast("Certificate image library did not load. Check your internet connection and try again.");return null;}
+ try{await document.fonts.ready;return await window.html2canvas($("certificate"),{scale:2,backgroundColor:"#fbfaf5",useCORS:true,allowTaint:false,logging:false,scrollX:0,scrollY:0});}
+ catch(error){console.error("Certificate rendering failed:",error);toast("Could not render certificate. Check logo image URL or internet connection.");return null;}
+}
+$("downloadPNG").addEventListener("click",async()=>{
+ const btn=$("downloadPNG");btn.disabled=true;const old=btn.innerHTML;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Preparing PNG...';
+ try{const canvas=await certificateCanvas();if(!canvas)return;const a=document.createElement("a");a.download=`${approvedCertificate.certificate_id}.png`;a.href=canvas.toDataURL("image/png");document.body.appendChild(a);a.click();a.remove();}
+ finally{btn.disabled=false;btn.innerHTML=old;}
+});
+$("downloadPDF").addEventListener("click",async()=>{
+ const btn=$("downloadPDF");btn.disabled=true;const old=btn.innerHTML;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Preparing PDF...';
+ try{const canvas=await certificateCanvas();if(!canvas)return;if(!window.jspdf?.jsPDF){toast("PDF library did not load. Check your internet connection and try again.");return;}const pdf=new window.jspdf.jsPDF({orientation:"landscape",unit:"mm",format:"a4",compress:true});pdf.addImage(canvas.toDataURL("image/png"),"PNG",0,0,297,210,undefined,"FAST");pdf.save(`${approvedCertificate.certificate_id}.pdf`);}
+ catch(error){console.error("PDF export failed:",error);toast("PDF export failed. Please try again.");}
+ finally{btn.disabled=false;btn.innerHTML=old;}
+});
+$("printCertificate").addEventListener("click",()=>{if(!revealCertificate(false))return;setTimeout(()=>window.print(),250)});
+
+async function initialize(){ $("deviceType").value=detectDevice();$("deviceBrand").value=detectBrand();await Promise.all([loadSettings(),loadDevotionals()]);if(requestRecord){$("fullName").value=requestRecord.full_name||"";$("deviceType").value=requestRecord.device_type||$("deviceType").value;$("deviceBrand").value=requestRecord.device_brand||$("deviceBrand").value}}
+initialize();
+// Check approval periodically so the Generate/Preview/Download/Print controls
+// unlock automatically after an administrator approves the request.
+setInterval(()=>{if(requestRecord?.request_token)loadSavedRequest();},15000);
+</script>
+</body>
+</html>

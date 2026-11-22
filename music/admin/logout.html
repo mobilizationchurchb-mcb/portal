@@ -1,0 +1,504 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Administrator Logout | Mobilization Church Balilihan</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+:root {
+  --primary: #0879bd;
+  --dark: #174c70;
+  --muted: #7898ad;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  background:
+    radial-gradient(circle at 10% 10%, #d2efff 0, transparent 35%),
+    radial-gradient(circle at 90% 90%, #c6e9ff 0, transparent 35%),
+    linear-gradient(135deg, #f5fbff, #e6f5ff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  color: var(--dark);
+}
+
+.background-circle {
+  position: fixed;
+  border-radius: 50%;
+  background: rgba(255,255,255,.35);
+  pointer-events: none;
+}
+
+.circle-one {
+  width: 250px;
+  height: 250px;
+  top: -80px;
+  right: -70px;
+}
+
+.circle-two {
+  width: 200px;
+  height: 200px;
+  bottom: -70px;
+  left: -60px;
+}
+
+.logout-wrapper {
+  width: 100%;
+  max-width: 470px;
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.logout-card {
+  background: rgba(255,255,255,.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,.95);
+  border-radius: 25px;
+  padding: 42px 35px;
+  box-shadow: 0 18px 55px rgba(35,111,158,.13);
+}
+
+/* LOGO */
+
+.logo {
+  width: 76px;
+  height: 76px;
+  border-radius: 23px;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  color: #0876b9;
+  background: linear-gradient(135deg, #c7edff, #77c8f5);
+  box-shadow: 0 10px 25px rgba(38,135,190,.18);
+}
+
+.brand-name {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--dark);
+}
+
+.brand-subtitle {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 7px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* STATUS ICON */
+
+.status-icon {
+  width: 90px;
+  height: 90px;
+  margin: 32px auto 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #dff5ff, #c5eaff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #0879bd;
+  font-size: 38px;
+  box-shadow: 0 8px 25px rgba(8,121,189,.12);
+}
+
+/* TEXT */
+
+.logout-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--dark);
+  margin-bottom: 10px;
+}
+
+.logout-description {
+  color: #7898ad;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* ADMIN PROFILE */
+
+.profile-box {
+  margin: 25px 0;
+  padding: 19px;
+  background: linear-gradient(135deg, #eff9ff, #ffffff);
+  border: 1px solid #dceefa;
+  border-radius: 16px;
+}
+
+.profile-label {
+  color: #8aa8bb;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 9px;
+}
+
+.profile-name {
+  color: #0879bd;
+  font-size: 19px;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.profile-role {
+  color: #7898ad;
+  font-size: 11px;
+  margin-top: 6px;
+}
+
+/* MESSAGE */
+
+.logout-status {
+  font-size: 12px;
+  color: #7898ad;
+  margin: 15px 0 20px;
+  min-height: 20px;
+}
+
+.logout-status.success {
+  color: #15804d;
+}
+
+.logout-status.error {
+  color: #c34444;
+}
+
+/* BUTTON */
+
+.login-button {
+  width: 100%;
+  height: 51px;
+  border: none;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #1599df, #0870b1);
+  color: white;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 8px 20px rgba(8,121,189,.22);
+  transition: .25s;
+}
+
+.login-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(8,121,189,.28);
+}
+
+.footer {
+  margin-top: 23px;
+  color: #82a2b8;
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.footer strong {
+  color: #477895;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:480px) {
+  .logout-card {
+    padding: 32px 22px;
+    border-radius: 21px;
+  }
+
+  .logout-title {
+    font-size: 23px;
+  }
+
+  .profile-name {
+    font-size: 17px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="background-circle circle-one"></div>
+<div class="background-circle circle-two"></div>
+
+<div class="logout-wrapper">
+
+  <div class="logout-card">
+
+    <!-- CHURCH BRAND -->
+    <div class="logo">
+      <i class="fa-solid fa-church"></i>
+    </div>
+
+    <h1 class="brand-name">
+      Mobilization Church Balilihan
+    </h1>
+
+    <p class="brand-subtitle">
+      Admin Management Portal
+    </p>
+
+    <!-- LOGOUT ICON -->
+    <div class="status-icon">
+      <i class="fa-solid fa-right-from-bracket"></i>
+    </div>
+
+    <!-- LOGOUT MESSAGE -->
+    <h2 class="logout-title">
+      Goodbye, Administrator!
+    </h2>
+
+    <p class="logout-description">
+      Thank you for managing and serving
+      Mobilization Church Balilihan.
+      Your administrator session is being securely closed.
+    </p>
+
+    <!-- REGISTERED ADMIN NAME -->
+    <div class="profile-box">
+
+      <div class="profile-label">
+        Signed-in Administrator
+      </div>
+
+      <div class="profile-name" id="adminName">
+        Loading administrator...
+      </div>
+
+      <div class="profile-role">
+        <i class="fa-solid fa-shield-halved"></i>
+        Authorized Administrator
+      </div>
+
+    </div>
+
+    <!-- LOGOUT STATUS -->
+    <div class="logout-status" id="logoutStatus">
+      <i class="fa-solid fa-spinner fa-spin"></i>
+      Securely signing out...
+    </div>
+
+    <!-- BACK TO LOGIN -->
+    <a href="../login.html" class="login-button" id="loginLink">
+      <i class="fa-solid fa-right-to-bracket"></i>
+      Proceed to Login
+    </a>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <strong>Mobilization Church Balilihan</strong><br>
+    Administrator Access Portal<br>
+    © <span id="year"></span> All Rights Reserved.
+    <br>
+    <span>Thank you for your service!</span>
+  </footer>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   SUPABASE CONFIGURATION
+   ===================================================== */
+
+const SUPABASE_URL =
+  "https://gcmsypmigipyizwcoflw.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+  "sb_publishable_LRvaH2X8ZuJz8q17_JkxOg_lbi3ob_s";
+
+const ADMIN_API_URL =
+  SUPABASE_URL + "/functions/v1/admin-api";
+
+
+/* =====================================================
+   ELEMENTS
+   ===================================================== */
+
+const adminNameElement =
+  document.getElementById("adminName");
+
+const logoutStatus =
+  document.getElementById("logoutStatus");
+
+const loginLink =
+  document.getElementById("loginLink");
+
+
+/* =====================================================
+   GET REGISTERED ADMINISTRATOR INFORMATION
+   ===================================================== */
+
+let adminProfile = null;
+
+try {
+
+  const savedProfile =
+    sessionStorage.getItem("adminProfile");
+
+  if (savedProfile) {
+    adminProfile = JSON.parse(savedProfile);
+  }
+
+} catch (error) {
+
+  console.error("Unable to read admin profile:", error);
+
+}
+
+// Display registered full name.
+const fullName =
+  adminProfile?.name ||
+  adminProfile?.full_name ||
+  adminProfile?.fullName ||
+  "Administrator";
+
+adminNameElement.textContent = fullName;
+
+
+/* =====================================================
+   SUPABASE LOGOUT REQUEST
+   ===================================================== */
+
+async function logoutAdmin() {
+
+  const token =
+    sessionStorage.getItem("adminSessionToken");
+
+  try {
+
+    if (token) {
+
+      const response = await fetch(ADMIN_API_URL, {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": SUPABASE_PUBLISHABLE_KEY,
+          "Authorization": "Bearer " + token
+        },
+
+        body: JSON.stringify({
+          action: "logout"
+        })
+
+      });
+
+      if (!response.ok) {
+
+        let errorMessage = "Server logout could not be confirmed.";
+
+        try {
+          const result = await response.json();
+          errorMessage = result.error || errorMessage;
+        } catch (_) {}
+
+        throw new Error(errorMessage);
+      }
+    }
+
+    logoutStatus.className = "logout-status success";
+
+    logoutStatus.innerHTML =
+      '<i class="fa-solid fa-circle-check"></i> ' +
+      'Successfully signed out. Redirecting to login...';
+
+  } catch (error) {
+
+    console.error("Logout error:", error);
+
+    logoutStatus.className = "logout-status error";
+
+    logoutStatus.innerHTML =
+      '<i class="fa-solid fa-circle-exclamation"></i> ' +
+      'Could not confirm server logout. Local session cleared.';
+
+  } finally {
+
+    // Clear local administrator session.
+    sessionStorage.removeItem("adminSessionToken");
+    sessionStorage.removeItem("adminProfile");
+
+    // Prevent browser from restoring authenticated page state.
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState(null, "", window.location.href);
+    }
+
+    // Redirect to login after displaying goodbye message.
+    setTimeout(function() {
+      window.location.replace("../login.html");
+    }, 3000);
+
+  }
+
+}
+
+
+/* =====================================================
+   MANUAL PROCEED TO LOGIN
+   ===================================================== */
+
+loginLink.addEventListener("click", function(e) {
+
+  e.preventDefault();
+
+  // Local session is cleared even if user clicks early.
+  sessionStorage.removeItem("adminSessionToken");
+  sessionStorage.removeItem("adminProfile");
+
+  window.location.replace("../login.html");
+
+});
+
+
+/* =====================================================
+   FOOTER YEAR
+   ===================================================== */
+
+document.getElementById("year").textContent =
+  new Date().getFullYear();
+
+
+/* =====================================================
+   START LOGOUT
+   ===================================================== */
+
+logoutAdmin();
+
+</script>
+
+</body>
+</html>

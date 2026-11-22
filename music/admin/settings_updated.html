@@ -1,0 +1,1598 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Settings | Mobilization Church Balilihan</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700&family=Montserrat:wght@300;400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&family=Lato:wght@300;400;700;900&family=Nunito:wght@300;400;600;700;800&family=Raleway:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&family=Georgia&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root {
+  --primary:#1687c9;
+  --primary-dark:#126b9f;
+  --page:#edf7fd;
+  --card:#ffffff;
+  --text:#21445c;
+  --muted:#7b98aa;
+  --border:#dcecf5;
+  --danger:#dc5656;
+  --success:#159b70;
+  --shadow:0 8px 28px rgba(35,111,155,.08);
+}
+
+* {
+  box-sizing:border-box;
+}
+
+body {
+  margin:0;
+  padding:24px;
+  background:linear-gradient(135deg,#eef8ff,#f7fbff);
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+}
+
+.page-container {
+  max-width:1250px;
+  margin:auto;
+}
+
+.page-heading {
+  margin:10px 0 25px;
+}
+
+.page-heading h1 {
+  font-size:28px;
+  font-weight:800;
+  color:#174c70;
+  margin:0 0 10px;
+}
+
+.page-heading p {
+  max-width:850px;
+  color:#7191a7;
+  line-height:1.8;
+  font-size:14px;
+  margin:0;
+}
+
+.section-card {
+  background:rgba(255,255,255,.92);
+  border:1px solid rgba(255,255,255,.9);
+  border-radius:19px;
+  padding:25px;
+  margin-bottom:23px;
+  box-shadow:var(--shadow);
+}
+
+.section-heading {
+  display:flex;
+  align-items:flex-start;
+  gap:13px;
+  margin-bottom:23px;
+}
+
+.section-icon {
+  width:43px;
+  height:43px;
+  flex-shrink:0;
+  border-radius:13px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#e5f4ff;
+  color:#1687c9;
+  font-size:18px;
+}
+
+.section-heading h2 {
+  font-size:18px;
+  font-weight:800;
+  color:#214d6b;
+  margin:2px 0 7px;
+}
+
+.section-heading p {
+  font-size:12px;
+  color:#819bad;
+  line-height:1.7;
+  margin:0;
+}
+
+.form-grid {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:18px;
+}
+
+.form-group {
+  min-width:0;
+}
+
+.form-group.full {
+  grid-column:1/-1;
+}
+
+label {
+  display:block;
+  font-size:12px;
+  font-weight:700;
+  color:#52758d;
+  margin-bottom:8px;
+}
+
+input,select {
+  width:100%;
+  height:45px;
+  padding:0 13px;
+  border:1px solid #d9e9f3;
+  border-radius:10px;
+  outline:none;
+  background:#fbfdff;
+  color:#244d67;
+  font-family:inherit;
+  font-size:13px;
+  transition:.2s;
+}
+
+input:focus,select:focus {
+  border-color:#72bce9;
+  box-shadow:0 0 0 3px rgba(22,135,201,.09);
+}
+
+input[type="color"] {
+  padding:5px;
+  cursor:pointer;
+}
+
+.theme-grid {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:13px;
+}
+
+.theme-option {
+  cursor:pointer;
+  position:relative;
+}
+
+.theme-option input {
+  position:absolute;
+  opacity:0;
+  pointer-events:none;
+}
+
+.theme-preview {
+  height:85px;
+  border-radius:13px;
+  padding:13px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  border:2px solid transparent;
+  transition:.2s;
+}
+
+.theme-option input:checked + .theme-preview {
+  border-color:#1687c9;
+  box-shadow:0 0 0 3px rgba(22,135,201,.12);
+}
+
+.theme-preview span {
+  font-size:11px;
+  font-weight:800;
+}
+
+.theme-preview i {
+  font-size:18px;
+}
+
+.theme-name {
+  display:block;
+  margin-top:9px;
+  font-size:11px;
+  font-weight:700;
+  color:#54778f;
+}
+
+.custom-theme {
+  margin-top:18px;
+  padding:17px;
+  background:#f5faff;
+  border:1px solid #e1eff8;
+  border-radius:13px;
+}
+
+.custom-theme h3 {
+  margin:0 0 14px;
+  font-size:13px;
+  color:#315c78;
+}
+
+.color-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:13px;
+}
+
+.signatory-grid {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:20px;
+}
+
+.signatory-card {
+  padding:19px;
+  border:1px solid #e1edf5;
+  border-radius:15px;
+  background:#fbfdff;
+}
+
+.signatory-card h3 {
+  margin:0 0 17px;
+  font-size:14px;
+  color:#2477a8;
+}
+
+.signatory-card .form-group {
+  margin-bottom:15px;
+}
+
+.image-grid {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:18px;
+}
+
+.image-card {
+  border:1px solid #e1edf5;
+  border-radius:15px;
+  padding:17px;
+  background:#fbfdff;
+  min-width:0;
+}
+
+.image-card h3 {
+  margin:0 0 12px;
+  font-size:13px;
+  color:#315c78;
+}
+
+.image-preview {
+  width:100%;
+  height:155px;
+  border:1px dashed #b9d7e9;
+  background:#f0f8fe;
+  border-radius:12px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+  margin-bottom:13px;
+}
+
+.image-preview img {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.image-placeholder {
+  color:#88a9bd;
+  text-align:center;
+  font-size:12px;
+}
+
+.image-placeholder i {
+  display:block;
+  font-size:29px;
+  margin-bottom:8px;
+}
+
+.image-actions {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.image-actions button {
+  flex:1;
+  min-width:100px;
+}
+
+.note {
+  margin-top:16px;
+  padding:13px 15px;
+  border-radius:11px;
+  background:#fff9e9;
+  color:#92712f;
+  font-size:11px;
+  line-height:1.7;
+}
+
+.btn {
+  border:0;
+  border-radius:10px;
+  padding:12px 17px;
+  font-family:inherit;
+  font-weight:700;
+  font-size:12px;
+  cursor:pointer;
+  transition:.2s;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+
+.btn:hover {
+  transform:translateY(-1px);
+  filter:brightness(.97);
+}
+
+.btn-primary {
+  background:linear-gradient(135deg,#279bdc,#0879b8);
+  color:white;
+  box-shadow:0 5px 14px rgba(22,135,201,.18);
+}
+
+.btn-light {
+  background:#eaf5fc;
+  color:#2679a9;
+}
+
+.btn-danger {
+  background:#fff0f0;
+  color:#d34d4d;
+}
+
+.btn-success {
+  background:#e7f8f0;
+  color:#16895f;
+}
+
+.save-area {
+  display:flex;
+  justify-content:flex-end;
+  margin:25px 0;
+}
+
+.admin-box {
+  background:#f7fbff;
+  border:1px solid #e0edf5;
+  border-radius:14px;
+  padding:19px;
+}
+
+.generated-field {
+  display:flex;
+  gap:8px;
+}
+
+.generated-field input {
+  flex:1;
+}
+
+.generated-field button {
+  flex-shrink:0;
+}
+
+.helper {
+  color:#819bad;
+  font-size:11px;
+  line-height:1.6;
+  margin-top:7px;
+}
+
+.danger-section {
+  border:1px solid #f1d5d5;
+}
+
+.danger-section .section-icon {
+  background:#fff0f0;
+  color:#d54f4f;
+}
+
+.danger-warning {
+  padding:15px;
+  background:#fff6f6;
+  border:1px solid #f3dada;
+  border-radius:12px;
+  color:#a44e4e;
+  font-size:12px;
+  line-height:1.7;
+  margin-bottom:18px;
+}
+
+.danger-warning strong {
+  display:block;
+  margin-bottom:5px;
+}
+
+.reset-actions {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+#toast-container {
+  position:fixed;
+  top:20px;
+  right:20px;
+  z-index:99999;
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+}
+
+.toast {
+  padding:14px 18px;
+  min-width:250px;
+  max-width:350px;
+  border-radius:12px;
+  background:#fff;
+  box-shadow:0 8px 30px rgba(0,0,0,.13);
+  border-left:4px solid #1687c9;
+  font-size:12px;
+  font-weight:600;
+  animation:slideIn .25s ease;
+}
+
+.toast.error {
+  border-left-color:#dc5656;
+}
+
+.toast.success {
+  border-left-color:#159b70;
+}
+
+@keyframes slideIn {
+  from { opacity:0; transform:translateX(20px); }
+  to { opacity:1; transform:translateX(0); }
+}
+
+.modal-backdrop {
+  position:fixed;
+  inset:0;
+  background:rgba(14,40,59,.55);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:9999;
+}
+
+.modal-backdrop.show {
+  display:flex;
+}
+
+.modal {
+  background:white;
+  width:100%;
+  max-width:440px;
+  padding:25px;
+  border-radius:18px;
+  box-shadow:0 20px 70px rgba(0,0,0,.2);
+}
+
+.modal h2 {
+  font-size:18px;
+  margin:0 0 9px;
+  color:#a94343;
+}
+
+.modal p {
+  font-size:12px;
+  color:#7892a3;
+  line-height:1.7;
+}
+
+.modal-buttons {
+  display:flex;
+  gap:9px;
+  margin-top:18px;
+}
+
+.modal-buttons button {
+  flex:1;
+}
+
+@media(max-width:850px) {
+  body { padding:15px; }
+  .theme-grid { grid-template-columns:repeat(2,1fr); }
+}
+
+@media(max-width:600px) {
+  .form-grid,
+  .signatory-grid,
+  .image-grid {
+    grid-template-columns:1fr;
+  }
+
+  .section-card { padding:18px; }
+  .page-heading h1 { font-size:23px; }
+  .color-grid { grid-template-columns:1fr; }
+  .save-area .btn { width:100%; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="page-container">
+
+  <div class="page-heading">
+    <h1><i class="fa-solid fa-sliders"></i> Manage the System</h1>
+    <p>
+      Configure your church system's identity, appearance, certificate
+      signatories, and module images in one place. You can also register
+      an administrator account, restore sample records, and manage
+      system data. Changes to system settings are saved to your
+      connected Supabase database.
+    </p>
+  </div>
+
+  <!-- SECTION 1: SYSTEM SETTINGS -->
+  <section class="section-card">
+
+    <div class="section-heading">
+      <div class="section-icon"><i class="fa-solid fa-palette"></i></div>
+      <div>
+        <h2>System Name, Location & Theme</h2>
+        <p>Manage your church identity, system title, location, colors and typography.</p>
+      </div>
+    </div>
+
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label>Church / Brand Name</label>
+        <input id="churchName" placeholder="Mobilization Church Balilihan">
+      </div>
+
+      <div class="form-group">
+        <label>System Name / Title</label>
+        <input id="systemName" placeholder="Church Management System">
+      </div>
+
+      <div class="form-group full">
+        <label>Location Label</label>
+        <input id="locationLabel" placeholder="Balilihan, Bohol, Philippines">
+      </div>
+
+      <div class="form-group full">
+        <label>Color Theme Preset Categories</label>
+
+        <div class="theme-grid">
+
+          <label class="theme-option">
+            <input type="radio" name="theme" value="navy" checked>
+            <div class="theme-preview" style="background:#172b4d;color:#e5bd72">
+              <span>Classic</span><i class="fa-solid fa-crown"></i>
+            </div>
+            <span class="theme-name">Classic Navy & Antique Gold</span>
+          </label>
+
+          <label class="theme-option">
+            <input type="radio" name="theme" value="indigo">
+            <div class="theme-preview" style="background:#383276;color:#f3d38a">
+              <span>Royal</span><i class="fa-solid fa-gem"></i>
+            </div>
+            <span class="theme-name">Royal Indigo & Warm Gold</span>
+          </label>
+
+          <label class="theme-option">
+            <input type="radio" name="theme" value="forest">
+            <div class="theme-preview" style="background:#174b3a;color:#d6bd78">
+              <span>Sanctuary</span><i class="fa-solid fa-leaf"></i>
+            </div>
+            <span class="theme-name">Sanctuary Forest & Brass</span>
+          </label>
+
+          <label class="theme-option">
+            <input type="radio" name="theme" value="burgundy">
+            <div class="theme-preview" style="background:#702d40;color:#e9c77b">
+              <span>Heritage</span><i class="fa-solid fa-church"></i>
+            </div>
+            <span class="theme-name">Heritage Burgundy & Gold</span>
+          </label>
+
+          <label class="theme-option">
+            <input type="radio" name="theme" value="custom">
+            <div class="theme-preview" style="background:linear-gradient(135deg,#dcefff,#b6d8f4);color:#23628a">
+              <span>Custom</span><i class="fa-solid fa-brush"></i>
+            </div>
+            <span class="theme-name">Custom Theme</span>
+          </label>
+
+        </div>
+      </div>
+
+      <div class="form-group full custom-theme">
+        <h3>Custom Theme Colors</h3>
+        <div class="color-grid">
+          <div>
+            <label>Primary Color</label>
+            <input type="color" id="customPrimary" value="#1687c9">
+          </div>
+          <div>
+            <label>Secondary Color</label>
+            <input type="color" id="customSecondary" value="#174c70">
+          </div>
+          <div>
+            <label>Accent Color</label>
+            <input type="color" id="customAccent" value="#d4ad65">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group full">
+        <label>Font Text Style (10 Options)</label>
+        <select id="fontStyle">
+          <option value="Inter">1. Inter – Modern Professional</option>
+          <option value="Poppins">2. Poppins – Clean & Modern</option>
+          <option value="Roboto">3. Roboto – Simple & Readable</option>
+          <option value="Montserrat">4. Montserrat – Elegant & Bold</option>
+          <option value="Open Sans">5. Open Sans – Professional</option>
+          <option value="Lato">6. Lato – Friendly & Clean</option>
+          <option value="Nunito">7. Nunito – Soft & Modern</option>
+          <option value="Raleway">8. Raleway – Elegant</option>
+          <option value="Playfair Display">9. Playfair Display – Classic</option>
+          <option value="Georgia">10. Georgia – Traditional</option>
+        </select>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 2: SIGNATORIES -->
+  <section class="section-card">
+
+    <div class="section-heading">
+      <div class="section-icon"><i class="fa-solid fa-file-signature"></i></div>
+      <div>
+        <h2>Certificate Signatories (2 Authorized Signatories)</h2>
+        <p>Edit the name and position title for the two certificate signatories: Pastor and Youth President.</p>
+      </div>
+    </div>
+
+    <div class="signatory-grid">
+
+      <div class="signatory-card">
+        <h3><i class="fa-solid fa-user-tie"></i> Signatory 1 – Pastor</h3>
+
+        <div class="form-group">
+          <label>Name</label>
+          <input id="pastorName" placeholder="Enter pastor's full name">
+        </div>
+
+        <div class="form-group">
+          <label>Position</label>
+          <input id="pastorPosition" value="Church Pastor">
+        </div>
+      </div>
+
+      <div class="signatory-card">
+        <h3><i class="fa-solid fa-user"></i> Signatory 2 – Youth President</h3>
+
+        <div class="form-group">
+          <label>Name</label>
+          <input id="youthName" placeholder="Enter youth president's full name">
+        </div>
+
+        <div class="form-group">
+          <label>Position</label>
+          <input id="youthPosition" value="Youth President">
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SECTION 3: IMAGES -->
+  <section class="section-card">
+
+    <div class="section-heading">
+      <div class="section-icon"><i class="fa-solid fa-images"></i></div>
+      <div>
+        <h2>Logo & Module Pictures</h2>
+        <p>Upload custom church logo and sanctuary/banner photos (PNG/JPG), or enter an image path.</p>
+      </div>
+    </div>
+
+    <div class="image-grid">
+
+      <!-- LOGO -->
+      <div class="image-card">
+        <h3>1. Church Logo (Navbar & Certificate Crest)</h3>
+        <div class="image-preview" id="preview-logo">
+          <div class="image-placeholder">
+            <i class="fa-solid fa-church"></i>
+            Built-in Church Logo
+          </div>
+        </div>
+        <input type="file" id="upload-logo" accept="image/png,image/jpeg,image/webp" hidden>
+        <div class="image-actions">
+          <button class="btn btn-primary" onclick="chooseImage('logo')">
+            <i class="fa-solid fa-upload"></i> Upload Image
+          </button>
+          <button class="btn btn-light" onclick="resetImage('logo')">
+            Reset Default
+          </button>
+        </div>
+      </div>
+
+      <!-- DEVOTIONAL -->
+      <div class="image-card">
+        <h3>2. Daily Grace Devotional Banner</h3>
+        <div class="image-preview" id="preview-devotional">
+          <div class="image-placeholder">
+            <i class="fa-solid fa-book-open"></i>
+            Daily Grace Devotional
+          </div>
+        </div>
+        <input type="file" id="upload-devotional" accept="image/png,image/jpeg,image/webp" hidden>
+        <div class="image-actions">
+          <button class="btn btn-primary" onclick="chooseImage('devotional')">
+            <i class="fa-solid fa-upload"></i> Upload Image
+          </button>
+          <button class="btn btn-light" onclick="resetImage('devotional')">
+            Reset Default
+          </button>
+        </div>
+      </div>
+
+      <!-- SANCTUARY -->
+      <div class="image-card">
+        <h3>3. Home Sanctuary Hero Picture</h3>
+        <div class="image-preview" id="preview-sanctuary">
+          <div class="image-placeholder">
+            <i class="fa-solid fa-place-of-worship"></i>
+            Sanctuary Hero Picture
+          </div>
+        </div>
+        <input type="file" id="upload-sanctuary" accept="image/png,image/jpeg,image/webp" hidden>
+        <div class="image-actions">
+          <button class="btn btn-primary" onclick="chooseImage('sanctuary')">
+            <i class="fa-solid fa-upload"></i> Upload Image
+          </button>
+          <button class="btn btn-light" onclick="resetImage('sanctuary')">
+            Reset Default
+          </button>
+        </div>
+      </div>
+
+      <!-- MUSIC -->
+      <div class="image-card">
+        <h3>4. Music Line Up Banner</h3>
+        <div class="image-preview" id="preview-music">
+          <div class="image-placeholder">
+            <i class="fa-solid fa-music"></i>
+            Music Line Up Banner
+          </div>
+        </div>
+        <input type="file" id="upload-music" accept="image/png,image/jpeg,image/webp" hidden>
+        <div class="image-actions">
+          <button class="btn btn-primary" onclick="chooseImage('music')">
+            <i class="fa-solid fa-upload"></i> Upload Image
+          </button>
+          <button class="btn btn-light" onclick="resetImage('music')">
+            Reset Default
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="note">
+      <strong><i class="fa-solid fa-circle-info"></i> Image Reset Information</strong><br>
+      Reset Default restores the built-in church logo for the logo section.
+      For the other three sections, it restores the default online image source.
+      Uploaded images are stored in your Supabase Storage bucket named
+      <strong>system-assets</strong>.
+    </div>
+
+  </section>
+
+  <!-- SAVE SETTINGS -->
+  <div class="save-area">
+    <button class="btn btn-primary" id="saveSettingsBtn" onclick="saveSettings()">
+      <i class="fa-solid fa-floppy-disk"></i> Save All Settings
+    </button>
+  </div>
+
+  <!-- SECTION 4: REGISTER ADMIN -->
+  <section class="section-card">
+
+    <div class="section-heading">
+      <div class="section-icon"><i class="fa-solid fa-user-shield"></i></div>
+      <div>
+        <h2>Register Administrator Account</h2>
+        <p>Create an administrator account for authorized system management. The username is generated from the nickname, and a temporary password is automatically created.</p>
+      </div>
+    </div>
+
+    <div class="admin-box">
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Administrator Name</label>
+          <input id="adminName" placeholder="Enter full name">
+        </div>
+
+        <div class="form-group">
+          <label>Nickname</label>
+          <input id="adminNickname" placeholder="Enter nickname" oninput="generateUsername()">
+        </div>
+
+        <div class="form-group">
+          <label>Username (Automatic)</label>
+          <input id="adminUsername" readonly placeholder="Automatically generated">
+        </div>
+
+        <div class="form-group">
+          <label>Password (Automatic)</label>
+          <div class="generated-field">
+            <input id="adminPassword" readonly placeholder="Generate password">
+            <button class="btn btn-light" onclick="generatePassword()" type="button">
+              <i class="fa-solid fa-rotate"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group full">
+          <button class="btn btn-primary" onclick="registerAdmin()" id="registerAdminBtn">
+            <i class="fa-solid fa-user-plus"></i> Register Administrator
+          </button>
+          <p class="helper">
+            Save the generated username and password securely. The password is stored as a salted PBKDF2 hash, not plain text.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+  </section>
+
+  <!-- SECTION 5: DATA RESET -->
+  <section class="section-card danger-section">
+
+    <div class="section-heading">
+      <div class="section-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+      <div>
+        <h2>Data Reset & Delete All Data</h2>
+        <p>Permanently delete all devotional records, music lineups, monthly schedules, certificate requests, and issued certificate records. Church settings and administrator accounts are preserved.</p>
+      </div>
+    </div>
+
+    <div class="danger-warning">
+      <strong><i class="fa-solid fa-circle-exclamation"></i> Warning: Permanent Action</strong>
+      Deleting data cannot be undone. Export or back up important records before continuing.
+      This operation does not delete app_settings, admin_accounts, or Supabase Storage files. Participant completion saved only in an individual visitor browser is not centrally stored and cannot be cleared from this admin page.
+    </div>
+
+    <div class="form-group">
+      <label>Type DELETE to confirm</label>
+      <input id="deleteConfirmation" placeholder="Type DELETE here" autocomplete="off">
+    </div>
+
+    <div class="reset-actions" style="margin-top:15px">
+      <button class="btn btn-danger" onclick="openDeleteModal()">
+        <i class="fa-solid fa-trash"></i> Delete All Data
+      </button>
+
+      <button class="btn btn-success" onclick="restoreSampleData()" id="restoreBtn">
+        <i class="fa-solid fa-database"></i> Restore Sample Data
+      </button>
+    </div>
+
+  </section>
+
+</div>
+
+<!-- DELETE CONFIRMATION MODAL -->
+<div class="modal-backdrop" id="deleteModal">
+  <div class="modal">
+    <h2><i class="fa-solid fa-triangle-exclamation"></i> Confirm Data Deletion</h2>
+    <p>
+      You are about to permanently delete the selected system records.
+      Your settings and administrator accounts will remain unchanged.
+      Are you absolutely sure?
+    </p>
+    <div class="modal-buttons">
+      <button class="btn btn-light" onclick="closeDeleteModal()">Cancel</button>
+      <button class="btn btn-danger" onclick="deleteAllData()" id="confirmDeleteBtn">
+        Yes, Delete All
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script>
+/* =====================================================
+   SUPABASE CONFIGURATION
+   ===================================================== */
+
+const SUPABASE_URL =
+  "https://gcmsypmigipyizwcoflw.supabase.co";
+
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjbXN5cG1pZ2lweWl6d2NvZmx3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUxNzI3MzYsImV4cCI6MjExMDc0ODczNn0.Ra53x1UDl8igDi0vTgR2FlzzscSQdsnZbV2pWtulQOY";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
+
+
+const SETTINGS_TABLE = "app_settings";
+const ADMIN_TABLE = "admin_accounts";
+const STORAGE_BUCKET = "system-assets";
+
+/* =====================================================
+   DEFAULT IMAGES
+   ===================================================== */
+
+const DEFAULT_IMAGES = {
+  logo: null,
+
+  devotional:
+  "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?auto=format&fit=crop&w=1200&q=85",
+
+  sanctuary:
+  "https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=1200&q=85",
+
+  music:
+  "https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=1200&q=85"
+};
+
+let imageSettings = {
+  logo: null,
+  devotional: DEFAULT_IMAGES.devotional,
+  sanctuary: DEFAULT_IMAGES.sanctuary,
+  music: DEFAULT_IMAGES.music
+};
+
+let loadedSettings = {};
+
+/* =====================================================
+   TOAST NOTIFICATION
+   ===================================================== */
+
+function showToast(message, type = "success") {
+  const container = document.getElementById("toast-container");
+  const toast = document.createElement("div");
+
+  toast.className = "toast " + type;
+  toast.textContent = message;
+
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.remove();
+  }, 4000);
+}
+
+/* =====================================================
+   THEME SETTINGS
+   ===================================================== */
+
+const THEME_PRESETS = {
+  navy: {
+    primary: "#172b4d",
+    secondary: "#e5bd72",
+    accent: "#b68a3d"
+  },
+
+  indigo: {
+    primary: "#383276",
+    secondary: "#f3d38a",
+    accent: "#c6a34d"
+  },
+
+  forest: {
+    primary: "#174b3a",
+    secondary: "#d6bd78",
+    accent: "#ad8e43"
+  },
+
+  burgundy: {
+    primary: "#702d40",
+    secondary: "#e9c77b",
+    accent: "#b58a48"
+  }
+};
+
+function getSelectedTheme() {
+  return document.querySelector('input[name="theme"]:checked')?.value || "navy";
+}
+
+function applyTheme(theme) {
+  if (theme === "custom") return;
+
+  const colors = THEME_PRESETS[theme];
+
+  if (!colors) return;
+
+  document.getElementById("customPrimary").value = colors.primary;
+  document.getElementById("customSecondary").value = colors.secondary;
+  document.getElementById("customAccent").value = colors.accent;
+}
+
+document.querySelectorAll('input[name="theme"]').forEach(input => {
+  input.addEventListener("change", () => {
+    if (input.value !== "custom") applyTheme(input.value);
+  });
+});
+
+/* =====================================================
+   IMAGE UPLOAD AND PREVIEW
+   ===================================================== */
+
+function showImagePreview(type, src) {
+  const preview = document.getElementById("preview-" + type);
+
+  if (!preview) return;
+
+  if (type === "logo" && !src) {
+    preview.innerHTML = `
+      <div class="image-placeholder">
+        <i class="fa-solid fa-church"></i>
+        Built-in Church Logo
+      </div>
+    `;
+    return;
+  }
+
+  if (!src) {
+    preview.innerHTML = `
+      <div class="image-placeholder">
+        <i class="fa-solid fa-image"></i>
+        No image selected
+      </div>
+    `;
+    return;
+  }
+
+  const img = document.createElement("img");
+  img.src = src;
+  img.alt = type + " preview";
+  img.onerror = () => {
+    preview.innerHTML = `
+      <div class="image-placeholder">
+        <i class="fa-solid fa-image"></i>
+        Image could not be loaded
+      </div>
+    `;
+  };
+
+  preview.replaceChildren(img);
+}
+
+function chooseImage(type) {
+  document.getElementById("upload-" + type).click();
+}
+
+["logo", "devotional", "sanctuary", "music"].forEach(type => {
+  document.getElementById("upload-" + type).addEventListener("change", async event => {
+    const file = event.target.files[0];
+
+    if (!file) return;
+
+    if (!["image/png", "image/jpeg", "image/webp"].includes(file.type)) {
+      showToast("Please select a PNG, JPG, or WebP image.", "error");
+      event.target.value = "";
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      showToast("Image must be smaller than 5 MB.", "error");
+      event.target.value = "";
+      return;
+    }
+
+    const localUrl = URL.createObjectURL(file);
+
+    showImagePreview(type, localUrl);
+    imageSettings[type] = {
+      file: file,
+      localUrl: localUrl
+    };
+
+    showToast("Image selected. Save All Settings to upload it.");
+  });
+});
+
+function resetImage(type) {
+  if (type === "logo") {
+    imageSettings.logo = null;
+    showImagePreview("logo", null);
+  } else {
+    imageSettings[type] = DEFAULT_IMAGES[type];
+    showImagePreview(type, DEFAULT_IMAGES[type]);
+  }
+
+  showToast("Default image restored. Save your settings to apply.");
+}
+
+/* =====================================================
+   UPLOAD IMAGE TO SUPABASE STORAGE
+   ===================================================== */
+
+async function uploadImage(type, value) {
+  if (value && value.file) {
+    const file = value.file;
+    const extension = file.name.split(".").pop().toLowerCase();
+
+    const filePath =
+      type + "/" + Date.now() + "-" +
+      crypto.randomUUID() + "." + extension;
+
+    const { error } = await db.storage
+      .from(STORAGE_BUCKET)
+      .upload(filePath, file, {
+        upsert: true,
+        contentType: file.type
+      });
+
+    if (error) throw error;
+
+    const { data } = db.storage
+      .from(STORAGE_BUCKET)
+      .getPublicUrl(filePath);
+
+    return data.publicUrl;
+  }
+
+  return value;
+}
+
+/* =====================================================
+   SAVE SETTINGS
+   ===================================================== */
+
+async function saveSettings() {
+  const button = document.getElementById("saveSettingsBtn");
+
+  button.disabled = true;
+  button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+
+  try {
+    const theme = getSelectedTheme();
+
+    const images = {};
+
+    for (const type of ["logo", "devotional", "sanctuary", "music"]) {
+      images[type] = await uploadImage(type, imageSettings[type]);
+    }
+
+    const settings = {
+      church_name: document.getElementById("churchName").value.trim(),
+      system_name: document.getElementById("systemName").value.trim(),
+      location_label: document.getElementById("locationLabel").value.trim(),
+
+      theme: theme,
+
+      colors: {
+        primary: document.getElementById("customPrimary").value,
+        secondary: document.getElementById("customSecondary").value,
+        accent: document.getElementById("customAccent").value
+      },
+
+      font_style: document.getElementById("fontStyle").value,
+
+      signatories: {
+        pastor: {
+          name: document.getElementById("pastorName").value.trim(),
+          position: document.getElementById("pastorPosition").value.trim()
+        },
+        youth_president: {
+          name: document.getElementById("youthName").value.trim(),
+          position: document.getElementById("youthPosition").value.trim()
+        }
+      },
+
+      images: images
+    };
+
+    const { error } = await db
+      .from(SETTINGS_TABLE)
+      .upsert({
+        id: 1,
+        settings: settings,
+        updated_at: new Date().toISOString()
+      }, { onConflict: "id" });
+
+    if (error) throw error;
+
+    imageSettings = images;
+    loadedSettings = settings;
+
+    for (const type of ["logo", "devotional", "sanctuary", "music"]) {
+      showImagePreview(type, images[type]);
+    }
+
+    showToast("All system settings saved successfully!");
+
+  } catch (error) {
+    console.error("Settings save error:", error);
+    showToast("Unable to save settings: " + error.message, "error");
+
+  } finally {
+    button.disabled = false;
+    button.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save All Settings';
+  }
+}
+
+/* =====================================================
+   LOAD SETTINGS
+   ===================================================== */
+
+async function loadSettings() {
+  try {
+    const { data, error } = await db
+      .from(SETTINGS_TABLE)
+      .select("settings")
+      .eq("id", 1)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    if (!data || !data.settings) return;
+
+    const s = data.settings;
+
+    loadedSettings = s;
+
+    document.getElementById("churchName").value = s.church_name || "";
+    document.getElementById("systemName").value = s.system_name || "";
+    document.getElementById("locationLabel").value = s.location_label || "";
+
+    document.getElementById("fontStyle").value = s.font_style || "Inter";
+
+    document.getElementById("pastorName").value = s.signatories?.pastor?.name || "";
+    document.getElementById("pastorPosition").value =
+      s.signatories?.pastor?.position || "Church Pastor";
+
+    document.getElementById("youthName").value =
+      s.signatories?.youth_president?.name || "";
+
+    document.getElementById("youthPosition").value =
+      s.signatories?.youth_president?.position || "Youth President";
+
+    const theme = s.theme || "navy";
+
+    const themeRadio = document.querySelector(
+      'input[name="theme"][value="' + theme + '"]'
+    );
+
+    if (themeRadio) themeRadio.checked = true;
+
+    if (s.colors) {
+      document.getElementById("customPrimary").value =
+        s.colors.primary || "#1687c9";
+
+      document.getElementById("customSecondary").value =
+        s.colors.secondary || "#174c70";
+
+      document.getElementById("customAccent").value =
+        s.colors.accent || "#d4ad65";
+    }
+
+    if (theme !== "custom") applyTheme(theme);
+
+    imageSettings = {
+      logo: s.images?.logo || null,
+      devotional: s.images?.devotional || DEFAULT_IMAGES.devotional,
+      sanctuary: s.images?.sanctuary || DEFAULT_IMAGES.sanctuary,
+      music: s.images?.music || DEFAULT_IMAGES.music
+    };
+
+    Object.keys(imageSettings).forEach(type => {
+      showImagePreview(type, imageSettings[type]);
+    });
+
+  } catch (error) {
+    console.error("Load settings error:", error);
+    showToast("Could not load saved settings: " + error.message, "error");
+  }
+}
+
+/* =====================================================
+   ADMIN USERNAME AND PASSWORD GENERATION
+   ===================================================== */
+
+function generateUsername() {
+  const nickname = document.getElementById("adminNickname").value.trim();
+
+  const username = nickname
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+
+  document.getElementById("adminUsername").value = username;
+}
+
+function generatePassword() {
+  const random = crypto.getRandomValues(new Uint32Array(1))[0] % 900;
+  const password = "admin-" + String(random + 100);
+
+  document.getElementById("adminPassword").value = password;
+}
+
+generatePassword();
+
+/* =====================================================
+   PASSWORD HASHING
+   ===================================================== */
+
+async function hashPassword(password) {
+  const encoder = new TextEncoder();
+
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+
+  const key = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(password),
+    "PBKDF2",
+    false,
+    ["deriveBits"]
+  );
+
+  const derived = await crypto.subtle.deriveBits(
+    {
+      name: "PBKDF2",
+      salt: salt,
+      iterations: 310000,
+      hash: "SHA-256"
+    },
+    key,
+    256
+  );
+
+  const saltString = btoa(String.fromCharCode(...salt));
+
+  const hashString = btoa(
+    String.fromCharCode(...new Uint8Array(derived))
+  );
+
+  return "pbkdf2-sha256$310000$" + saltString + "$" + hashString;
+}
+
+/* =====================================================
+   REGISTER ADMINISTRATOR
+   ===================================================== */
+
+async function registerAdmin() {
+  const button = document.getElementById("registerAdminBtn");
+
+  const name = document.getElementById("adminName").value.trim();
+  const nickname = document.getElementById("adminNickname").value.trim();
+  const username = document.getElementById("adminUsername").value.trim();
+  const password = document.getElementById("adminPassword").value.trim();
+
+  if (!name || !nickname || !username || !password) {
+    showToast("Please complete all administrator fields.", "error");
+    return;
+  }
+
+  if (username.length < 3) {
+    showToast("Username must contain at least 3 characters.", "error");
+    return;
+  }
+
+  button.disabled = true;
+  button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Registering...';
+
+  try {
+    const passwordHash = await hashPassword(password);
+
+    const { error } = await db
+      .from(ADMIN_TABLE)
+      .insert({
+        name: name,
+        nickname: nickname,
+        username: username,
+        password_hash: passwordHash
+      });
+
+    if (error) throw error;
+
+    showToast("Administrator account registered successfully!");
+
+    alert(
+      "ADMINISTRATOR ACCOUNT CREATED\n\n" +
+      "Name: " + name + "\n" +
+      "Username: " + username + "\n" +
+      "Password: " + password +
+      "\n\nPlease save these credentials securely."
+    );
+
+    document.getElementById("adminName").value = "";
+    document.getElementById("adminNickname").value = "";
+    document.getElementById("adminUsername").value = "";
+
+    generatePassword();
+
+  } catch (error) {
+    console.error("Admin registration error:", error);
+    showToast("Registration failed: " + error.message, "error");
+
+  } finally {
+    button.disabled = false;
+    button.innerHTML = '<i class="fa-solid fa-user-plus"></i> Register Administrator';
+  }
+}
+
+/* =====================================================
+   DATA RESET
+   ===================================================== */
+
+/*
+  IMPORTANT:
+  These table names must match your actual Supabase tables.
+  The code intentionally does not delete app_settings or
+  admin_accounts.
+*/
+
+const DATA_TABLES = [
+  "daily_challenges",
+  "music_lineups",
+  "monthly_schedules",
+  // Pending requests and issued certificate IDs are stored in this table.
+  "certificate_requests"
+];
+
+function openDeleteModal() {
+  const confirmation = document.getElementById("deleteConfirmation").value.trim();
+  if (confirmation !== "DELETE") {
+    showToast('Please type exactly "DELETE" to continue.', "error");
+    return;
+  }
+  document.getElementById("deleteModal").classList.add("show");
+}
+
+function closeDeleteModal() {
+  document.getElementById("deleteModal").classList.remove("show");
+}
+
+async function deleteAllData() {
+  const button = document.getElementById("confirmDeleteBtn");
+  const errors = [];
+  const deleted = [];
+  button.disabled = true;
+  button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Deleting...';
+  try {
+    // This page creates `supabaseClient`; the old code incorrectly called `db`.
+    // Supabase RLS must authorize this action for a verified administrator only.
+    for (const table of DATA_TABLES) {
+      const { error, count } = await supabaseClient
+        .from(table)
+        .delete({ count: "exact" })
+        .not("id", "is", null);
+      if (error) errors.push(`${table}: ${error.message}`);
+      else {
+        deleted.push(table);
+        console.info(`Cleared ${table}; rows affected: ${count ?? "not reported"}`);
+      }
+    }
+    closeDeleteModal();
+    document.getElementById("deleteConfirmation").value = "";
+    if (errors.length) {
+      console.error("Data reset errors:", errors);
+      showToast("Some data could not be deleted. See details.", "error");
+      alert("RESET INCOMPLETE\n\nCleared:\n" + (deleted.join("\n") || "None") +
+        "\n\nCould not clear:\n" + errors.join("\n") +
+        "\n\nCheck table names and administrator DELETE permissions in Supabase RLS.");
+    } else {
+      showToast("All selected devotional, music, schedule, and certificate records were deleted.");
+      alert("SYSTEM DATA CLEARED\n\nDeleted records from:\n" + deleted.join("\n") +
+        "\n\nPreserved: app_settings, admin_accounts, and Supabase Storage files.\n\n" +
+        "Completion records stored only in each visitor's browser are not centrally stored and are not erased by this database action.");
+    }
+  } catch (error) {
+    console.error("Data reset failed:", error);
+    closeDeleteModal();
+    showToast("Data deletion failed: " + error.message, "error");
+  } finally {
+    button.disabled = false;
+    button.innerHTML = "Yes, Delete All";
+  }
+}
+
+/* =====================================================
+   RESTORE SAMPLE DATA
+   ===================================================== */
+
+async function restoreSampleData() {
+  const confirmed = confirm(
+    "Restore sample devotional and music line-up records?\n\n" +
+    "This adds demonstration records. It does not delete your existing data."
+  );
+
+  if (!confirmed) return;
+
+  const button = document.getElementById("restoreBtn");
+
+  button.disabled = true;
+  button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Restoring...';
+
+  try {
+    const today = new Date().toISOString().slice(0, 10);
+
+    const devotionalSample = {
+      date: today,
+      title: "Walking in God's Grace",
+      scripture: "Ephesians 2:8-9",
+      key_message: "We are saved by grace through faith."
+    };
+
+    const musicSample = {
+      service_date: today,
+      worship_leader: "Sample Worship Leader",
+      songs: [
+        {
+          title: "Opening Song",
+          musical_key: "G",
+          category: "Opening Song"
+        },
+        {
+          title: "Praise Song",
+          musical_key: "D",
+          category: "Praise"
+        },
+        {
+          title: "Worship Song",
+          musical_key: "G",
+          category: "Worship"
+        }
+      ]
+    };
+
+    const results = await Promise.all([
+      db.from("daily_challenges").insert(devotionalSample),
+      db.from("music_lineups").insert(musicSample)
+    ]);
+
+    const errors = results
+      .filter(result => result.error)
+      .map(result => result.error.message);
+
+    if (errors.length) {
+      throw new Error(errors.join(" | "));
+    }
+
+    showToast("Sample devotional and music line-up records restored!");
+
+  } catch (error) {
+    console.error("Sample restore error:", error);
+    showToast("Could not restore sample data: " + error.message, "error");
+
+  } finally {
+    button.disabled = false;
+    button.innerHTML = '<i class="fa-solid fa-database"></i> Restore Sample Data';
+  }
+}
+
+/* =====================================================
+   INITIALIZATION
+   ===================================================== */
+
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadSettings();
+});
+</script>
+
+<!-- SHARED ADMIN NAVBAR -->
+<script src="navbar.js"></script>
+
+</body>
+</html>

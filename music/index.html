@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#07111f">
+  <title>Mobilization Church Balilihan | Begin Your Journey</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+  <style>
+    :root {
+      --cover-bg:#07111f; --cover-surface:#101e30; --cover-surface2:#14243a;
+      --cover-text:#f8fafc; --cover-muted:#a8b6c9; --cover-border:rgba(255,255,255,.11);
+      --cover-primary:#38bdf8; --cover-secondary:#818cf8; --cover-accent:#22d3ee;
+      --cover-font:"Poppins",sans-serif;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--cover-bg);color:var(--cover-text);font-family:var(--cover-font)}
+    a{color:inherit}
+    .cover-wrap{width:min(1220px,calc(100% - 44px));margin:auto}
+    .cover-hero{
+      min-height:calc(100vh - 82px);display:grid;grid-template-columns:1.05fr .95fr;
+      align-items:center;gap:48px;padding:65px 0 75px;
+    }
+    .eyebrow{display:inline-flex;align-items:center;gap:9px;color:var(--cover-primary);font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+    .brand-mini{display:flex;align-items:center;gap:12px;margin-bottom:36px}
+    .brand-logo{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;overflow:hidden;background:linear-gradient(135deg,var(--cover-primary),var(--cover-secondary));color:white;font-size:20px;flex:0 0 48px}
+    .brand-logo img{width:100%;height:100%;object-fit:contain;padding:4px}
+    .brand-mini strong{display:block;font-size:13px}
+    .brand-mini small{display:block;margin-top:4px;color:var(--cover-muted);font-size:10px;letter-spacing:1.2px;text-transform:uppercase}
+    h1{font-size:clamp(40px,6vw,70px);line-height:1.08;letter-spacing:-2px;margin:17px 0 22px;max-width:720px}
+    h1 span{color:var(--cover-primary)}
+    .hero-copy{max-width:620px;color:var(--cover-muted);font-size:15px;line-height:1.95;margin:0 0 30px}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:12px}
+    .btn{min-height:52px;padding:0 23px;border-radius:14px;display:inline-flex;align-items:center;justify-content:center;gap:11px;text-decoration:none;font-size:12px;font-weight:800;transition:.2s ease}
+    .btn:hover{transform:translateY(-3px)}
+    .btn-start{background:linear-gradient(135deg,var(--cover-primary),var(--cover-accent));color:#061321;box-shadow:0 12px 30px rgba(56,189,248,.2)}
+    .btn-learn{border:1px solid var(--cover-border);background:rgba(255,255,255,.04);color:var(--cover-text)}
+    .hero-note{display:flex;align-items:center;gap:9px;color:var(--cover-muted);font-size:10px;margin-top:25px}
+    .hero-note i{color:var(--cover-primary)}
+    .hero-art{position:relative;min-height:490px;border-radius:30px;overflow:hidden;background:#15283e;border:1px solid var(--cover-border);box-shadow:0 35px 90px rgba(0,0,0,.35)}
+    .hero-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+    .hero-art:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,12,23,.05) 25%,rgba(4,12,23,.9) 100%)}
+    .art-caption{position:absolute;z-index:1;left:28px;right:28px;bottom:28px}
+    .art-caption .quote-mark{font-size:32px;color:var(--cover-primary);line-height:1}
+    .art-caption h2{font-size:25px;line-height:1.3;margin:10px 0}
+    .art-caption p{font-size:11px;color:rgba(255,255,255,.75);line-height:1.8;margin:0}
+    .floating-verse{position:absolute;z-index:2;top:25px;left:25px;max-width:245px;padding:15px 17px;border-radius:15px;background:rgba(7,17,31,.78);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(12px)}
+    .floating-verse strong{display:block;font-size:11px;color:#fff}
+    .floating-verse span{display:block;color:rgba(255,255,255,.7);font-size:9px;line-height:1.6;margin-top:5px}
+    .section{padding:78px 0}
+    .section-head{text-align:center;max-width:680px;margin:0 auto 36px}
+    .section-head h2{font-size:clamp(27px,4vw,39px);margin:12px 0}
+    .section-head p{font-size:13px;color:var(--cover-muted);line-height:1.8;margin:0}
+    .feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}
+    .feature-card{padding:27px;border-radius:20px;background:var(--cover-surface);border:1px solid var(--cover-border)}
+    .feature-icon{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;color:var(--cover-primary);background:rgba(56,189,248,.12);font-size:19px;margin-bottom:20px}
+    .feature-card h3{font-size:15px;margin:0 0 10px}
+    .feature-card p{font-size:11px;line-height:1.9;color:var(--cover-muted);margin:0}
+    .journey{padding:42px;border-radius:25px;border:1px solid var(--cover-border);background:radial-gradient(circle at 0 0,rgba(56,189,248,.16),transparent 45%),var(--cover-surface);display:flex;align-items:center;justify-content:space-between;gap:25px}
+    .journey h2{font-size:clamp(23px,3.5vw,34px);margin:8px 0}
+    .journey p{max-width:650px;color:var(--cover-muted);font-size:12px;line-height:1.8;margin:0}
+    .site-footer{border-top:1px solid var(--cover-border);padding:25px 0 16px;background:rgba(0,0,0,.12)}
+    .footer-main{display:flex;justify-content:space-between;align-items:center;gap:15px}
+    .footer-main strong{display:block;font-size:11px}
+    .footer-main span{display:block;color:var(--cover-muted);font-size:9px;margin-top:5px}
+    .footer-bottom{display:flex;justify-content:center;align-items:center;gap:10px;padding-top:17px;margin-top:18px;border-top:1px solid var(--cover-border);color:var(--cover-muted);font-size:9px}
+    .admin-icon-link{width:23px;height:23px;display:inline-grid;place-items:center;border-radius:50%;color:#8291a5;text-decoration:none;font-size:10px;opacity:.65;transition:.2s}
+    .admin-icon-link:hover{opacity:1;color:var(--cover-primary);background:rgba(56,189,248,.1)}
+    @media(max-width:900px){.cover-hero{grid-template-columns:1fr;gap:30px;padding-top:48px}.hero-art{min-height:420px}.feature-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:600px){.cover-wrap{width:calc(100% - 30px)}.cover-hero{min-height:auto;padding:40px 0 50px}.brand-mini{margin-bottom:27px}h1{font-size:43px;letter-spacing:-1.5px}.hero-copy{font-size:13px}.hero-art{min-height:350px;border-radius:22px}.art-caption{left:19px;right:19px;bottom:20px}.art-caption h2{font-size:20px}.floating-verse{top:15px;left:15px;max-width:210px}.section{padding:55px 0}.feature-grid{grid-template-columns:1fr}.journey{padding:27px 22px;align-items:flex-start;flex-direction:column}.journey .btn{width:100%}.footer-main{align-items:flex-start;flex-direction:column}.footer-bottom{justify-content:space-between}}
+  </style>
+</head>
+
+<body>
+  <main>
+    <section class="cover-wrap cover-hero">
+      <div>
+        <div class="brand-mini">
+          <div class="brand-logo" id="coverLogo"><i class="fa-solid fa-church"></i></div>
+          <div>
+            <strong id="coverChurchName">Mobilization Church Balilihan</strong>
+            <small>Faith · Fellowship · Growth</small>
+          </div>
+        </div>
+
+        <span class="eyebrow"><i class="fa-solid fa-sparkles"></i> Welcome to a journey of faith</span>
+        <h1>Grow in Faith.<br><span>Live by Grace.</span></h1>
+        <p class="hero-copy">
+          Your daily walk with God begins with one step. Discover a simple space
+          to read the Bible, reflect on His Word, follow devotional challenges,
+          and stay connected with the worship life of Mobilization Church Balilihan.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-start" href=".user/index.html">
+            Start the Journey <i class="fa-solid fa-arrow-right"></i>
+          </a>
+          <a class="btn btn-learn" href="#discover">
+            Discover More <i class="fa-solid fa-chevron-down"></i>
+          </a>
+        </div>
+        <div class="hero-note">
+          <i class="fa-solid fa-heart"></i>
+          <span>A welcoming place to grow closer to God, one day at a time.</span>
+        </div>
+      </div>
+
+      <div class="hero-art">
+        <img id="coverHeroImage"
+          src="https://images.unsplash.com/photo-1438232992991-995b7058bbb3?auto=format&fit=crop&w=1400&q=85"
+          alt="Church sanctuary and worship space">
+        <div class="floating-verse">
+          <strong>“Draw near to God, and He will draw near to you.”</strong>
+          <span>James 4:8 · A daily invitation to walk with Him</span>
+        </div>
+        <div class="art-caption">
+          <div class="quote-mark">“</div>
+          <h2>A journey rooted in God's Word and guided by His grace.</h2>
+          <p id="coverLocation">Mobilization Church Balilihan · Balilihan, Bohol</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="discover">
+      <div class="cover-wrap">
+        <div class="section-head">
+          <span class="eyebrow">Discover the experience</span>
+          <h2>Take Your Next Step in Faith</h2>
+          <p>Everything is designed to help you stay encouraged, consistent, and connected as you grow in your relationship with Jesus Christ.</p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <div class="feature-icon"><i class="fa-solid fa-book-bible"></i></div>
+            <h3>Daily Devotional</h3>
+            <p>Spend a meaningful moment with Scripture, a devotional message, and a personal reflection you can apply to everyday life.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon"><i class="fa-solid fa-calendar-days"></i></div>
+            <h3>Monthly Schedule</h3>
+            <p>Stay informed about upcoming devotionals, church activities, and important dates in the church calendar.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon"><i class="fa-solid fa-music"></i></div>
+            <h3>Worship Music Line Up</h3>
+            <p>View the upcoming worship song selections and song leads as we prepare together to praise and worship God.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon"><i class="fa-solid fa-chart-line"></i></div>
+            <h3>Track Your Growth</h3>
+            <p>Follow your devotional challenge progress and celebrate each day you make time for God's Word.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon"><i class="fa-solid fa-award"></i></div>
+            <h3>Certificate Recognition</h3>
+            <p>Complete the devotional challenge requirements and submit your certificate request for review and recognition.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon"><i class="fa-solid fa-people-group"></i></div>
+            <h3>Stay Connected</h3>
+            <p>Keep up with church information and helpful guides created to make your experience simple and accessible.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="cover-wrap section" style="padding-top:0">
+      <div class="journey">
+        <div>
+          <span class="eyebrow"><i class="fa-solid fa-route"></i> Your journey starts here</span>
+          <h2>Make room for God's Word every day.</h2>
+          <p>Begin your Daily Grace journey today. Open the devotional space, explore the schedule, and take one meaningful step at a time.</p>
+        </div>
+        <a class="btn btn-start" href=".user/index.html">
+          Start the Journey <i class="fa-solid fa-arrow-right"></i>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="cover-wrap">
+      <div class="footer-main">
+        <div>
+          <strong id="footerChurchName">Mobilization Church Balilihan</strong>
+          <span>Growing in God's Word. Living by His Grace.</span>
+        </div>
+        <span>Faith · Fellowship · Discipleship</span>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span id="currentYear"></span> Mobilization Church Balilihan. All rights reserved.</span>
+        <a class="admin-icon-link" href="login.html" aria-label="Administrator login" title="Administrator Login">
+          <i class="fa-solid fa-user-shield"></i>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="navbar.js"></script>
+  <script>
+    (() => {
+      "use strict";
+      const SUPABASE_URL = "https://gcmsypmigipyizwcoflw.supabase.co";
+      const SUPABASE_KEY = "sb_publishable_LRvaH2X8ZuJz8q17_JkxOg_lbi3ob_s";
+      const db = window.supabase?.createClient
+        ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+        : null;
+
+      document.getElementById("currentYear").textContent = new Date().getFullYear();
+
+      async function loadCoverSettings() {
+        if (!db) return;
+        try {
+          const { data, error } = await db.from("app_settings")
+            .select("id, settings").eq("id", 1).maybeSingle();
+          if (error) throw error;
+          const settings = data?.settings || {};
+          const churchName = settings.church_name || "Mobilization Church Balilihan";
+          const location = settings.location || settings.church_location || settings.address || "Balilihan, Bohol, Philippines";
+          document.getElementById("coverChurchName").textContent = churchName;
+          document.getElementById("footerChurchName").textContent = churchName;
+          document.getElementById("coverLocation").textContent = `${churchName} · ${location}`;
+
+          const logo = settings.images?.logo || settings.logo_url || settings.church_logo || "";
+          if (logo) {
+            const mark = document.getElementById("coverLogo");
+            const img = document.createElement("img");
+            img.src = logo;
+            img.alt = "Church logo";
+            img.onerror = () => { mark.innerHTML = '<i class="fa-solid fa-church"></i>'; };
+            mark.innerHTML = "";
+            mark.appendChild(img);
+          }
+
+          const heroImage = settings.images?.sanctuary || settings.images?.hero ||
+            settings.images?.church_image || settings.sanctuary_image || settings.hero_image || "";
+          if (heroImage) document.getElementById("coverHeroImage").src = heroImage;
+
+          const colors = settings.colors || {};
+          if (colors.primary) document.documentElement.style.setProperty("--cover-primary", colors.primary);
+          if (colors.secondary) document.documentElement.style.setProperty("--cover-secondary", colors.secondary);
+          if (colors.accent) document.documentElement.style.setProperty("--cover-accent", colors.accent);
+          const font = typeof settings.font_style === "string" ? settings.font_style : settings.font_style?.family;
+          if (font) document.documentElement.style.setProperty("--cover-font", `"${font}", sans-serif`);
+        } catch (error) {
+          console.warn("Could not load church cover settings:", error.message);
+        }
+      }
+      loadCoverSettings();
+    })();
+  </script>
+</body>
+</html>
